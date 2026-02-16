@@ -1,0 +1,419 @@
+<nav class="sidebar">
+	<div class="sidebar-header">
+		{% set isAdmin = is_granted('ROLE_ADMIN') %}
+		{% set isJury = is_granted('ROLE_JURY') %}
+		{% set isCandidat = is_granted('ROLE_CANDIDAT') %}
+		{% set isUserCentre = is_granted('ROLE_USER_CENTRE') %}
+
+		{% set brandRoute =
+			isCandidat and not isAdmin and not isJury and not isUserCentre
+				? 'app_candidature_index'
+				: (isUserCentre and not isAdmin and not isJury
+					? 'app_dashboard_centre'
+					: 'app_dashboard')
+		%}
+
+		<a href="{{ path(brandRoute) }}" class="sidebar-brand d-flex align-items-center justify-content-center">
+			<img src="{{ asset('front/image/favicon.png') }}" alt="DAIP Logo" style="height: 40px; width: auto;">
+		</a>
+		<div class="sidebar-toggler">
+			<span></span>
+			<span></span>
+			<span></span>
+		</div>
+	</div>
+	<div class="sidebar-body">
+		{% set showCandidateNav = isCandidat and not isAdmin and not isJury and not isUserCentre %}
+
+		{% if showCandidateNav %}
+			<ul class="nav" id="sidebarNav">
+				<li class="nav-item nav-category">Candidatures</li>
+				<li class="nav-item">
+					<a href="{{ path('app_candidature_index') }}" class="nav-link">
+						<i class="link-icon" data-lucide="user-round"></i>
+						<span class="link-title">Mes candidatures</span>
+					</a>
+				</li>
+			</ul>
+		{% elseif isUserCentre and not isAdmin and not isJury %}
+			<ul class="nav" id="sidebarNav">
+				<li class="nav-item nav-category">Espace Centre</li>
+				
+				<li class="nav-item">
+					<a href="{{ path('app_dashboard_centre') }}" class="nav-link">
+						<i class="link-icon" data-lucide="layout-dashboard"></i>
+						<span class="link-title">Dashboard</span>
+					</a>
+				</li>
+				
+				<li class="nav-item">
+					<a href="{{ path('app_prospection_metier_index') }}" class="nav-link">
+						<i class="link-icon" data-lucide="briefcase"></i>
+						<span class="link-title">Prospections Effectuées</span>
+					</a>
+				</li>
+				<li class="nav-item">
+					<a href="{{ path('app_structure_accueil_index') }}" class="nav-link">
+						<i class="link-icon" data-lucide="building"></i>
+						<span class="link-title">Entreprises/Ateliers</span>
+					</a>
+				</li>
+			</ul>
+		{% else %}
+			<ul class="nav" id="sidebarNav">
+				<li class="nav-item nav-category">Tableau de bord</li>
+				<li class="nav-item">
+					<a href="{{ path('app_dashboard') }}" class="nav-link">
+						<i class="link-icon" data-lucide="layout-dashboard"></i>
+						<span class="link-title">Dashboard</span>
+					</a>
+				</li>
+
+				{% if isAdmin %}
+					<li class="nav-item nav-category">Gestion des projets</li>
+					<li class="nav-item">
+						<a class="nav-link" data-bs-toggle="collapse" href="#projetsMenu" role="button" aria-expanded="false" aria-controls="projetsMenu">
+							<i class="link-icon" data-lucide="folder-kanban"></i>
+							<span class="link-title">Projets</span>
+							<i class="link-arrow" data-lucide="chevron-down"></i>
+						</a>
+						<div class="collapse" data-bs-parent="#sidebarNav" id="projetsMenu">
+							<ul class="nav sub-menu">
+								<li class="nav-item">
+									<a href="{{ path('app_projet_new') }}" class="nav-link">Nouveau projet</a>
+								</li>
+								<li class="nav-item">
+									<a href="{{ path('app_projet_index') }}" class="nav-link">Liste des projets</a>
+								</li>
+							</ul>
+						</div>
+					</li>
+
+					<li class="nav-item nav-category">Gestion des recrutements</li>
+					<li class="nav-item">
+						<a class="nav-link" data-bs-toggle="collapse" href="#recrutementMenu" role="button" aria-expanded="false" aria-controls="recrutementMenu">
+							<i class="link-icon" data-lucide="users"></i>
+							<span class="link-title">Recrutements</span>
+							<i class="link-arrow" data-lucide="chevron-down"></i>
+						</a>
+						<div class="collapse" data-bs-parent="#sidebarNav" id="recrutementMenu">
+							<ul class="nav sub-menu">
+								<li class="nav-item"><a href="{{ path('app_recrutement_new') }}" class="nav-link">Nouveau recrutement</a></li>
+								<li class="nav-item"><a href="{{ path('app_recrutement_index') }}" class="nav-link">Liste des recrutements</a></li>
+							</ul>
+						</div>
+					</li>
+
+					<li class="nav-item">
+						<a class="nav-link" data-bs-toggle="collapse" href="#formationsMenu" role="button" aria-expanded="false" aria-controls="formationsMenu">
+							<i class="link-icon" data-lucide="book-open"></i>
+							<span class="link-title">Formations</span>
+							<i class="link-arrow" data-lucide="chevron-down"></i>
+						</a>
+						<div class="collapse" data-bs-parent="#sidebarNav" id="formationsMenu">
+							<ul class="nav sub-menu">
+								<li class="nav-item"><a href="{{ path('app_formation_new') }}" class="nav-link">Nouvelle formation</a></li>
+								<li class="nav-item"><a href="{{ path('app_formation_index') }}" class="nav-link">Liste des formations</a></li>
+							</ul>
+						</div>
+					</li>
+
+					<li class="nav-item">
+						<a class="nav-link" data-bs-toggle="collapse" href="#vaeMenu" role="button" aria-expanded="false" aria-controls="vaeMenu">
+							<i class="link-icon" data-lucide="badge-check"></i>
+							<span class="link-title">VAE</span>
+							<i class="link-arrow" data-lucide="chevron-down"></i>
+						</a>
+						<div class="collapse" data-bs-parent="#sidebarNav" id="vaeMenu">
+							<ul class="nav sub-menu">
+								<li class="nav-item"><a href="{{ path('app_vae_new') }}" class="nav-link">Nouvelle VAE</a></li>
+								<li class="nav-item"><a href="{{ path('app_vae_index') }}" class="nav-link">Liste des VAE</a></li>
+							</ul>
+						</div>
+					</li>
+				{% endif %}
+
+				{% if isAdmin or isJury %}
+					<li class="nav-item nav-category">Gestion des candidatures</li>
+					<li class="nav-item">
+						<a class="nav-link" data-bs-toggle="collapse" href="#candidaturesMenu" role="button" aria-expanded="false" aria-controls="candidaturesMenu">
+							<i class="link-icon" data-lucide="file-text"></i>
+							<span class="link-title">Candidatures</span>
+							<i class="link-arrow" data-lucide="chevron-down"></i>
+						</a>
+						<div class="collapse" data-bs-parent="#sidebarNav" id="candidaturesMenu">
+							<ul class="nav sub-menu">
+								<li class="nav-item"><a href="{{ path('app_candidature_index') }}" class="nav-link">Liste des candidatures</a></li>
+							</ul>
+						</div>
+					</li>
+				{% endif %}
+
+				{% if isAdmin %}
+					<li class="nav-item nav-category">Gestion des partenaires</li>
+					<li class="nav-item">
+						<a class="nav-link" data-bs-toggle="collapse" href="#partenairesMenu" role="button" aria-expanded="false" aria-controls="partenairesMenu">
+							<i class="link-icon" data-lucide="building-2"></i>
+							<span class="link-title">Partenaires</span>
+							<i class="link-arrow" data-lucide="chevron-down"></i>
+						</a>
+						<div class="collapse" data-bs-parent="#sidebarNav" id="partenairesMenu">
+							<ul class="nav sub-menu">
+								<li class="nav-item"><a href="{{ path('app_partenaire_new') }}" class="nav-link">Nouveau partenaire</a></li>
+								<li class="nav-item"><a href="{{ path('app_partenaire_index') }}" class="nav-link">Liste des partenaires</a></li>
+							</ul>
+						</div>
+					</li>
+
+					<li class="nav-item nav-category">Référentiels</li>
+					<li class="nav-item">
+						<a class="nav-link" data-bs-toggle="collapse" href="#centresMenu" role="button" aria-expanded="false" aria-controls="centresMenu">
+							<i class="link-icon" data-lucide="map-pin"></i>
+							<span class="link-title">Centres</span>
+							<i class="link-arrow" data-lucide="chevron-down"></i>
+						</a>
+						<div class="collapse" data-bs-parent="#sidebarNav" id="centresMenu">
+							<ul class="nav sub-menu">
+								<li class="nav-item"><a href="{{ path('app_centre_new') }}" class="nav-link">Nouveau centre</a></li>
+								<li class="nav-item"><a href="{{ path('app_centre_index') }}" class="nav-link">Liste des centres</a></li>
+							</ul>
+						</div>
+					</li>
+
+					<li class="nav-item">
+						<a class="nav-link" data-bs-toggle="collapse" href="#metiersMenu" role="button" aria-expanded="false" aria-controls="metiersMenu">
+							<i class="link-icon" data-lucide="briefcase"></i>
+							<span class="link-title">Métiers</span>
+							<i class="link-arrow" data-lucide="chevron-down"></i>
+						</a>
+						<div class="collapse" data-bs-parent="#sidebarNav" id="metiersMenu">
+							<ul class="nav sub-menu">
+								<li class="nav-item"><a href="{{ path('app_metier_new') }}" class="nav-link">Nouveau métier</a></li>
+								<li class="nav-item"><a href="{{ path('app_metier_index') }}" class="nav-link">Liste des métiers</a></li>
+							</ul>
+						</div>
+					</li>
+
+					<li class="nav-item">
+						<a class="nav-link" data-bs-toggle="collapse" href="#secteursMenu" role="button" aria-expanded="false" aria-controls="secteursMenu">
+							<i class="link-icon" data-lucide="layers"></i>
+							<span class="link-title">Secteurs</span>
+							<i class="link-arrow" data-lucide="chevron-down"></i>
+						</a>
+						<div class="collapse" data-bs-parent="#sidebarNav" id="secteursMenu">
+							<ul class="nav sub-menu">
+								<li class="nav-item"><a href="{{ path('app_secteur_new') }}" class="nav-link">Nouveau secteur</a></li>
+								<li class="nav-item"><a href="{{ path('app_secteur_index') }}" class="nav-link">Liste des secteurs</a></li>
+							</ul>
+						</div>
+					</li>
+
+					<li class="nav-item">
+						<a class="nav-link" data-bs-toggle="collapse" href="#filieresMenu" role="button" aria-expanded="false" aria-controls="filieresMenu">
+							<i class="link-icon" data-lucide="git-branch"></i>
+							<span class="link-title">Filières</span>
+							<i class="link-arrow" data-lucide="chevron-down"></i>
+						</a>
+						<div class="collapse" data-bs-parent="#sidebarNav" id="filieresMenu">
+							<ul class="nav sub-menu">
+								<li class="nav-item"><a href="{{ path('app_filiere_new') }}" class="nav-link">Nouvelle filière</a></li>
+								<li class="nav-item"><a href="{{ path('app_filiere_index') }}" class="nav-link">Liste des filières</a></li>
+							</ul>
+						</div>
+					</li>
+
+					<li class="nav-item">
+						<a class="nav-link" data-bs-toggle="collapse" href="#cfaEtablissementMenu" role="button" aria-expanded="false" aria-controls="cfaEtablissementMenu">
+							<i class="link-icon" data-lucide="graduation-cap"></i>
+							<span class="link-title">CFA Établissements</span>
+							<i class="link-arrow" data-lucide="chevron-down"></i>
+						</a>
+						<div class="collapse" data-bs-parent="#sidebarNav" id="cfaEtablissementMenu">
+							<ul class="nav sub-menu">
+								<li class="nav-item"><a href="{{ path('app_cfa_etablissement_new') }}" class="nav-link">Nouvel établissement</a></li>
+								<li class="nav-item"><a href="{{ path('app_cfa_etablissement_index') }}" class="nav-link">Liste des établissements</a></li>
+							</ul>
+						</div>
+					</li>
+
+					<li class="nav-item">
+						<a class="nav-link" data-bs-toggle="collapse" href="#structureAccueilMenu" role="button" aria-expanded="false" aria-controls="structureAccueilMenu">
+							<i class="link-icon" data-lucide="building"></i>
+							<span class="link-title">Structures d'accueil</span>
+							<i class="link-arrow" data-lucide="chevron-down"></i>
+						</a>
+						<div class="collapse" data-bs-parent="#sidebarNav" id="structureAccueilMenu">
+							<ul class="nav sub-menu">
+								<li class="nav-item"><a href="{{ path('app_structure_accueil_new') }}" class="nav-link">Nouvelle structure</a></li>
+								<li class="nav-item"><a href="{{ path('app_structure_accueil_index') }}" class="nav-link">Liste des structures</a></li>
+							</ul>
+						</div>
+					</li>
+
+					<li class="nav-item">
+						<a class="nav-link" data-bs-toggle="collapse" href="#prospectionMenu" role="button" aria-expanded="false" aria-controls="prospectionMenu">
+							<i class="link-icon" data-lucide="search"></i>
+							<span class="link-title">Prospections</span>
+							<i class="link-arrow" data-lucide="chevron-down"></i>
+						</a>
+						<div class="collapse" data-bs-parent="#sidebarNav" id="prospectionMenu">
+							<ul class="nav sub-menu">
+								<li class="nav-item"><a href="{{ path('app_prospection_index') }}" class="nav-link">Liste des prospections</a></li>
+								<li class="nav-item"><a href="{{ path('app_prospection_metier_new') }}" class="nav-link">Nouvelle prospection métier</a></li>
+								<li class="nav-item"><a href="{{ path('app_prospection_metier_index') }}" class="nav-link">Liste des prospections métiers</a></li>
+							</ul>
+						</div>
+					</li>
+				{% endif %}
+
+				{% if isAdmin or isJury %}
+
+
+
+							<li class="nav-item nav-category">Programmation des évaluations</li>
+							<li class="nav-item">
+						<a class="nav-link" data-bs-toggle="collapse" href="#evaluationProgrammeMenu" role="button" aria-expanded="false" aria-controls="evaluationProgrammeMenu">
+							<i class="link-icon" data-lucide="clock"></i>
+							<span class="link-title">Programmation des évaluations</span>
+							<i class="link-arrow" data-lucide="chevron-down"></i>
+						</a>
+						<div class="collapse" data-bs-parent="#sidebarNav" id="evaluationProgrammeMenu">
+							<ul class="nav sub-menu">
+								<li class="nav-item"><a href="{{ path('app_jury_date_index') }}" class="nav-link">Dates de jury</a></li>
+								<li class="nav-item"><a href="{{ path('app_programmation_evaluation_new') }}" class="nav-link">Nouvelle programmation</a></li>
+								<li class="nav-item"><a href="{{ path('app_programmation_evaluation_index') }}" class="nav-link">Liste des programmations</a></li>
+							</ul>
+						</div>
+					</li>
+
+
+
+					<li class="nav-item nav-category">Évaluation des candidatures</li>
+					<li class="nav-item">
+						<a class="nav-link" data-bs-toggle="collapse" href="#evaluationMenu" role="button" aria-expanded="false" aria-controls="evaluationMenu">
+							<i class="link-icon" data-lucide="clipboard-check"></i>
+							<span class="link-title">Évaluation des candidatures</span>
+							<i class="link-arrow" data-lucide="chevron-down"></i>
+						</a>
+						<div class="collapse" data-bs-parent="#sidebarNav" id="evaluationMenu">
+							<ul class="nav sub-menu">
+								
+									<li class="nav-item"><a href="{{ path('app_evaluation_candidature_traitement') }}" class="nav-link">Analyse des dossiers</a></li>
+							
+								<li class="nav-item"><a href="{{ path('app_evaluation_candidature_index') }}" class="nav-link">Liste des évaluations</a></li>
+							</ul>
+						</div>
+					</li>
+
+					<li class="nav-item">
+						<a class="nav-link" data-bs-toggle="collapse" href="#critereMenu" role="button" aria-expanded="false" aria-controls="critereMenu">
+							<i class="link-icon" data-lucide="sliders"></i>
+							<span class="link-title">Critères</span>
+							<i class="link-arrow" data-lucide="chevron-down"></i>
+						</a>
+						<div class="collapse" data-bs-parent="#sidebarNav" id="critereMenu">
+							<ul class="nav sub-menu">
+								{% if isAdmin %}
+									<li class="nav-item"><a href="{{ path('app_critere_new') }}" class="nav-link">Nouveau critère</a></li>
+								{% endif %}
+								<li class="nav-item"><a href="{{ path('app_critere_index') }}" class="nav-link">Liste des critères</a></li>
+							</ul>
+						</div>
+					</li>
+
+					<li class="nav-item">
+						<a class="nav-link" data-bs-toggle="collapse" href="#grilleEvaluationMenu" role="button" aria-expanded="false" aria-controls="grilleEvaluationMenu">
+							<i class="link-icon" data-lucide="table"></i>
+							<span class="link-title">Grilles d'évaluation</span>
+							<i class="link-arrow" data-lucide="chevron-down"></i>
+						</a>
+						<div class="collapse" data-bs-parent="#sidebarNav" id="grilleEvaluationMenu">
+							<ul class="nav sub-menu">
+								{% if isAdmin %}
+									<li class="nav-item"><a href="{{ path('app_grille_evaluation_new') }}" class="nav-link">Nouvelle grille</a></li>
+								{% endif %}
+								<li class="nav-item"><a href="{{ path('app_grille_evaluation_index') }}" class="nav-link">Liste des grilles</a></li>
+							</ul>
+						</div>
+					</li>
+
+					{% if isAdmin %}
+						<li class="nav-item">
+							<a class="nav-link" data-bs-toggle="collapse" href="#juryMenu" role="button" aria-expanded="false" aria-controls="juryMenu">
+								<i class="link-icon" data-lucide="users"></i>
+								<span class="link-title">Jury</span>
+								<i class="link-arrow" data-lucide="chevron-down"></i>
+							</a>
+							<div class="collapse" data-bs-parent="#sidebarNav" id="juryMenu">
+								<ul class="nav sub-menu">
+									<li class="nav-item"><a href="{{ path('app_jury_new') }}" class="nav-link">Nouveau jury</a></li>
+									<li class="nav-item"><a href="{{ path('app_jury_index') }}" class="nav-link">Liste des jurys</a></li>
+								</ul>
+							</div>
+						</li>
+					{% endif %}
+
+					<li class="nav-item">
+						<a class="nav-link" data-bs-toggle="collapse" href="#notationMenu" role="button" aria-expanded="false" aria-controls="notationMenu">
+							<i class="link-icon" data-lucide="bar-chart-3"></i>
+							<span class="link-title">Notation</span>
+							<i class="link-arrow" data-lucide="chevron-down"></i>
+						</a>
+						<div class="collapse" data-bs-parent="#sidebarNav" id="notationMenu">
+							<ul class="nav sub-menu">
+								{% if isAdmin %}
+									<li class="nav-item"><a href="{{ path('app_notation_new') }}" class="nav-link">Nouvelle notation</a></li>
+								{% endif %}
+								<li class="nav-item"><a href="{{ path('app_notation_index') }}" class="nav-link">Liste des notations</a></li>
+							</ul>
+						</div>
+					</li>
+				{% endif %}
+
+				{% if isAdmin %}
+					<li class="nav-item">
+						<a class="nav-link" data-bs-toggle="collapse" href="#pieceJointeMenu" role="button" aria-expanded="false" aria-controls="pieceJointeMenu">
+							<i class="link-icon" data-lucide="paperclip"></i>
+							<span class="link-title">Pièces jointes</span>
+							<i class="link-arrow" data-lucide="chevron-down"></i>
+						</a>
+						<div class="collapse" data-bs-parent="#sidebarNav" id="pieceJointeMenu">
+							<ul class="nav sub-menu">
+								<li class="nav-item"><a href="{{ path('app_piece_jointe_new') }}" class="nav-link">Nouvelle pièce jointe</a></li>
+								<li class="nav-item"><a href="{{ path('app_piece_jointe_index') }}" class="nav-link">Liste des pièces jointes</a></li>
+							</ul>
+						</div>
+					</li>
+
+					<li class="nav-item">
+						<a class="nav-link" data-bs-toggle="collapse" href="#diplomeMenu" role="button" aria-expanded="false" aria-controls="diplomeMenu">
+							<i class="link-icon" data-lucide="award"></i>
+							<span class="link-title">Diplômes</span>
+							<i class="link-arrow" data-lucide="chevron-down"></i>
+						</a>
+						<div class="collapse" data-bs-parent="#sidebarNav" id="diplomeMenu">
+							<ul class="nav sub-menu">
+								<li class="nav-item"><a href="{{ path('app_diplome_new') }}" class="nav-link">Nouveau diplôme</a></li>
+								<li class="nav-item"><a href="{{ path('app_diplome_index') }}" class="nav-link">Liste des diplômes</a></li>
+							</ul>
+						</div>
+					</li>
+
+					<li class="nav-item">
+						<a class="nav-link" data-bs-toggle="collapse" href="#typeEvaluationMenu" role="button" aria-expanded="false" aria-controls="typeEvaluationMenu">
+							<i class="link-icon" data-lucide="clipboard-list"></i>
+							<span class="link-title">Types d'évaluation</span>
+							<i class="link-arrow" data-lucide="chevron-down"></i>
+						</a>
+						<div class="collapse" data-bs-parent="#sidebarNav" id="typeEvaluationMenu">
+							<ul class="nav sub-menu">
+								<li class="nav-item"><a href="{{ path('app_type_evaluation_new') }}" class="nav-link">Nouveau type</a></li>
+								<li class="nav-item"><a href="{{ path('app_type_evaluation_index') }}" class="nav-link">Liste des types</a></li>
+							</ul>
+						</div>
+					</li>
+				{% endif %}
+			</ul>
+		{% endif %}
+	</div>
+</nav>

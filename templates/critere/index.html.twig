@@ -1,0 +1,42 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Critere index{% endblock %}
+
+{% block page_content %}
+    <h1>Critere index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Libellé</th>
+                <th>Barème</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for critere in criteres %}
+            <tr>
+                <td>{{ critere.id }}</td>
+                <td>{{ critere.libelle }}</td>
+                <td>{{ critere.bareme ?? 'Non défini' }}</td>
+                <td>
+                    <a href="{{ path('app_critere_edit', {'id': critere.id}) }}" class="btn btn-warning btn-lg mt-1">edit</a>
+                    <form method="post" action="{{ path('app_critere_delete', {'id': critere.id}) }}" class="d-inline" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce critere ?');">
+                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ critere.id) }}">
+                        <button class="btn btn-danger btn-lg mt-1">Supprimer</button>
+                        </form>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="4">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_critere_new') }}" class="btn btn-primary btn-lg mt-1">
+    Nouveau
+</a>
+{% endblock %}

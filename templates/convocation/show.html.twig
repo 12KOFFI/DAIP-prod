@@ -1,0 +1,80 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Détails Convocation{% endblock %}
+
+{% block body %}
+    <div class="container mt-4">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card shadow">
+                    <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                        <h3 class="card-title mb-0">Détails de la Convocation</h3>
+                        <span class="badge bg-light text-primary">{{ convocation.statut }}</span>
+                    </div>
+                    <div class="card-body">
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <h5 class="border-bottom pb-2">Candidat</h5>
+                                <p class="mb-1"><strong>Nom complet :</strong> {{ convocation.candidature.nomComplet }}</p>
+                                <p class="mb-1"><strong>Email :</strong> {{ convocation.candidature.email }}</p>
+                                <p class="mb-1"><strong>Téléphone :</strong> {{ convocation.candidature.telephone }}</p>
+                            </div>
+                            <div class="col-md-6">
+                                <h5 class="border-bottom pb-2">Programmation</h5>
+                                <p class="mb-1"><strong>Type :</strong> {{ convocation.programEvaluation.typeEvaluation.libelle }}</p>
+                                <p class="mb-1"><strong>Date Lancement :</strong> {{ convocation.programEvaluation.dateLancement|date('d/m/Y') }}</p>
+                                <p class="mb-1"><strong>Centre :</strong> {{ convocation.programEvaluation.centre.libelle|default('N/A') }}</p>
+                            </div>
+                        </div>
+
+                        <div class="row mb-4">
+                            <div class="col-md-12">
+                                <h5 class="border-bottom pb-2">Détails du passage</h5>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <p class="mb-1"><strong>Date & Heure :</strong> 
+                                            {% if convocation.juryDate %}
+                                                {{ convocation.juryDate.datePassage|date('d/m/Y H:i') }}
+                                            {% else %}
+                                                <span class="text-muted">Non définie</span>
+                                            {% endif %}
+                                        </p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <p class="mb-1"><strong>Jury :</strong> 
+                                            {% if convocation.juryDate and convocation.juryDate.jury %}
+                                                {{ convocation.juryDate.jury.libelle }}
+                                            {% else %}
+                                                <span class="text-muted">Non assigné</span>
+                                            {% endif %}
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-between mt-4">
+                            <a href="{{ path('app_convocation_index') }}" class="btn btn-secondary">
+                                <i class="fas fa-arrow-left"></i> Retour à la liste
+                            </a>
+                            <div class="btn-group">
+                                <a href="{{ path('app_convocation_print', {'id': convocation.id}) }}" class="btn btn-success">
+                                    <i class="fas fa-print"></i> Imprimer PDF
+                                </a>
+                                <a href="{{ path('app_convocation_edit', {'id': convocation.id}) }}" class="btn btn-warning">
+                                    <i class="fas fa-edit"></i> Modifier
+                                </a>
+                                <form method="post" action="{{ path('app_convocation_delete', {'id': convocation.id}) }}" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cet élément ?');" style="display: inline-block;">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ convocation.id) }}">
+                                    <button class="btn btn-danger rounded-0 rounded-end">
+                                        <i class="fas fa-trash"></i> Supprimer
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,164 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Dashboard Centre{% endblock %}
+
+{% block page_content %}
+    {# En-tête principal #}
+    <div class="dashboard-header mb-4">
+        <div class="d-flex align-items-start">
+            <div class="icon-wrapper bg-primary bg-opacity-10 rounded-3 p-3 me-3">
+                <i class="fas fa-graduation-cap fs-3 text-primary"></i>
+            </div>
+            <div class="flex-grow-1">
+                <h1 class="h3 mb-2 fw-bold">Espace CFA</h1>
+                <h2 class="h5 text-muted fw-normal mb-3">Gestion des Postes d'Apprentissage</h2>
+                <p class="text-secondary mb-2">
+                    Gestion ciblée des postes d'apprentissage : prospections, prospections métiers et structures d'accueil.
+                </p>
+                {% if app.user.cfaEtablissement is defined and app.user.cfaEtablissement %}
+                    <div class="badge bg-light text-dark border py-2 px-3">
+                        <i class="fas fa-users me-2"></i>
+                        <strong> Effectifs à atteindre :</strong> {{ app.user.cfaEtablissement.effectifs }}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    {# Call to action principal #}
+    <div class="card border-0 shadow-sm mb-4">
+        <div class="card-body p-4">
+            <div class="row align-items-center g-3">
+                <div class="col-lg-8">
+                    <div class="d-flex align-items-start">
+                        <div class="icon-wrapper bg-success bg-opacity-10 rounded-circle p-2 me-3">
+                            <i class="fas fa-search-plus fs-5 text-success"></i>
+                        </div>
+                        <div>
+                            <h3 class="h5 mb-2 fw-semibold">Effectuer une prospection</h3>
+                            <p class="text-muted mb-0 small">
+                                Suivez un parcours guidé en 2 étapes : création de la structure d'accueil, 
+                                de la prospection puis des prospections métiers.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="d-grid">
+                        <a href="{{ path('app_structure_accueil_new', { flow: 'prospection' }) }}" 
+                           class="btn btn-primary btn-lg py-3">
+                            <i class="fas fa-plus-circle me-2"></i>
+                            Nouvelle prospection
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# Grille des actions secondaires #}
+    <div class="row g-4">
+        {# Card Prospections Métiers #}
+        <div class="col-12 col-lg-6">
+            <div class="card border-0 shadow-sm h-100 hover-lift">
+                <div class="card-body p-4 d-flex flex-column">
+                    <div class="mb-auto">
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="icon-wrapper bg-info bg-opacity-10 rounded-circle p-2 me-3">
+                                <i class="fas fa-briefcase fs-4 text-info"></i>
+                            </div>
+                            <h3 class="h5 mb-0 fw-semibold">Prospections Effectuées</h3>
+                        </div>
+                        <p class="text-muted mb-0">
+                            Consultez et gérez les besoins en postes d'apprentissage identifiés par métier.
+                        </p>
+                    </div>
+                    <div class="mt-4">
+                        <a href="{{ path('app_prospection_metier_index') }}" 
+                           class="btn btn-outline-info w-100 py-2">
+                            <i class="fas fa-list me-2"></i>
+                            Voir les prospections métiers
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {# Card Structures d'Accueil #}
+        <div class="col-12 col-lg-6">
+            <div class="card border-0 shadow-sm h-100 hover-lift">
+                <div class="card-body p-4 d-flex flex-column">
+                    <div class="mb-auto">
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="icon-wrapper bg-warning bg-opacity-10 rounded-circle p-2 me-3">
+                                <i class="fas fa-building fs-4 text-warning"></i>
+                            </div>
+                            <h3 class="h5 mb-0 fw-semibold">Structures Prospectées</h3>
+                        </div>
+                        <p class="text-muted mb-0">
+                            Accédez aux détails des entreprises et ateliers artisanaux prospectés.
+                        </p>
+                    </div>
+                    <div class="mt-4">
+                        <a href="{{ path('app_structure_accueil_index') }}" 
+                           class="btn btn-outline-warning w-100 py-2">
+                            <i class="fas fa-list me-2"></i>
+                            Voir les structures d'accueil
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# CSS personnalisé pour les améliorations visuelles #}
+    <style>
+        .dashboard-header {
+            padding: 1.5rem 0;
+        }
+
+        .icon-wrapper {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .hover-lift {
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .hover-lift:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.15) !important;
+        }
+
+        .card {
+            border-radius: 0.75rem;
+        }
+
+        .btn {
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+
+        .btn:hover {
+            transform: translateY(-1px);
+        }
+
+        .badge {
+            font-weight: 500;
+            font-size: 0.875rem;
+        }
+
+        @media (max-width: 768px) {
+            .dashboard-header .icon-wrapper {
+                padding: 0.75rem !important;
+            }
+            
+            .dashboard-header .icon-wrapper i {
+                font-size: 1.5rem !important;
+            }
+        }
+    </style>
+{% endblock %}

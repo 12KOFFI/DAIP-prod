@@ -1,0 +1,64 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Programmation d'Évaluation{% endblock %}
+
+{% block page_content %}
+    <h1>Programmation d'Évaluation</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ program_evaluation.id }}</td>
+            </tr>
+            <tr>
+                <th>Recrutement</th>
+                <td>{{ program_evaluation.recrutement ? program_evaluation.recrutement.libelle : '' }}</td>
+            </tr>
+            <tr>
+                <th>Type d'évaluation</th>
+                <td>{{ program_evaluation.typeEvaluation ? program_evaluation.typeEvaluation.libelle : '' }}</td>
+            </tr>
+            <tr>
+                <th>Centre</th>
+                <td>{{ program_evaluation.centre ? program_evaluation.centre.nom : '' }}</td>
+            </tr>
+            <tr>
+                <th>Métiers</th>
+                <td>
+                    <ul>
+                        {% for metier in program_evaluation.metiers %}
+                            <li>{{ metier.nom }}</li>
+                        {% endfor %}
+                    </ul>
+                </td>
+            </tr>
+            <tr>
+                <th>Date de lancement</th>
+                <td>{{ program_evaluation.dateLancement ? program_evaluation.dateLancement|date('d/m/Y') : '' }}</td>
+            </tr>
+            <tr>
+                <th>Statut</th>
+                <td>{{ program_evaluation.statut }}</td>
+            </tr>
+            <tr>
+                <th>Utilisateur</th>
+                <td>{{ program_evaluation.user ? program_evaluation.user.email : '' }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_programmation_evaluation_index') }}" class="btn btn-secondary">Retour</a>
+    <a href="{{ path('app_programmation_evaluation_edit', {'id': program_evaluation.id}) }}" class="btn btn-warning">Modifier</a>
+
+    {% if program_evaluation.statut == 'OUVERT' %}
+        <form method="post" action="{{ path('app_programmation_evaluation_generate_convocations', {'id': program_evaluation.id}) }}" style="display: inline-block;">
+            <input type="hidden" name="_token" value="{{ csrf_token('generate_convocations' ~ program_evaluation.id) }}">
+            <button type="submit" class="btn btn-success" onclick="return confirm('Générer les convocations pour cette programmation ?');">
+                Générer convocations
+            </button>
+        </form>
+    {% endif %}
+
+    {{ include('programmation_evaluation/_delete_form.html.twig') }}
+{% endblock %}

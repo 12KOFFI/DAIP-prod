@@ -1,0 +1,130 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Évaluer une Candidature{% endblock %}
+
+{% block page_content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            <div class='card border-0 shadow-sm mb-4'>
+                <div class='card-header bg-white border-0 py-3'>
+                    <h4 class='card-title mb-0 text-primary'>
+                        <i class='fas fa-clipboard-check me-2'></i>
+                        Évaluer une candidature
+                    </h4>
+                </div>
+                <div class='card-body p-4'>
+
+                    {% for message in app.flashes('success') %}
+                        <div class='alert alert-success alert-dismissible fade show mb-4'>
+                            <i class='fas fa-check-circle me-2'></i>
+                            {{ message }}
+                            <button type='button' class='btn-close' data-bs-dismiss='alert' aria-label='Fermer'></button>
+                        </div>
+                    {% endfor %}
+
+                    {% if error %}
+                        <div class='alert alert-danger alert-dismissible fade show mb-4'>
+                            <i class='fas fa-exclamation-circle me-2'></i>
+                            {{ error }}
+                            <button type='button' class='btn-close' data-bs-dismiss='alert' aria-label='Fermer'></button>
+                        </div>
+                    {% endif %}
+
+                    <form method='get' action="{{ path('app_evaluation_candidature_traitement') }}" class='needs-validation' novalidate>
+                        <div class='mb-4'>
+                            <label for='num_candidature' class='form-label fw-medium'>
+                                Numéro de candidature
+                                <span class='text-danger'>*</span>
+                            </label>
+                            <div class='input-group input-group-lg'>
+                                <input type='text' 
+                                       class='form-control form-control-lg border-start-0' 
+                                       id='num_candidature' 
+                                       name='num_candidature' 
+                                       value='{{ num_candidature ?? '' }}'
+                                       placeholder='Ex: CAND240015'
+                                       required
+                                       autofocus>
+                            </div>
+                            <div class='form-text text-muted small mt-2 ps-3'>
+                                <i class='fas fa-info-circle me-1'></i>
+                                Entrez le numéro de candidature à évaluer
+                            </div>
+                        </div>
+
+                        <div class='d-flex justify-content-end align-items-center mt-4 pt-2'>
+                            <button type='submit' class='btn btn-primary px-4 py-2'>
+                                <i class='fas fa-search me-2'></i>
+                                Rechercher
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+        {% if candidature %}
+    <div class="mt-5">
+        {% include 'layout/candidature/content.html.twig' with {'candidature': candidature, 'hide_actions': true} %}
+    </div>
+
+
+                {# Affichage des évaluations existantes #}
+                {% if evaluationsExistantes is defined and evaluationsExistantes|length > 0 %}
+                <div class="card shadow-sm border-0 mt-4">
+                    <div class="card-header bg-light fw-bold text-primary">
+                        <i class="fas fa-history me-2"></i>
+                        Évaluations existantes
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Type d'évaluation</th>
+                                        <th>Date</th>
+                                        <th>Note</th>
+                                        <th>Statut</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for eval in evaluationsExistantes %}
+                                    <tr>
+                                        <td>{{ eval.libelle|trans }}</td>
+                                        <td>{{ eval.dateEvaluation ? eval.dateEvaluation|date('d/m/Y H:i') : 'N/A' }}</td>
+                                        <td>
+                                            <span class="badge bg-{{ eval.noteTotale is not null ? 'primary' : 'secondary' }}">
+                                                {{ eval.noteTotale ?? 'N/A' }}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <span class="badge bg-{{ eval.statut == 'en_cours' ? 'warning' : (eval.statut == 'termine' ? 'success' : 'danger') }}">
+                                                {{ eval.statut|trans }}
+                                            </span>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+
+                <div class="card shadow-sm border-0 mt-4">
+                    <div class="card-header bg-light fw-bold text-primary">
+                        <i class="fas fa-edit me-2"></i>
+                        Formulaire d'Évaluation
+                    </div>
+                    <div class="card-body">
+                        {% if formEvaluation %}
+                            {{ include('evaluationCandidature/form.html.twig', {'form': formEvaluation}) }}
+                            {{ form_end(formEvaluation) }}
+                        {% endif %}
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

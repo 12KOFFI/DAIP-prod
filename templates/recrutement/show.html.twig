@@ -1,0 +1,969 @@
+﻿{% extends 'base.config.html.twig' %}
+{% block title %}Recrutement| {{ parent() }}{% endblock %}
+{% block meta %}
+{{ parent() }}
+<meta name='keywords' content="daip, recrutement, E2C_TIC"/>
+<meta name='description' content="Recrutement de deux cent dix (210) personnes pour un projet pilote de formation dans deux (02) mÃƒÂ©tiers des Technologies de lÃ¢â‚¬â„¢Information et de la Communication (TIC)."/>
+<meta property="og:type" content="article" />
+<meta property="og:url" content="{{ app.request.uri }}" />
+<meta property="og:title" content="Recrutement E2C_TIC" />
+<meta property="og:description" content="Recrutement de deux cent dix (210) personnes pour un projet pilote de formation dans deux (02) mÃƒÂ©tiers des Technologies de lÃ¢â‚¬â„¢Information et de la Communication (TIC)." />
+
+{% endblock %}
+
+{% block body %}
+
+    <!-- <section class='content-inner-3 mt-2 p-0'>
+    <marquee class='text-secondary bg-light px-1 w-100' style='font-size: 19px'>
+        <a href="#" class='text-secondary'>   La cÃƒÂ©rÃƒÂ©monie de lancement des formations se tiendra le Lundi 15 Septembre 2025 ÃƒÂ  13H30 au LYCEE PROFESSIONNEL COMMERCIAL BOUAKÃƒâ€° </a>
+    </marquee>
+</section>
+   -->
+<section class="banner-section position-relative d-flex align-items-center skrollable skrollable-between"
+         style="background-image: url('{{ recrutement.banniere ? asset('uploads/recrutement/bannieres/' ~ recrutement.banniere|split('/')|last) : asset('front/media/projet/ticcouverture.png') }}');
+                background-repeat: no-repeat;
+                background-size: cover;
+                background-position: center;
+                min-height: 650px;"
+         data-0="background-position:0px 5px;"
+         data-end="background-position:0px -600px;">
+    
+    {# Overlay plus subtil pour mettre en valeur l'image tout en assurant la lisibilité #}
+    <div class="banner-overlay" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(75deg, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.5) 40%, rgba(0,0,0,0.1) 100%);"></div>
+
+	<div class="container position-relative z-index-1">
+		<div class="row align-items-center">
+			<div class="col-lg-8">
+				<div class="section-head wow fadeInUp" data-wow-delay=".5s">
+					<div class="d-flex align-items-center mb-3">
+                        <span class="badge bg-primary px-3 py-2 rounded-1 text-uppercase fw-bold ls-2 shadow-sm me-3" style="font-size: 0.7rem;">Campagne Active</span>
+                        <div class="line bg-white opacity-50" style="width: 40px; height: 1px;"></div>
+                    </div>
+					<h1 class="title text-white mb-4 display-3 fw-bold animate__animated animate__fadeInDown" style="text-shadow: 2px 2px 10px rgba(0,0,0,0.3);">
+                        {{ recrutement.projet.nom }}
+                    </h1>
+					
+                    <div class="annonce-text-box p-4 border-start border-primary border-5 bg-black bg-opacity-25 backdrop-blur rounded-end mb-5 shadow-sm">
+                        <p class="text-white fs-5 mb-0 fw-light" style="text-align: justify; line-height: 1.8; color: rgba(255,255,255,0.9) !important;">
+                            {{ recrutement.texteAnnonce|raw|nl2br }}
+                        </p>
+                    </div>
+
+                    <div class="d-flex flex-wrap align-items-center gap-4">
+                        <div class="registration-info-card d-flex align-items-center bg-white p-1 rounded-pill shadow-lg pr-4" style="padding-right: 25px !important;">
+                            <div class="icon-circle bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 45px; height: 45px;">
+                                <i class="fas fa-calendar-alt fs-5"></i>
+                            </div>
+                            <div>
+                                <span class="d-block text-muted x-small text-uppercase fw-bold ls-1" style="font-size: 0.6rem;">Inscriptions</span>
+                                <span class="text-dark fw-bold">{{ recrutement.dateInscription|raw }}</span>
+                            </div>
+                        </div>
+                        
+                        {% if recrutement.dateFin %}
+                            <div class="deadline-badge d-flex align-items-center text-white px-3 py-2 rounded-2" style="background: rgba(220, 53, 69, 0.8); backdrop-filter: blur(4px);">
+                                <div class="pulse-red me-2"></div>
+                                <span class="small fw-bold text-uppercase">Clôture le {{ recrutement.dateFin|date('d/m/Y') }}</span>
+                            </div>
+
+                            <a class="btn btn-light d-flex align-items-center px-3 py-2 rounded-2 shadow-sm" href="{{ asset('communiquer.docx') }}" download>
+                                <i class="fas fa-file-download me-2"></i>
+                                <span class="small fw-bold text-uppercase">Télécharger le communiqué</span>
+                            </a>
+                        {% endif %}
+                    </div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+    {# Indicateur de défilement élégant #}
+    <div class="scroll-indicator position-absolute bottom-0 start-50 translate-middle-x mb-4 d-none d-md-block">
+        <div class="mouse">
+            <div class="wheel"></div>
+        </div>
+        <div class="arrows mt-2">
+            <span class="arrow-down"></span>
+        </div>
+    </div>
+
+    <div id="parcours"></div>
+</section>
+
+<style>
+.banner-section {
+    color: #fff;
+    transition: all 0.5s ease;
+}
+.z-index-1 {
+    z-index: 1;
+}
+.ls-2 {
+    letter-spacing: 2px;
+}
+.ls-1 {
+    letter-spacing: 1px;
+}
+.backdrop-blur {
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+}
+.annonce-text-box {
+    max-width: 95%;
+}
+.x-small {
+    font-size: 0.75rem;
+}
+
+/* Mouse Scroll Animation */
+.mouse {
+    width: 26px;
+    height: 42px;
+    border: 2px solid rgba(255,255,255,0.6);
+    border-radius: 20px;
+    position: relative;
+    margin: 0 auto;
+}
+.mouse .wheel {
+    width: 4px;
+    height: 8px;
+    background: #fff;
+    border-radius: 2px;
+    position: absolute;
+    top: 6px;
+    left: 50%;
+    transform: translateX(-50%);
+    animation: scroll-wheel 2s infinite;
+}
+@keyframes scroll-wheel {
+    0% { opacity: 1; transform: translateX(-50%) translateY(0); }
+    100% { opacity: 0; transform: translateX(-50%) translateY(15px); }
+}
+.arrow-down {
+    display: block;
+    width: 10px;
+    height: 10px;
+    border-bottom: 2px solid rgba(255,255,255,0.6);
+    border-right: 2px solid rgba(255,255,255,0.6);
+    transform: rotate(45deg);
+    margin: 0 auto;
+    animation: arrows-down 2s infinite;
+}
+@keyframes arrows-down {
+    0% { opacity: 0; transform: rotate(45deg) translate(-5px, -5px); }
+    50% { opacity: 1; }
+    100% { opacity: 0; transform: rotate(45deg) translate(5px, 5px); }
+}
+
+.pulse-red {
+    width: 8px;
+    height: 8px;
+    background: #ff4d4d;
+    border-radius: 50%;
+    box-shadow: 0 0 0 rgba(255, 77, 77, 0.4);
+    animation: pulse 2s infinite;
+}
+@keyframes pulse {
+    0% { box-shadow: 0 0 0 0 rgba(255, 77, 77, 0.7); }
+    70% { box-shadow: 0 0 0 10px rgba(255, 77, 77, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(255, 77, 77, 0); }
+}
+
+@media (max-width: 991px) {
+    .banner-section {
+        min-height: 550px !important;
+    }
+    .display-3 {
+        font-size: 2.5rem;
+    }
+}
+@media (max-width: 767px) {
+    .banner-section {
+        min-height: 500px !important;
+        text-align: center;
+        padding-top: 80px;
+        padding-bottom: 60px;
+    }
+    .banner-overlay {
+        background: rgba(0,0,0,0.75) !important;
+    }
+    .annonce-text-box {
+        max-width: 100%;
+        border-start: none !important;
+        border-top: 5px solid var(--bs-primary);
+        border-radius: 0 0 15px 15px;
+        padding: 1.5rem !important;
+    }
+    .registration-info-card {
+        width: 100%;
+        justify-content: center;
+        border-radius: 15px !important;
+    }
+    .deadline-badge {
+        width: 100%;
+        justify-content: center;
+    }
+}
+</style>
+<section class='content-inner-3 pattern-bg-4 bg-light'>
+    <div class='container'>
+        <!-- Postuler Button -->
+        <div class="container my-5">
+            <div class="row justify-content-center">
+                <div class="col-md-6 text-center">
+                    <a href="{{ path('app_candidature_new', {'projet': recrutement.projet.nom, 'type': 'recrutement' , 'recrutementId': recrutement.id}) }}" class="btn-postuler">
+                        Postuler
+                    </a>
+                </div>
+            </div>
+        </div>
+		<div class="section-head wow fadeInUp text-center" data-wow-delay="1s" style="visibility: visible; animation-delay: 1s; animation-name: fadeInUp;">
+			<h3 class="m-b15 text-primary">Des parcours de formation pour qui ?</h3>
+		</div>
+        <div class="row about-bx3">
+            <div class="col-lg-12">
+				<div class="p-r30 p-md-r0">
+					<ul class="list-check-1 m-b30">
+						{% for parcours in recrutement.listeParcours %}
+						<li style='text-align: justify'>{{ parcours|raw }}</li>
+						{% endfor %}
+					</ul>
+				</div>
+				<p style='text-align: justify'>
+                    {{ recrutement.texteParcours|raw|nl2br }}
+                </p>
+                <!--p class='fw-bold' style='text-align: justify'>LÃ¢â‚¬â„¢objectif de nos parcours est de former des personnes de diffÃƒÂ©rents profils (Histoire GÃƒÂ©ographie, Economie, Ressources Humaines, Sociologie, Droit, Marketing, Communication, Finances, Anglais, ...) pour quÃ¢â‚¬â„¢Ãƒï¿½ lÃ¢â‚¬â„¢issu du parcours, ils soient en capacitÃƒÂ© dÃ¢â‚¬â„¢exercer des mÃƒÂ©tiers du numÃƒÂ©rique.</p-->
+
+
+                </p>
+                <!--ol class="fw-bold m-b30">
+                    <li style='text-align: justify'>1 . Former en entrepreneuriat numÃƒÂ©rique des  jeunes diplÃƒÂ´mÃƒÂ©s dans les filiÃƒÂ¨res du numÃƒÂ©rique (dÃƒÂ©veloppement dÃ¢â‚¬â„¢applications web, cybersÃƒÂ©curitÃƒÂ©, bureautique, data, etc.) souhaitant sÃ¢â‚¬â„¢installer Ãƒ  leur propre compte ;</li>
+                    <li style='text-align: justify'>2 . Offrir une formation certifiante pour les jeunes de niveau BAC (toute sÃƒÂ©rie) ou BT (toute option) au minimum, sans qualification dans les filiÃƒÂ¨res du numÃƒÂ©rique, dÃƒÂ©sireux de sÃ¢â‚¬â„¢insÃƒÂ¨rer dans les mÃƒÂ©tiers de Community Manager ou Infographiste. Un accompagnement Ãƒ  lÃ¢â‚¬â„¢auto emploi est prÃƒÂ©vu pour ces 02 parcours de formation.</li>
+                </ol-->
+                <!--p class='text-danger' style='text-align: justify'>Le candidat pourra par la suite faire des certifications internationales.</p-->
+        	    <br>
+			</div>
+        </div>
+    </div>
+</section>
+
+<section id="conditions-candidature" class="content-inner-3 pattern-bg-2 overflow-hidden" style="scroll-margin-top: 110px;">
+	<div class="container">
+		<div class="row about-bx3 align-items-center">
+			<div class="col-lg-7 m-b20 wow fadeInLeft" data-wow-delay="0.2s">
+				<div class="p-r30 p-md-r0">
+					<div class="section-head mb-5">
+						<h6 class="sub-title text-primary">Éligibilité</h6>
+						<h2 class="title m-b10">Conditions de candidature</h2>
+						<div class="dlab-separator bg-primary"></div>
+						<p class="text-muted mt-3" style="font-size: 1.1rem;">
+							Pour rejoindre ce programme d'excellence, les candidats doivent remplir les critères d'admission suivants :
+						</p>
+					</div>
+
+					<div class="conditions-grid row g-4">
+						{% for condition in recrutement.conCandidature %}
+							<div class="col-12">
+								<div class="condition-item p-3 rounded-4 bg-white shadow-sm border-start border-primary border-4 transition-all hover-shadow-lg">
+									<div class="d-flex align-items-center">
+										<div class="icon-box me-3 bg-light rounded-circle d-flex align-items-center justify-content-center" style="width: 50px; height: 50px; min-width: 50px;">
+											<i class="fas fa-check-circle text-primary fs-4"></i>
+										</div>
+										<div class="content">
+											<p class="mb-0 text-dark fw-medium" style="line-height: 1.5;">{{ condition|raw }}</p>
+										</div>
+									</div>
+								</div>
+							</div>
+						{% endfor %}
+
+						{% if recrutement.ageMin is defined and recrutement.ageMin is not null or recrutement.ageMax is defined and recrutement.ageMax is not null %}
+							<div class="col-md-6">
+								<div class="condition-item p-3 rounded-4 bg-white shadow-sm border-start border-success border-4 h-100 transition-all hover-shadow-lg">
+									<div class="d-flex align-items-center">
+										<div class="icon-box me-3 bg-success-light rounded-circle d-flex align-items-center justify-content-center" style="width: 50px; height: 50px; min-width: 50px; background-color: rgba(25, 135, 84, 0.1);">
+											<i class="fas fa-user-clock text-success fs-4"></i>
+										</div>
+										<div class="content">
+											<h6 class="mb-1 text-success small text-uppercase fw-bold ls-1">Tranche d'âge</h6>
+											<p class="mb-0 text-dark fw-semibold">
+												{% if recrutement.ageMin %}{{ recrutement.ageMin }}{% endif %}
+												{% if recrutement.ageMin and recrutement.ageMax %} à {% endif %}
+												{% if recrutement.ageMax %}{{ recrutement.ageMax }}{% endif %} ans
+												{% if recrutement.dateLimiteAge %}<br><small class="text-muted fw-normal">Au {{ recrutement.dateLimiteAge|date('d/m/Y') }}</small>{% endif %}
+											</p>
+										</div>
+									</div>
+								</div>
+							</div>
+						{% endif %}
+
+						{% if recrutement.nationalite %}
+							<div class="col-md-6">
+								<div class="condition-item p-3 rounded-4 bg-white shadow-sm border-start border-warning border-4 h-100 transition-all hover-shadow-lg">
+									<div class="d-flex align-items-center">
+										<div class="icon-box me-3 bg-warning-light rounded-circle d-flex align-items-center justify-content-center" style="width: 50px; height: 50px; min-width: 50px; background-color: rgba(255, 193, 7, 0.1);">
+											<i class="fas fa-globe-africa text-warning fs-4"></i>
+										</div>
+										<div class="content">
+											<h6 class="mb-1 text-warning small text-uppercase fw-bold ls-1">Nationalité</h6>
+											<p class="mb-0 text-dark fw-semibold">{{ recrutement.nationalite }}</p>
+										</div>
+									</div>
+								</div>
+							</div>
+						{% endif %}
+					</div>
+				</div>
+			</div>
+			<div class="col-lg-5 align-self-center m-b30 wow fadeInRight" data-wow-delay="0.4s">
+				<div class="dz-media position-relative">
+					<div class="image-wrapper rounded-4 overflow-hidden shadow-lg border border-5 border-white">
+						<img src="{{ recrutement.imageAnnonce ? asset('uploads/recrutement/image_annonce/' ~ recrutement.imageAnnonce|split('/')|last) : asset('front/media/projet/ticcandidature.png') }}" alt="" class="img-fluid transition-all hover-scale">
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+
+<style>
+.hover-shadow-lg:hover {
+	box-shadow: 0 1rem 3rem rgba(0,0,0,.175)!important;
+	transform: translateY(-5px);
+}
+.transition-all {
+	transition: all 0.3s ease-in-out;
+}
+.ls-1 {
+	letter-spacing: 1px;
+}
+.hover-scale:hover {
+	transform: scale(1.05);
+}
+.condition-item {
+	cursor: default;
+}
+.dlab-separator {
+    width: 50px;
+    height: 3px;
+    display: block;
+}
+@media (max-width: 991px) {
+	.image-wrapper {
+		margin-bottom: 20px;
+	}
+}
+</style>
+
+<section class='content-inner-3 bg-light pattern-bg-4'>
+    <div class='container'>
+        <div class="section-head wow fadeInUp text-center" data-wow-delay="1s" style="visibility: visible; animation-delay: 1s; animation-name: fadeInUp;">
+            <h3 class="m-b10 text-primary">Métiers par secteur d'activité</h3>
+            <p class="text-muted">Découvrez les métiers proposés, classés par secteur. Cliquez sur un secteur pour voir les détails.</p>
+        </div>
+
+        {% if recrutement.metiers is not empty %}
+            {# ── Grouper les métiers par secteur ── #}
+            {% set secteurs_obj = {} %}
+            {% set secteurs_metiers = {} %}
+            {% set sans_secteur = [] %}
+            {% for metier in recrutement.metiers %}
+                {% if metier.secteur %}
+                    {% set skey = 's_' ~ metier.secteur.id %}
+                    {% if secteurs_obj[skey] is not defined %}
+                        {% set secteurs_obj = secteurs_obj|merge({(skey): metier.secteur}) %}
+                        {% set secteurs_metiers = secteurs_metiers|merge({(skey): []}) %}
+                    {% endif %}
+                    {% set secteurs_metiers = secteurs_metiers|merge({(skey): secteurs_metiers[skey]|merge([metier])}) %}
+                {% else %}
+                    {% set sans_secteur = sans_secteur|merge([metier]) %}
+                {% endif %}
+            {% endfor %}
+
+            <div class="accordion" id="secteursAccordion">
+                {% set acc_index = 0 %}
+                {% for skey, secteur in secteurs_obj %}
+                    {% set acc_index = acc_index + 1 %}
+                    {% set grp_metiers = secteurs_metiers[skey] %}
+                    <div class="accordion-item border-0 shadow-sm mb-3 rounded-3 overflow-hidden">
+                        <h2 class="accordion-header" id="headingSecteur{{ skey }}">
+                            <button class="accordion-button {{ acc_index > 1 ? 'collapsed' : '' }} fw-semibold" type="button"
+                                    data-bs-toggle="collapse" data-bs-target="#collapseSecteur{{ skey }}"
+                                    aria-expanded="{{ acc_index == 1 ? 'true' : 'false' }}" aria-controls="collapseSecteur{{ skey }}"
+                                    style="background-color: #f0f4ff;">
+                                <i class="fas fa-industry me-2 text-primary"></i>
+                                {{ secteur.nom }}
+                                <span class="badge bg-primary rounded-pill ms-2">{{ grp_metiers|length }} métier{{ grp_metiers|length > 1 ? 's' : '' }}</span>
+                            </button>
+                        </h2>
+                        <div id="collapseSecteur{{ skey }}" class="accordion-collapse collapse {{ acc_index == 1 ? 'show' : '' }}"
+                             aria-labelledby="headingSecteur{{ skey }}" data-bs-parent="#secteursAccordion">
+                            <div class="accordion-body">
+                                {% if secteur.dureeFormation %}
+                                    <div class="d-flex align-items-center gap-2 mb-4 p-3 rounded-3" style="background: linear-gradient(135deg, #e8f0fe 0%, #f0f4ff 100%);">
+                                        <i class="fas fa-clock fa-lg text-primary"></i>
+                                        <div>
+                                            <span class="fw-semibold text-dark">Durée de formation :</span>
+                                            <span class="text-primary fw-bold">{{ secteur.dureeFormation }} mois</span>
+                                        </div>
+                                    </div>
+                                {% endif %}
+
+                                <div class="secteur-metiers-paginated" data-per-page="3">
+                                    <div class="row g-3 metiers-grid">
+                                        {% for metier in grp_metiers %}
+                                            <div class="col-12 col-md-6 col-lg-4 metier-card-item">
+                                                <div class="card h-100 border-0 shadow-sm metier-card">
+                                                    {% if metier.image %}
+                                                        <img src="{{ asset('uploads/metiers/' ~ metier.image) }}"
+                                                             class="card-img-top" alt="{{ metier.nom }}"
+                                                             style="height: 180px; object-fit: cover;">
+                                                    {% else %}
+                                                        <div class="d-flex align-items-center justify-content-center"
+                                                             style="height: 180px; background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);">
+                                                            <i class="fas fa-briefcase fa-3x text-muted opacity-50"></i>
+                                                        </div>
+                                                    {% endif %}
+
+                                                    <div class="card-body d-flex flex-column">
+                                                        <h6 class="card-title fw-bold mb-2">{{ metier.nom }}</h6>
+
+                                                        {% if metier.niveauEtude %}
+                                                            <div class="mb-2">
+                                                                <span class="badge" style="background-color: #e8f5e9; color: #2e7d32; font-size: 0.75rem; font-weight: 500; border-radius: 20px; padding: 4px 10px;">
+                                                                    <i class="fas fa-graduation-cap me-1"></i>{{ metier.niveauEtude.libelle }}
+                                                                </span>
+                                                            </div>
+                                                        {% endif %}
+
+                                                        <div class="mb-3">
+                                                            <span class="badge" style="background-color: #f3f0ff; color: #5b21b6; font-size: 0.7rem; font-weight: 500; border-radius: 20px; padding: 3px 9px;">
+                                                                <i class="fas fa-industry me-1"></i>{{ secteur.nom }}
+                                                            </span>
+                                                        </div>
+
+                                                        <div class="mt-auto">
+                                                            <button type="button" class="btn btn-sm btn-outline-primary w-100 rounded-pill"
+                                                                    data-bs-toggle="modal" data-bs-target="#metierModal{{ metier.id }}">
+                                                                <i class="fas fa-eye me-1"></i> Voir plus
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                    <nav class="secteur-pagination mt-3 d-flex justify-content-center" aria-label="Pagination métiers"></nav>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+
+                {# ── Métiers sans secteur ── #}
+                {% if sans_secteur is not empty %}
+                    {% set acc_index = acc_index + 1 %}
+                    <div class="accordion-item border-0 shadow-sm mb-3 rounded-3 overflow-hidden">
+                        <h2 class="accordion-header" id="headingSecteurNone">
+                            <button class="accordion-button collapsed fw-semibold" type="button"
+                                    data-bs-toggle="collapse" data-bs-target="#collapseSecteurNone"
+                                    aria-expanded="false" aria-controls="collapseSecteurNone"
+                                    style="background-color: #f9fafb;">
+                                <i class="fas fa-folder-open me-2 text-secondary"></i>
+                                Autres métiers
+                                <span class="badge bg-secondary rounded-pill ms-2">{{ sans_secteur|length }}</span>
+                            </button>
+                        </h2>
+                        <div id="collapseSecteurNone" class="accordion-collapse collapse"
+                             aria-labelledby="headingSecteurNone" data-bs-parent="#secteursAccordion">
+                            <div class="accordion-body">
+                                <div class="secteur-metiers-paginated" data-per-page="3">
+                                    <div class="row g-3 metiers-grid">
+                                        {% for metier in sans_secteur %}
+                                            <div class="col-12 col-md-6 col-lg-4 metier-card-item">
+                                                <div class="card h-100 border-0 shadow-sm metier-card">
+                                                    {% if metier.image %}
+                                                        <img src="{{ asset('uploads/metiers/' ~ metier.image) }}"
+                                                             class="card-img-top" alt="{{ metier.nom }}"
+                                                             style="height: 180px; object-fit: cover;">
+                                                    {% else %}
+                                                        <div class="d-flex align-items-center justify-content-center"
+                                                             style="height: 180px; background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);">
+                                                            <i class="fas fa-briefcase fa-3x text-muted opacity-50"></i>
+                                                        </div>
+                                                    {% endif %}
+                                                    <div class="card-body d-flex flex-column">
+                                                        <h6 class="card-title fw-bold mb-2">{{ metier.nom }}</h6>
+                                                        {% if metier.niveauEtude %}
+                                                            <div class="mb-3">
+                                                                <span class="badge" style="background-color: #e8f5e9; color: #2e7d32; font-size: 0.75rem; font-weight: 500; border-radius: 20px; padding: 4px 10px;">
+                                                                    <i class="fas fa-graduation-cap me-1"></i>{{ metier.niveauEtude.libelle }}
+                                                                </span>
+                                                            </div>
+                                                        {% endif %}
+                                                        <div class="mt-auto">
+                                                            <button type="button" class="btn btn-sm btn-outline-primary w-100 rounded-pill"
+                                                                    data-bs-toggle="modal" data-bs-target="#metierModal{{ metier.id }}">
+                                                                <i class="fas fa-eye me-1"></i> Voir plus
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                    <nav class="secteur-pagination mt-3 d-flex justify-content-center" aria-label="Pagination métiers"></nav>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+
+            {# ══════════════════════════════════════════════════════════════════════════ #}
+            {# MODALS MÉTIERS - Rendus EN DEHORS de l'accordéon pour éviter les conflits #}
+            {# de z-index et overflow:hidden qui empêchent la fermeture du modal        #}
+            {# ══════════════════════════════════════════════════════════════════════════ #}
+            <div id="modals-container" style="display: none; visibility: hidden; height: 0; overflow: hidden; position: absolute;">
+            {% for metier in recrutement.metiers %}
+                <div class="modal fade" id="metierModal{{ metier.id }}" tabindex="-1" aria-labelledby="metierModalLabel{{ metier.id }}" aria-hidden="true">
+                    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+                        <div class="modal-content border-0 shadow-lg">
+                            <div class="modal-header border-0 pb-0" style="background: linear-gradient(135deg, #1c3faa 0%, #2563eb 100%);">
+                                <div class="text-white">
+                                    <h5 class="modal-title fw-bold mb-1" id="metierModalLabel{{ metier.id }}">{{ metier.nom }}</h5>
+                                    {% if metier.niveauEtude %}
+                                        <small class="opacity-75"><i class="fas fa-graduation-cap me-1"></i>{{ metier.niveauEtude.libelle }}</small>
+                                    {% endif %}
+                                </div>
+                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fermer"></button>
+                            </div>
+                            <div class="modal-body pt-4">
+                                {% if metier.description %}
+                                    <p class="text-muted mb-4" style="line-height: 1.7;">{{ metier.description }}</p>
+                                {% endif %}
+
+                                <h6 class="fw-bold text-dark mb-3">
+                                    <i class="fas fa-building me-2 text-primary"></i>Établissements CFA & Effectifs
+                                </h6>
+
+                                {% if metier.cfaMetiers is not empty %}
+                                    <div class="table-responsive">
+                                        <table class="table table-hover align-middle mb-0">
+                                            <thead style="background-color: #f8fafc;">
+                                                <tr>
+                                                    <th class="border-0 text-muted small text-uppercase fw-semibold py-3">Établissement</th>
+                                                    <th class="border-0 text-muted small text-uppercase fw-semibold py-3">Région</th>
+                                                    <th class="border-0 text-muted small text-uppercase fw-semibold py-3 text-center">Effectif disponible</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {% for cfaMetier in metier.cfaMetiers %}
+                                                    <tr>
+                                                        <td class="py-3">
+                                                            <div class="fw-semibold">{{ cfaMetier.cfaEtablissement.nomEtablissement }}</div>
+                                                            <small class="text-muted">{{ cfaMetier.cfaEtablissement.email }}</small>
+                                                        </td>
+                                                        <td class="py-3">
+                                                            <span class="text-muted">{{ cfaMetier.cfaEtablissement.region ?? '—' }}</span>
+                                                        </td>
+                                                        <td class="py-3 text-center">
+                                                            <span class="badge bg-primary rounded-pill px-3 py-2" style="font-size: 0.85rem;">
+                                                                {{ cfaMetier.effectif }} place{{ cfaMetier.effectif > 1 ? 's' : '' }}
+                                                            </span>
+                                                        </td>
+                                                    </tr>
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                {% else %}
+                                    <div class="text-center py-4">
+                                        <i class="fas fa-info-circle fa-2x text-muted mb-2 d-block"></i>
+                                        <p class="text-muted mb-0">Aucun établissement CFA n'est encore associé à ce métier.</p>
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div class="modal-footer border-0 pt-0">
+                                <button type="button" class="btn btn-outline-secondary rounded-pill px-4" data-bs-dismiss="modal">
+                                    <i class="fas fa-times me-1"></i> Fermer
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+            </div>
+
+            <style>
+                /* ═══════════════════════════════════════════════════════════════ */
+                /* CORRECTION CRITIQUE DU MODAL - Ne pas supprimer ces règles     */
+                /* ═══════════════════════════════════════════════════════════════ */
+                
+                /* Force la navbar à rester en dessous du modal */
+                header, .header, nav, .navbar, .main-bar {
+                    z-index: 1040 !important;
+                }
+                
+                /* Force le modal à être au-dessus du backdrop ET de la navbar */
+                .modal {
+                    z-index: 1055 !important;
+                }
+                
+                /* Force le backdrop à être visible mais en dessous du modal */
+                .modal-backdrop {
+                    z-index: 1050 !important;
+                    background-color: rgba(0, 0, 0, 0.5) !important;
+                }
+                
+                /* Assure que le modal-dialog est bien positionné */
+                .modal-dialog {
+                    z-index: 1056 !important;
+                    position: relative;
+                }
+                
+                /* Assure que le contenu du modal est visible */
+                .modal-content {
+                    position: relative;
+                    z-index: 1057 !important;
+                    background-color: #fff !important;
+                }
+                
+                /* Force l'affichage du modal quand il est actif */
+                .modal.show {
+                    display: block !important;
+                    opacity: 1 !important;
+                }
+                
+                /* Empêche tout overflow qui pourrait cacher le modal */
+                body.modal-open {
+                    overflow: hidden !important;
+                }
+                
+                /* ═══════════════════════════════════════════════════════════════ */
+                
+                .metier-card {
+                    border-radius: 12px;
+                    overflow: hidden;
+                    transition: transform 0.3s ease, box-shadow 0.3s ease;
+                }
+                .metier-card:hover {
+                    transform: translateY(-4px);
+                    box-shadow: 0 8px 25px rgba(0,0,0,0.1) !important;
+                }
+                .accordion-button:not(.collapsed) {
+                    color: #1c3faa;
+                    box-shadow: none;
+                }
+                .accordion-button:focus {
+                    box-shadow: none;
+                    border-color: transparent;
+                }
+                .accordion-item {
+                    border-radius: 12px !important;
+                }
+                .secteur-pagination .page-link {
+                    border: none;
+                    color: #1c3faa;
+                    border-radius: 8px;
+                    margin: 0 2px;
+                    padding: 6px 12px;
+                    font-size: 0.85rem;
+                }
+                .secteur-pagination .page-item.active .page-link {
+                    background-color: #1c3faa;
+                    color: #fff;
+                }
+                .secteur-pagination .page-link:hover {
+                    background-color: #e8f0fe;
+                }
+            </style>
+        {% else %}
+            <div class="text-center py-5">
+                <i class="fas fa-briefcase fa-3x text-muted mb-3 d-block"></i>
+                <p class="text-muted">Aucun métier associé à ce recrutement.</p>
+            </div>
+        {% endif %}
+    </div>
+</section>
+
+<style>
+    .btn-postuler {
+        background-color: #FF8C00; /* Orange color */
+        color: white !important;
+        padding: 12px 30px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        border: none;
+        border-radius: 50px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(255, 140, 0, 0.4);
+        text-decoration: none;
+        display: inline-block;
+    }
+
+    .btn-postuler:hover {
+        background-color: #2E8B57; /* Green color on hover */
+        transform: translateY(-3px);
+        box-shadow: 0 6px 20px rgba(46, 139, 87, 0.5);
+        color: white !important;
+    }
+
+    .btn-postuler:active {
+        transform: translateY(1px);
+    }
+</style>
+
+<section class='content-inner-3 pattern-bg-4'>
+    <div class='container'>
+		<div class="section-head wow fadeInUp text-center" data-wow-delay="1s" style="visibility: visible; animation-delay: 1s; animation-name: fadeInUp;">
+			<h3 class="m-b10">Dossiers de candidature</h3>
+			<p class="text-primary">Le dossier de candidature en ligne devra comporter les pieces suivantes :</p>
+		</div>
+        <div class='row about-bx3'>
+        	<div class="col-lg-5">
+        		<div class="dz-media">
+        			<img src="{{ asset('front/image/dossier.png') }}" alt="">
+        		</div>
+        	</div>
+            <div class='col-lg-7'>
+    		    <div class="process-wrapper">
+                {% if recrutement.DosCandidature is defined and recrutement.DosCandidature|length > 0 %}
+                    {% for index, document in recrutement.DosCandidature %}
+                    <div class="icon-bx-wraper left p-b50">
+                        <div class="icon-bx-{% if index == 0 %}xs{% else %}sm{% endif %} bg-primary text-white radius">{{ loop.index }}</div>
+                        <div class="icon-content">
+                            <h5 class="dlab-tilte">{{ document|raw }}</h5>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="icon-bx-wraper left p-b50">
+                        <div class="icon-bx-xs bg-primary text-white radius">1</div>
+                        <div class="icon-content">
+                            <h5 class="dlab-tilte">lÃ¢â‚¬â„¢extrait dÃ¢â‚¬â„¢acte de naissance ou le jugement supplÃƒÂ©tif.</h5>
+                        </div>
+                    </div>
+                    <div class="icon-bx-wraper left p-b50">
+                        <div class="icon-bx-sm bg-primary text-white radius">2</div>
+                        <div class="icon-content">
+                            <h5 class="dlab-tilte">la carte nationale dÃ¢â‚¬â„¢identitÃƒÂ© </b>(CNI)</b> ou le rÃƒÂ©cÃƒÂ©pissÃƒÂ© de la CNI.</h5>
+                        </div>
+                    </div>
+                    <div class="icon-bx-wraper left p-b50">
+                        <div class="icon-bx-sm bg-primary text-white radius">3</div>
+                        <div class="icon-content">
+                            <h5 class="dlab-tilte">une (01) photo d'identitÃƒÂ© couleur.</h5>
+                        </div>
+                    </div>
+                    <div class="icon-bx-wraper left p-b50">
+                        <div class="icon-bx-sm bg-primary text-white radius">4</div>
+                        <div class="icon-content">
+                            <h5 class="dlab-tilte">tout document attestant du niveau ou du diplÃƒÂ´me requis.</h5>
+                        </div>
+                    </div>
+
+                {% endif %}
+    		</div>
+            </div>
+        </div>
+        {#<div class='row'><div class='col-lg-12 text-center'><a href="{{ path('app_tic_new') }}" class="btn btn-primary m-r30 m-b10">Inscription</a></div></div>#}
+    </div>
+</section>
+
+ {#<section class='half-shape-bottom-w'>
+    <div class='container'>
+        <div class="section-head wow fadeInUp text-center" data-wow-delay="1s" style="visibility: visible; animation-delay: 1s; animation-name: fadeInUp;">
+			<h3 class="title">Partenaires</h3>
+		</div>
+        <div class='dz-subscribe style-1 bg-secondary' style='padding: 20px 25px !important;'>
+            <div class='swiper-container clients-swiper'>
+                <div class='swiper-wrapper'>
+                    {% for partenaire in partenaires %}
+                        <div class='swiper-slide'>
+                            <div class='clients-logo aos-item' data-aos='fade-in' data-aos-duration='1000' data-aos-delay='100'>
+                                <a href='{{ partenaire.weburl ? partenaire.weburl : "#" }}' target='_blink' ><img class='logo-main' src='{{ dir_partenaire ~ partenaire.url }}' alt=''></a>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+ #}
+<br><br>
+{% endblock %}
+
+{% block javascripts %}
+{{ parent() }}
+<style>
+    /* Solution de secours pour masquer tout contenu après le footer */
+    body > *:not(.page-wraper):not(.modal):not(.modal-backdrop) {
+        display: none !important;
+        visibility: hidden !important;
+        height: 0 !important;
+        overflow: hidden !important;
+        position: absolute !important;
+        z-index: -9999 !important;
+    }
+</style>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var modalActu = document.getElementById('modal_actu');
+        if (modalActu && typeof bootstrap !== 'undefined') {
+            new bootstrap.Modal(modalActu).show();
+        }
+
+        // Fonction pour nettoyer les modals indésirables après le footer
+        function cleanupUnwantedModals() {
+            // Supprimer tout contenu de métier qui pourrait être en dehors du conteneur principal
+            var pageWraper = document.querySelector('.page-wraper');
+            if (pageWraper) {
+                var bodyChildren = Array.from(document.body.children);
+                bodyChildren.forEach(function(element) {
+                    // Ne pas supprimer les éléments essentiels
+                    if (element !== pageWraper && 
+                        !element.classList.contains('modal') && 
+                        !element.classList.contains('modal-backdrop') &&
+                        !element.id.startsWith('metierModal') &&
+                        element.tagName !== 'SCRIPT' &&
+                        element.tagName !== 'STYLE') {
+                        
+                        // Vérifier si c'est un texte indésirable
+                        if (element.textContent && element.textContent.includes('Maçon') || 
+                            element.textContent && element.textContent.includes('Peintre Bâtiment')) {
+                            element.style.display = 'none';
+                            element.style.visibility = 'hidden';
+                            element.style.height = '0';
+                            element.style.overflow = 'hidden';
+                            // Optionnel: supprimer complètement l'élément
+                            // element.parentNode.removeChild(element);
+                        }
+                    }
+                });
+            }
+        }
+        
+        // Gestionnaire de modals optimisé
+        var modalManager = {
+            init: function() {
+                // Collecter tous les modals
+                var modals = document.querySelectorAll('[id^="metierModal"]');
+                
+                // Traiter chaque modal
+                modals.forEach(function(modal) {
+                    // Cacher le modal avant de le déplacer
+                    modal.style.display = 'none';
+                    modal.style.visibility = 'hidden';
+                    
+                    // Déplacer dans le body pour éviter les problèmes de z-index
+                    if (modal.parentElement.id === 'modals-container') {
+                        document.body.appendChild(modal);
+                    }
+                    
+                    // Initialiser avec Bootstrap
+                    if (typeof bootstrap !== 'undefined' && bootstrap.Modal) {
+                        var bsModal = new bootstrap.Modal(modal, {
+                            backdrop: true,
+                            keyboard: true,
+                            focus: true
+                        });
+                        
+                        // Configurer les événements
+                        modal.addEventListener('show.bs.modal', function() {
+                            // Assurer la visibilité et le bon z-index
+                            setTimeout(function() {
+                                var backdrop = document.querySelector('.modal-backdrop');
+                                if (backdrop) backdrop.style.zIndex = '1050';
+                                modal.style.zIndex = '1055';
+                                modal.style.display = 'block';
+                                modal.style.visibility = 'visible';
+                            }, 10);
+                        });
+                        
+                        modal.addEventListener('hidden.bs.modal', function() {
+                            // Nettoyer après fermeture
+                            modal.style.display = 'none';
+                            modal.style.visibility = 'hidden';
+                            document.body.classList.remove('modal-open');
+                            
+                            // Supprimer les backdrops résiduels
+                            var backdrops = document.querySelectorAll('.modal-backdrop');
+                            backdrops.forEach(function(bd) { bd.remove(); });
+                            
+                            // Nettoyer à nouveau les modals indésirables
+                            cleanupUnwantedModals();
+                        });
+                    }
+                });
+                
+                // Nettoyer les modals indésirables après initialisation
+                cleanupUnwantedModals();
+                
+                // Nettoyer à nouveau après un court délai (pour les éléments insérés dynamiquement)
+                setTimeout(cleanupUnwantedModals, 500);
+                setTimeout(cleanupUnwantedModals, 2000);
+            }
+        };
+        
+        // Initialiser le gestionnaire de modals
+        modalManager.init();
+        
+        // ── Pagination indépendante par secteur ──
+        document.querySelectorAll('.secteur-metiers-paginated').forEach(function(container) {
+            var perPage = parseInt(container.dataset.perPage) || 3;
+            var items = container.querySelectorAll('.metier-card-item');
+            var nav = container.querySelector('.secteur-pagination');
+            var totalPages = Math.ceil(items.length / perPage);
+
+            if (totalPages <= 1) {
+                if (nav) nav.style.display = 'none';
+                return;
+            }
+
+            var currentPage = 1;
+
+            function showPage(page) {
+                currentPage = page;
+                items.forEach(function(item, i) {
+                    var start = (page - 1) * perPage;
+                    var end = start + perPage;
+                    item.style.display = (i >= start && i < end) ? '' : 'none';
+                });
+                renderPagination();
+            }
+
+            function renderPagination() {
+                var html = '<ul class="pagination pagination-sm mb-0">';
+                html += '<li class="page-item ' + (currentPage === 1 ? 'disabled' : '') + '">';
+                html += '<a class="page-link" href="#" data-page="' + (currentPage - 1) + '" aria-label="Précédent">&laquo;</a></li>';
+                for (var p = 1; p <= totalPages; p++) {
+                    html += '<li class="page-item ' + (p === currentPage ? 'active' : '') + '">';
+                    html += '<a class="page-link" href="#" data-page="' + p + '">' + p + '</a></li>';
+                }
+                html += '<li class="page-item ' + (currentPage === totalPages ? 'disabled' : '') + '">';
+                html += '<a class="page-link" href="#" data-page="' + (currentPage + 1) + '" aria-label="Suivant">&raquo;</a></li>';
+                html += '</ul>';
+                nav.innerHTML = html;
+
+                nav.querySelectorAll('.page-link').forEach(function(link) {
+                    link.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        var target = parseInt(this.dataset.page);
+                        if (target >= 1 && target <= totalPages) {
+                            showPage(target);
+                        }
+                    });
+                });
+            }
+
+            showPage(1);
+        });
+    });
+</script>
+{% endblock %}

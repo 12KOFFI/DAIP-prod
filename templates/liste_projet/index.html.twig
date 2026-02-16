@@ -1,0 +1,332 @@
+{% extends 'base_view.html.twig' %}
+
+{% block title %}Nos Opportunités - Recrutement & Formation{% endblock %}
+
+{% block page_content %}
+<div class="py-4">
+    {# HERO SECTION #}
+    <div class="p-5 mb-5 bg-light rounded-4 text-center hero-section position-relative overflow-hidden">
+        <div class="position-relative z-1">
+            <h1 class="display-5 fw-bold text-dark mb-3">Développez votre avenir avec nous</h1>
+            <p class="lead text-muted mx-auto mb-4" style="max-width: 700px;">
+                Explorez nos offres de recrutement, inscrivez-vous à nos formations qualifiantes ou validez vos acquis. 
+                Votre prochaine étape professionnelle commence ici.
+            </p>
+        </div>
+        <div class="hero-shape-1"></div>
+        <div class="hero-shape-2"></div>
+    </div>
+
+    {# NAVIGATION TABS #}
+    <ul class="nav nav-pills nav-fill mb-5 gap-2 p-1 bg-white rounded-pill shadow-sm mx-auto" id="projetTabs" role="tablist" style="max-width: 600px;">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active rounded-pill" id="recrutement-tab" data-bs-toggle="tab" data-bs-target="#recrutement" type="button" role="tab">
+                <i class="bi bi-briefcase me-2"></i>Recrutement
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link rounded-pill" id="formation-tab" data-bs-toggle="tab" data-bs-target="#formation" type="button" role="tab">
+                <i class="bi bi-book me-2"></i>Formation
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link rounded-pill" id="vae-tab" data-bs-toggle="tab" data-bs-target="#vae" type="button" role="tab">
+                <i class="bi bi-award me-2"></i>VAE
+            </button>
+        </li>
+    </ul>
+
+    <div class="tab-content" id="projetTabsContent">
+        
+        {# --- ONGLET RECRUTEMENT --- #}
+        <div class="tab-pane fade show active" id="recrutement" role="tabpanel">
+            <div class="d-flex align-items-center justify-content-between mb-4">
+                <h2 class="h4 fw-bold text-dark mb-0">Offres disponibles</h2>
+                <span class="badge bg-light text-dark border">{{ recrutements|length }} offre(s)</span>
+            </div>
+
+            {% if recrutements is not empty %}
+                <div class="row g-4">
+                    {% for recrutement in recrutements %}
+                        <div class="col-md-6 col-lg-4 d-flex">
+                            <div class="card border-0 shadow-hover w-100 rounded-4 overflow-hidden position-relative project-card">
+                                {# Status Badge Absolute #}
+                                <span class="position-absolute top-0 end-0 m-3 badge rounded-pill {{ recrutement.status == 'Publié' ? 'bg-success' : 'bg-warning text-dark' }} shadow-sm">
+                                    {{ recrutement.status ?: 'En cours' }}
+                                </span>
+
+                                <div class="card-img-wrapper">
+                                    {% if recrutement.image %}
+                                        <img src="{{ asset('uploads/' ~ recrutement.image) }}" alt="{{ recrutement.libelle }}" class="card-img-top">
+                                    {% else %}
+                                        <div class="card-img-top placeholder-image d-flex flex-column align-items-center justify-content-center bg-light text-muted">
+                                            <i class="bi bi-briefcase fs-1 mb-2 opacity-50"></i>
+                                            <span class="small">Aucune image</span>
+                                        </div>
+                                    {% endif %}
+                                </div>
+
+                                <div class="card-body d-flex flex-column p-4">
+                                    <div class="mb-2 text-primary small fw-bold text-uppercase">
+                                        <i class="bi bi-calendar-check me-1"></i>
+                                        Jusqu'au {{ recrutement.dateFin ? recrutement.dateFin|date('d/m/Y') : 'Non spécifié' }}
+                                    </div>
+                                    
+                                    <h5 class="card-title fw-bold mb-3 text-dark">{{ recrutement.libelle }}</h5>
+                                    
+                                    <div class="mt-auto pt-3 border-top">
+                                        <div class="row g-2 mb-3 small text-muted">
+                                            <div class="col-6">
+                                                <i class="bi bi-bullseye me-1"></i> {{ recrutement.nationalite ?: 'Non précisé' }}
+                                            </div>
+                                            {% if recrutement.ageMin or recrutement.ageMax %}
+                                            <div class="col-6">
+                                                <i class="bi bi-person me-1"></i>
+                                                {{ recrutement.ageMin ? recrutement.ageMin : '?' }} - {{ recrutement.ageMax ? recrutement.ageMax : '?' }} ans
+                                            </div>
+                                            {% endif %}
+                                        </div>
+                                        <a href="{{ path('app_recrutement_show', {'id': recrutement.id}) }}" class="btn btn-primary w-100 rounded-pill fw-medium">
+                                            Voir les détails <i class="bi bi-arrow-right ms-1"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+
+                {# Pagination #}
+                {% if recrutementTotalPages > 1 %}
+                    <nav class="mt-5">
+                        <ul class="pagination justify-content-center">
+                            <li class="page-item {% if recrutementCurrentPage == 1 %}disabled{% endif %}">
+                                <a class="page-link rounded-circle mx-1 border-0 shadow-sm" href="{{ path('app_liste_projet', {'page': recrutementCurrentPage - 1}) }}">
+                                    <i class="bi bi-chevron-left"></i>
+                                </a>
+                            </li>
+                            {% for page in 1..recrutementTotalPages %}
+                                <li class="page-item {% if page == recrutementCurrentPage %}active{% endif %}">
+                                    <a class="page-link rounded-circle mx-1 border-0 shadow-sm" href="{{ path('app_liste_projet', {'page': page}) }}">{{ page }}</a>
+                                </li>
+                            {% endfor %}
+                            <li class="page-item {% if recrutementCurrentPage == recrutementTotalPages %}disabled{% endif %}">
+                                <a class="page-link rounded-circle mx-1 border-0 shadow-sm" href="{{ path('app_liste_projet', {'page': recrutementCurrentPage + 1}) }}">
+                                    <i class="bi bi-chevron-right"></i>
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
+                {% endif %}
+
+            {% else %}
+                <div class="text-center py-5">
+                    <div class="mb-3">
+                        <i class="bi bi-inbox fs-1 text-muted opacity-25"></i>
+                    </div>
+                    <h5 class="text-muted">Aucune offre de recrutement pour le moment</h5>
+                    <p class="text-muted small">Revenez plus tard pour découvrir de nouvelles opportunités.</p>
+                </div>
+            {% endif %}
+        </div>
+
+        {# --- ONGLET FORMATION --- #}
+        <div class="tab-pane fade" id="formation" role="tabpanel">
+            <div class="d-flex align-items-center justify-content-between mb-4">
+                <h2 class="h4 fw-bold text-dark mb-0">Catalogue de Formations</h2>
+                <span class="badge bg-light text-dark border">{{ formations|length }} formation(s)</span>
+            </div>
+
+            {% if formations is not empty %}
+                <div class="d-flex flex-column gap-3">
+                    {% for formation in formations %}
+                        <div class="card border-0 shadow-hover rounded-4 overflow-hidden">
+                            <div class="row g-0">
+                                <div class="col-md-3 col-lg-2 position-relative">
+                                    {% if formation.image %}
+                                        <img src="{{ asset('uploads/formations/' ~ formation.image) }}" class="img-fluid h-100 w-100 object-fit-cover" alt="{{ formation.libelle }}" style="min-height: 160px;">
+                                    {% else %}
+                                        <div class="bg-light h-100 w-100 d-flex align-items-center justify-content-center text-muted" style="min-height: 160px;">
+                                            <i class="bi bi-book fs-3 opacity-50"></i>
+                                        </div>
+                                    {% endif %}
+                                    <span class="badge position-absolute top-0 start-0 m-2 {{ formation.statut == 'Publié' ? 'bg-success' : 'bg-secondary' }}">
+                                        {{ formation.statut }}
+                                    </span>
+                                </div>
+                                <div class="col-md-9 col-lg-10">
+                                    <div class="card-body h-100 d-flex flex-column justify-content-center">
+                                        <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-2">
+                                            <h5 class="card-title fw-bold mb-1 text-dark">{{ formation.libelle }}</h5>
+                                            <small class="text-muted">
+                                                <i class="bi bi-calendar-event me-1"></i>
+                                                {{ formation.dateDebut ? formation.dateDebut|date('d/m/Y') : '...' }} au {{ formation.dateFin ? formation.dateFin|date('d/m/Y') : '...' }}
+                                            </small>
+                                        </div>
+                                        
+                                        <p class="card-text text-muted small mb-3 flex-grow-1">
+                                            {{ formation.description|striptags|slice(0, 180) }}...
+                                        </p>
+                                        
+                                        <div class="d-flex align-items-center justify-content-between mt-auto">
+                                            <div class="d-flex gap-2">
+                                                {% if formation.ageMinimum or formation.ageMaximum %}
+                                                    <span class="badge bg-light text-secondary border fw-normal">
+                                                        <i class="bi bi-person me-1"></i> {{ formation.ageMinimum }}-{{ formation.ageMaximum }} ans
+                                                    </span>
+                                                {% endif %}
+                                                {% if formation.publicCible %}
+                                                    <span class="badge bg-light text-secondary border fw-normal d-none d-sm-inline-block">
+                                                        {{ formation.publicCible }}
+                                                    </span>
+                                                {% endif %}
+                                            </div>
+                                            <a href="{{ path('app_formation_show', {'id': formation.id}) }}" class="btn btn-sm btn-outline-primary rounded-pill px-3">
+                                                En savoir plus
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="text-center py-5">
+                    <h5 class="text-muted">Aucune formation disponible</h5>
+                </div>
+            {% endif %}
+        </div>
+
+        {# --- ONGLET VAE --- #}
+        <div class="tab-pane fade" id="vae" role="tabpanel">
+             <div class="d-flex align-items-center justify-content-between mb-4">
+                <h2 class="h4 fw-bold text-dark mb-0">Validation des Acquis (VAE)</h2>
+            </div>
+            
+            {% if vae is not empty %}
+                <div class="row g-4">
+                    {% for item in vae %}
+                        <div class="col-md-6 col-lg-4">
+                            <div class="card h-100 border-0 shadow-hover rounded-4">
+                                <div class="card-body p-4 d-flex flex-column">
+                                    <div class="mb-3">
+                                        <div class="d-inline-flex align-items-center justify-content-center bg-primary bg-opacity-10 text-primary rounded-circle" style="width: 48px; height: 48px;">
+                                            <i class="bi bi-award fs-4"></i>
+                                        </div>
+                                    </div>
+                                    <h5 class="card-title fw-bold">{{ item.titre }}</h5>
+                                    <p class="card-text text-muted small flex-grow-1">{{ item.description|slice(0, 150) }}...</p>
+                                    <a href="#" class="btn btn-outline-primary rounded-pill w-100 mt-3">Détails du programme</a>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="alert alert-light border-0 shadow-sm rounded-4 p-4 text-center">
+                    <i class="bi bi-info-circle text-primary fs-4 mb-2 d-block"></i>
+                    <p class="mb-0 text-muted">Aucune information VAE disponible pour le moment.</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        /* --- CUSTOM VARIABLES --- */
+        :root {
+            --primary-color: #4e73df; /* Adaptez selon votre charte */
+            --primary-hover: #2e59d9;
+            --accent-color: #ff6b6b;
+        }
+
+        /* --- HERO --- */
+        .hero-section {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        }
+        .hero-shape-1 {
+            position: absolute;
+            top: -50px;
+            right: -50px;
+            width: 200px;
+            height: 200px;
+            background: radial-gradient(circle, rgba(78,115,223,0.1) 0%, rgba(255,255,255,0) 70%);
+            border-radius: 50%;
+        }
+        .hero-shape-2 {
+            position: absolute;
+            bottom: -30px;
+            left: -30px;
+            width: 150px;
+            height: 150px;
+            background: radial-gradient(circle, rgba(255,107,107,0.1) 0%, rgba(255,255,255,0) 70%);
+            border-radius: 50%;
+        }
+
+        /* --- TABS --- */
+        .nav-pills .nav-link {
+            color: #6c757d;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        .nav-pills .nav-link:hover {
+            background-color: #f8f9fa;
+            color: #4e73df;
+        }
+        .nav-pills .nav-link.active {
+            background-color: #4e73df; /* Primary color */
+            color: #fff;
+            box-shadow: 0 4px 10px rgba(78, 115, 223, 0.3);
+        }
+
+        /* --- CARDS --- */
+        .shadow-hover {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .shadow-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1) !important;
+        }
+        
+        .card-img-wrapper {
+            height: 200px;
+            overflow: hidden;
+            background-color: #f8f9fa;
+        }
+        .card-img-top {
+            height: 100%;
+            width: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+        .project-card:hover .card-img-top {
+            transform: scale(1.05);
+        }
+
+        .object-fit-cover {
+            object-fit: cover;
+        }
+
+        /* --- PAGINATION --- */
+        .page-link {
+            color: #4e73df;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .page-link.active {
+            background-color: #4e73df;
+            border-color: #4e73df;
+        }
+        .page-link:hover:not(.active) {
+            background-color: #e9ecef;
+            color: #2e59d9;
+        }
+    </style>
+{% endblock %}

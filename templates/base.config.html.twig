@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+    {% block meta %}
+    	<meta charset="UTF-8">
+    	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+    	<meta name="author" content="daip"/>
+    	<meta name="robots" content=""/>
+        <meta property="fb:app_id" content="1604133883317306" />
+    {% endblock %}
+    <title>{% block title %}Direction de l'Apprentissage et de l'Insertion Professionnelle{% endblock %}</title>
+    {% block stylesheets %}
+        <link rel='icon' type='image/png' href='{{ asset('front/image/favicon.png') }}'>
+        <link rel='stylesheet' href='{{ asset('front/web/vendor/magnific-popup/magnific-popup.min.css') }}'>
+        <link rel='stylesheet' href='{{ asset('front/web/vendor/swiper/swiper-bundle.min.css') }}' >
+        <link rel='stylesheet' href='{{ asset('front/web/vendor/animate/animate.css') }}'>
+        <link rel='stylesheet' href='{{ asset('front/web/css/style.css') }}'>
+        <link rel='stylesheet' href='{{ asset('front/web/css/template.css') }}'>
+        <link rel='stylesheet' href='{{ asset('front/web/vendor/rangeslider/rangeslider.css') }}'>
+        <link rel='stylesheet' href='{{ asset('front/web/css/skin/skin-1.css') }}' class='skin'>
+		<link rel="stylesheet" href="{{ asset('front/vendor/datatables.net-bs5/dataTables.bootstrap5.css') }}">
+        <link rel='stylesheet' href='https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700;900&amp;family=Sarabun:wght@100;200;300;400;500;600;700;800&amp;display=swap'>
+    {% endblock %}
+</head>
+<body id='bg'>
+    <div class='page-wraper'>
+        {{ include('layout/pageconfig/header.html.twig', {'header_logo': header_logo|default('front/image/e2c.png')}) }}
+        <div class='page-content bg-white'>{% block body %}{% endblock %}</div>
+        {{ include('layout/pageconfig/footer.html.twig') }}
+        <button class='scroltop icon-up' type='button'><i class='fas fa-arrow-up'></i></button>
+    </div>
+    {% block javascripts %}
+        <script src='{{ asset('front/web/js/jquery.min.js') }}'></script>
+        <script src='{{ asset('front/web/vendor/bootstrap/js/bootstrap.bundle.min.js') }}'></script>
+        <script src='{{ asset('front/web/vendor/wow/wow.js') }}'></script>
+        <script src='{{ asset('front/web/vendor/rangeslider/rangeslider.js') }}'></script>
+        <script src='{{ asset('front/web/vendor/magnific-popup/magnific-popup.js') }}'></script>
+        <script src='{{ asset('front/web/vendor/masonry/isotope.pkgd.min.js') }}'></script>
+        <script src='{{ asset('front/web/vendor/imagesloaded/imagesloaded.js') }}'></script>
+        <script src='{{ asset('front/web/vendor/masonry/masonry-4.2.2.js') }}'></script>
+        <script src='{{ asset('front/web/vendor/counter/waypoints-min.js') }}'></script>
+        <script src='{{ asset('front/web/vendor/counter/counterup.min.js') }}'></script>
+        <script src='{{ asset('front/web/vendor/swiper/swiper-bundle.min.js') }}'></script>
+        <script src='{{ asset('front/web/vendor/paroller/skrollr.min.js') }}'></script>
+        <script src='{{ asset('front/web/js/dz.carousel.js') }}'></script>
+        <script src='{{ asset('front/web/js/dz.ajax.js') }}'></script>
+        <script src='{{ asset('front/web/js/custom.js') }}'></script>
+        <script src='{{ asset('front/web/js/lightbox.min.js') }}'></script>
+		<script src="{{ asset('front/vendor/datatables.net/jquery.dataTables.js') }}"></script>
+		<script src="{{ asset('front/vendor/datatables.net-bs5/dataTables.bootstrap5.js') }}"></script>
+		<script src="{{ asset('front/js/data-table.js') }}"></script>
+
+		<script src="{{ asset('front/vendor/bootstrap-maxlength/bootstrap-maxlength.min.js') }}"></script>
+		<script src="{{ asset('front/vendor/inputmask/jquery.inputmask.min.js') }}"></script>
+		<script src="{{ asset('front/js/bootstrap-maxlength.js') }}"></script>
+		<script src="{{ asset('front/js/inputmask.js') }}"></script>
+    {% endblock %}
+</body>
+</html>

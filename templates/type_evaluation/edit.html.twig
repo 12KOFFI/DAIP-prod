@@ -1,0 +1,21 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Modifier type d'évaluation{% endblock %}
+
+{% block page_content %}
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h1 class="h4 mb-0">Modifier type d'évaluation</h1>
+        <a href="{{ path('app_type_evaluation_index') }}" class="btn btn-outline-secondary btn-sm">Retour</a>
+    </div>
+
+    <div class="card mb-3">
+        <div class="card-body">
+            {{ include('type_evaluation/_form.html.twig', {form: form, button_label: 'Mettre à jour'}) }}
+        </div>
+    </div>
+
+    <form method="post" action="{{ path('app_type_evaluation_delete', {'id': type_evaluation.id}) }}" onsubmit="return confirm('Supprimer ce type d\'évaluation ?');">
+        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ type_evaluation.id) }}">
+        <button class="btn btn-outline-danger btn-sm" type="submit">Supprimer</button>
+    </form>
+{% endblock %}

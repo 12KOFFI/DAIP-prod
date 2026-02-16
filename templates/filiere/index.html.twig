@@ -1,0 +1,51 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Filiere index{% endblock %}
+
+{% block page_content %}
+    <h1 class="mb-4">Liste des Filières</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Nom</th>
+                <th>Métiers associés</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for filiere in filieres %}
+            <tr>
+                <td>{{ filiere.id }}</td>
+                <td>{{ filiere.nom }}</td>
+                <td>
+                    {% if filiere.metier|length > 0 %}
+                        <span class="badge bg-primary">{{ filiere.metier|length }} métier(s)</span>
+                        {% for metier in filiere.metier %}
+                            <span class="badge bg-secondary me-1">{{ metier.nom }}</span>
+                        {% endfor %}
+                    {% else %}
+                        <span class="badge bg-light text-dark">Aucun métier</span>
+                    {% endif %}
+                </td>
+                <td>
+                    <a href="{{ path('app_filiere_edit', {'id': filiere.id}) }}" class="btn btn-warning btn-lg mt-1">edit</a>
+                    <form method="post" action="{{ path('app_filiere_delete', {'id': filiere.id}) }}" class="d-inline" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette filiere ?');">
+                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ filiere.id) }}">
+                        <button class="btn btn-danger btn-lg mt-1">Supprimer</button>
+                        </form>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="4">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_filiere_new') }}" class="btn btn-primary btn-lg mt-1">
+    Nouveau
+</a>
+{% endblock %}

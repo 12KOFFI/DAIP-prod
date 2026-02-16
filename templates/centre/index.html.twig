@@ -1,0 +1,63 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Centre index{% endblock %}
+
+{% block page_content %}
+    <h1 class="mb-4">Liste des Centres</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Nom</th>
+                <th>Type</th>
+                <th>Region</th>
+                <th>Departement</th>
+                <th>Adresse</th>
+                <th>Contacts</th>
+                <th>Métiers</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for centre in centres %}
+            <tr>
+                <td>{{ centre.id }}</td>
+                <td>{{ centre.nom }}</td>
+                <td>{{ centre.type }}</td>
+                <td>{{ centre.region }}</td>
+                <td>{{ centre.departement }}</td>
+                <td>{{ centre.adresse }}</td>
+                <td>{{ centre.contacts }}</td>
+                <td>
+                    {% if centre.metiers|length > 0 %}
+                        <ul class="list-unstyled mb-0">
+                        {% for metier in centre.metiers %}
+                            <li>{{ metier.nom }}</li>
+                        {% endfor %}
+                        </ul>
+                    {% else %}
+                        <span class="text-muted">Aucun métier</span>
+                    {% endif %}
+                </td>
+                <td>
+
+                    <a href="{{ path('app_centre_edit', {'id': centre.id}) }}" class="btn btn-warning btn-lg mt-1">edit</a>
+                    <form method="post" action="{{ path('app_centre_delete', {'id': centre.id}) }}" class="d-inline" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette candidature ?');">
+                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ centre.id) }}">
+                        <button class="btn btn-danger btn-lg mt-1">Supprimer</button>
+                    </form>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="8">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_centre_new') }}" class="btn btn-primary btn-lg mt-1">
+    Nouveau
+</a>
+{% endblock %}

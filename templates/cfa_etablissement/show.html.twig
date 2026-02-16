@@ -1,0 +1,145 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Détails CFA Établissement{% endblock %}
+
+{% block page_content %}
+<div class="row mt-5 justify-content-center">
+    <div class="col-md-10">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">{{ cfa_etablissement.nomEtablissement }}</h5>
+                <div>
+                    <a href="{{ path('app_cfa_etablissement_edit', {'id': cfa_etablissement.id}) }}" class="btn btn-warning btn-sm">
+                        <i class="link-icon" data-feather="edit"></i> Modifier
+                    </a>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <h6 class="text-muted">Informations générales</h6>
+                        <table class="table table-sm">
+                            <tr>
+                                <th width="40%">Numéro CFA:</th>
+                                <td>{{ cfa_etablissement.numcfaEtablissement }}</td>
+                            </tr>
+                            <tr>
+                                <th>Chef d'établissement:</th>
+                                <td>{{ cfa_etablissement.nomChefEtablissement }}</td>
+                            </tr>
+                            <tr>
+                                <th>Email:</th>
+                                <td><a href="mailto:{{ cfa_etablissement.email }}">{{ cfa_etablissement.email }}</a></td>
+                            </tr>
+                            <tr>
+                                <th>Région:</th>
+                                <td>
+                                    {% if cfa_etablissement.region %}
+                                        <span class="badge bg-info">{{ cfa_etablissement.region }}</span>
+                                    {% else %}
+                                        <span class="text-muted">-</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Effectifs totaux:</th>
+                                <td>
+                                    {% if cfa_etablissement.effectifs is not null %}
+                                        <span class="badge bg-primary">{{ cfa_etablissement.effectifs }}</span>
+                                    {% else %}
+                                        <span class="text-muted">-</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="col-md-6">
+                        <h6 class="text-muted">Métiers et effectifs</h6>
+                        {% if cfa_etablissement.cfaMetiers is not empty %}
+                            <table class="table table-sm table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Métier</th>
+                                        <th class="text-end">Effectif</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                {% for cfaMetier in cfa_etablissement.cfaMetiers %}
+                                    <tr>
+                                        <td>{{ cfaMetier.metier.nom }}</td>
+                                        <td class="text-end">
+                                            <span class="badge bg-success">{{ cfaMetier.effectif }}</span>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                                <tfoot>
+                                    <tr class="table-active">
+                                        <th>Total métiers:</th>
+                                        <th class="text-end">
+                                            {% set totalEffectifMetiers = 0 %}
+                                            {% for cfaMetier in cfa_etablissement.cfaMetiers %}
+                                                {% set totalEffectifMetiers = totalEffectifMetiers + cfaMetier.effectif %}
+                                            {% endfor %}
+                                            <span class="badge bg-primary">{{ totalEffectifMetiers }}</span>
+                                        </th>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        {% else %}
+                            <div class="alert alert-info">
+                                <i class="link-icon" data-feather="info"></i>
+                                Aucun métier associé à cet établissement.
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <h6 class="text-muted">Filières</h6>
+                        {% if cfa_etablissement.filieres is not empty %}
+                            <div class="d-flex flex-wrap gap-2">
+                            {% for filiere in cfa_etablissement.filieres %}
+                                <span class="badge bg-secondary">{{ filiere.nom }}</span>
+                            {% endfor %}
+                            </div>
+                        {% else %}
+                            <div class="alert alert-info">
+                                <i class="link-icon" data-feather="info"></i>
+                                Aucune filière associée.
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-12">
+                        <h6 class="text-muted">Utilisateurs associés</h6>
+                        {% if cfa_etablissement.users is not empty %}
+                            <ul class="list-group">
+                            {% for user in cfa_etablissement.users %}
+                                <li class="list-group-item">
+                                    <i class="link-icon" data-feather="user"></i>
+                                    {{ user.email }}
+                                </li>
+                            {% endfor %}
+                            </ul>
+                        {% else %}
+                            <div class="alert alert-info">
+                                <i class="link-icon" data-feather="info"></i>
+                                Aucun utilisateur associé.
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer">
+                <a href="{{ path('app_cfa_etablissement_index') }}" class="btn btn-secondary">
+                    <i class="link-icon" data-feather="arrow-left"></i> Retour à la liste
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,43 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ prospection.id ? 'Modifier la prospection' : 'Nouvelle prospection' }}{% endblock %}
+
+{% block page_content %}
+    <div class="container py-4">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-white border-bottom d-flex justify-content-between align-items-center">
+                        <h1 class="h4 mb-0">
+                            {{ prospection.id ? 'Modifier la prospection' : 'Créer une nouvelle prospection' }}
+                        </h1>
+                        <a href="{{ path('app_prospection_index') }}" class="btn btn-outline-secondary btn-sm">
+                            Retour
+                        </a>
+                    </div>
+                    <div class="card-body">
+                        {{ form_start(form) }}
+                            {{ form_widget(form) }}
+                           {% set in_flow = app.request.query.get('flow') == 'prospection' and not prospection.id %}
+                            <div class="mt-3 d-flex justify-content-between">
+                                <a href="{{ path('app_prospection_index') }}" class="btn btn-outline-secondary">
+                                    Retour
+                                </a>
+                                {% if in_flow %}
+                                    <button type="submit" name="next_step" value="prospection_metier" class="btn btn-primary">
+                                        Suivant
+                                    </button>
+                                {% else %}
+                                    <button type="submit" class="btn btn-primary">
+                                        {{ prospection.id ? 'Mettre à jour' : 'Enregistrer' }}
+                                    </button>
+                                {% endif %}
+                            </div>
+                        {{ form_end(form) }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+

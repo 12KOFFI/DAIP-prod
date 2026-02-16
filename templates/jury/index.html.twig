@@ -1,0 +1,48 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Jury index{% endblock %}
+
+{% block page_content %}
+    <h1 class="mb-4">Liste des Jurys</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Nom</th>
+                <th>Prenom</th>
+                <th>Fonction</th>
+                <th>Organisation</th>
+                <th>Email</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for jury in juries %}
+            <tr>
+                <td>{{ jury.id }}</td>
+                <td>{{ jury.nom }}</td>
+                <td>{{ jury.prenom }}</td>
+                <td>{{ jury.fonction }}</td>
+                <td>{{ jury.organisation }}</td>
+                <td>{{ jury.user ? jury.user.email : 'Aucun utilisateur lié' }}</td>
+                <td>
+                    <a href="{{ path('app_jury_edit', {'id': jury.id}) }}" class="btn btn-warning btn-lg mt-1">edit</a>
+                    <form method="post" action="{{ path('app_jury_delete', {'id': jury.id}) }}" class="d-inline" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce jury ?');">
+                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ jury.id) }}">
+                        <button class="btn btn-danger btn-lg mt-1">Supprimer</button>
+                        </form>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="6">Aucun enregistrement trouvé</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_jury_new') }}" class="btn btn-primary btn-lg mt-1">
+    Nouveau
+</a>
+{% endblock %}

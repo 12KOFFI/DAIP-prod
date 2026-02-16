@@ -1,0 +1,148 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Dashboard Admin{% endblock %}
+
+{% block plugins_css %}
+    <link rel="stylesheet" href="{{ asset('assets/templateNEW/vendors/flatpickr/flatpickr.min.css') }}">
+    <style>
+        .fixed-btn {
+            min-width: 150px;
+            width: 100%;
+            max-width: 180px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .btn-container {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .card-title {
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        @media (max-width: 576px) {
+            .fixed-btn {
+                min-width: 140px;
+                max-width: 160px;
+                font-size: 0.85rem;
+                padding: 0.25rem 0.5rem;
+            }
+        }
+    </style>
+{% endblock %}
+
+{% block page_content %}
+
+    <div class="d-flex justify-content-between align-items-center flex-wrap grid-margin">
+        <div>
+            <h4 class="mb-3 mb-md-0">Bienvenue sur le tableau de bord Administrateur</h4>
+        </div>
+        <div class="d-flex align-items-center flex-wrap text-nowrap">
+            <div class="input-group flatpickr w-200px me-2 mb-2 mb-md-0" id="dashboardDate">
+                <span class="input-group-text input-group-addon bg-transparent border-primary" data-toggle><i data-lucide="calendar" class="text-primary"></i></span>
+                <input type="text" class="form-control bg-transparent border-primary" placeholder="Select date" data-input>
+            </div>
+        </div>
+    </div>
+
+    <div class="card mb-4">
+        <div class="card-body">
+            <form method="get" action="{{ path('app_dashboard') }}" class="row g-2 align-items-end">
+                <div class="col-12 col-md-6">
+                    <label class="form-label">Filtrer par recrutement</label>
+                    <select name="recrutement" class="form-select">
+                        <option value="">Tous les recrutements</option>
+                        {% for r in recrutements|default([]) %}
+                            <option value="{{ r.id }}" {{ (selectedRecrutementId is not null and selectedRecrutementId == r.id) ? 'selected' : '' }}>
+                                {{ r.libelle }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-12 col-md-6">
+                    <button type="submit" class="btn btn-primary">Appliquer</button>
+                    <a href="{{ path('app_dashboard') }}" class="btn btn-outline-secondary">Réinitialiser</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="row mb-4">
+        <div class="col-12 col-sm-6 col-md-3 mb-3">
+            <div class="card h-100">
+                <div class="card-body text-center">
+                    <div class="text-muted">Total candidatures</div>
+                    <div class="fs-3 fw-bold">{{ dashboardCounts.total|default(0) }}</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-sm-6 col-md-3 mb-3">
+            <div class="card h-100">
+                <div class="card-body text-center">
+                    <div class="text-muted">Candidats admis</div>
+                    <div class="fs-3 fw-bold text-success">{{ dashboardCounts.admitted|default(0) }}</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-sm-6 col-md-3 mb-3">
+            <div class="card h-100">
+                <div class="card-body text-center">
+                    <div class="text-muted">Candidats rejetés</div>
+                    <div class="fs-3 fw-bold text-danger">{{ dashboardCounts.rejected|default(0) }}</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-sm-6 col-md-3 mb-3">
+            <div class="card h-100">
+                <div class="card-body text-center">
+                    <div class="text-muted">Candidats en attente</div>
+                    <div class="fs-3 fw-bold text-warning">{{ dashboardCounts.pending|default(0) }}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card mb-4">
+        <div class="card-body">
+            <h6 class="card-title mb-3">Candidats admis par type d'évaluation</h6>
+            <div class="table-responsive">
+                <table class="table table-sm">
+                    <thead>
+                    <tr>
+                        <th>Type d'évaluation</th>
+                        <th class="text-end">Admis</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for row in admittedByEvaluationType|default([]) %}
+                        <tr>
+                            <td>{{ row.type_evaluation }}</td>
+                            <td class="text-end">{{ row.admitted_count }}</td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="2" class="text-center text-muted">Aucune donnée</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block plugins_js %}
+    <script src="{{ asset('assets/templateNEW/vendors/flatpickr/flatpickr.min.js') }}"></script>
+    <script src="{{ asset('assets/templateNEW/vendors/apexcharts/apexcharts.min.js') }}"></script>
+{% endblock %}
+
+{% block javascripts %}
+    <script src="{{ asset('assets/templateNEW/js/dashboard.js') }}"></script>
+{% endblock %}

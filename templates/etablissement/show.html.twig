@@ -1,0 +1,125 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ etablissement.nom }} - DAIP{% endblock %}
+
+{% block body %}
+    <div class="page-content bg-white">
+        <!-- Banner  -->
+        <div class="dlab-bnr-inr style-1 bg-parallax" style="background-image: url({{ asset('front/images/banner/bnr1.jpg') }}); background-size:cover; background-position:center;">
+            <div class="container">
+                <div class="dlab-bnr-inr-entry">
+                    <h1 class="text-white">{{ etablissement.nom }}</h1>
+                    <div class="dlab-separator bg-primary"></div>
+                    {% if etablissement.sigle %}
+                        <p class="text-white">{{ etablissement.sigle }}</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <!-- Banner End -->
+
+        <!-- Content -->
+        <section class="content-inner-1">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-8">
+                        <div class="widget widget_services">
+                            <div class="dlab-post-text">
+                                {% if etablissement.type %}
+                                    <div class="dlab-meta m-b20">
+                                        <ul>
+                                            <li class="post-category">
+                                                <i class="fas fa-building"></i> {{ etablissement.type }}
+                                            </li>
+                                        </ul>
+                                    </div>
+                                {% endif %}
+
+                                {% if etablissement.description %}
+                                    <h4>Description</h4>
+                                    <div class="m-b30">
+                                        {{ etablissement.description|nl2br }}
+                                    </div>
+                                {% endif %}
+
+                                <div class="row">
+                                    {% if etablissement.adresse or etablissement.ville %}
+                                        <div class="col-md-6 m-b20">
+                                            <h5><i class="fas fa-map-marker-alt text-primary"></i> Adresse</h5>
+                                            <address>
+                                                {% if etablissement.adresse %}
+                                                    {{ etablissement.adresse }}<br>
+                                                {% endif %}
+                                                {% if etablissement.ville %}
+                                                    {{ etablissement.ville }}
+                                                {% endif %}
+                                            </address>
+                                        </div>
+                                    {% endif %}
+
+                                    <div class="col-md-6 m-b20">
+                                        <h5>Contact</h5>
+                                        <ul class="list-info">
+                                            {% if etablissement.telephone %}
+                                                <li>
+                                                    <i class="fas fa-phone-alt text-primary"></i> 
+                                                    <a href="tel:{{ etablissement.telephone|replace({' ': ''}) }}">{{ etablissement.telephone }}</a>
+                                                </li>
+                                            {% endif %}
+                                            {% if etablissement.email %}
+                                                <li>
+                                                    <i class="fas fa-envelope text-primary"></i> 
+                                                    <a href="mailto:{{ etablissement.email }}">{{ etablissement.email }}</a>
+                                                </li>
+                                            {% endif %}
+                                            {% if etablissement.site_web %}
+                                                <li>
+                                                    <i class="fas fa-globe text-primary"></i> 
+                                                    <a href="{{ etablissement.site_web }}" target="_blank" rel="noopener noreferrer">
+                                                        {{ etablissement.site_web }}
+                                                    </a>
+                                                </li>
+                                            {% endif %}
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-lg-4">
+                        <div class="widget">
+                            <div class="widget-box">
+                                <h4 class="widget-title">Autres établissements</h4>
+                                <div class="recent-posts-entry">
+                                    <ul class="recent-posts">
+                                        {% for other in etablissements %}
+                                            {% if other.id != etablissement.id %}
+                                                <li>
+                                                    <div class="recent-posts-text">
+                                                        <h6>
+                                                            <a href="{{ path('app_etablissement_show', {'id': other.id}) }}">
+                                                                {{ other.nom }}
+                                                                {% if other.sigle %}({{ other.sigle }}){% endif %}
+                                                            </a>
+                                                        </h6>
+                                                        {% if other.ville %}
+                                                            <span class="post-date">
+                                                                <i class="fas fa-map-marker-alt"></i> {{ other.ville }}
+                                                            </span>
+                                                        {% endif %}
+                                                    </div>
+                                                </li>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- Content End -->
+    </div>
+{% endblock %}

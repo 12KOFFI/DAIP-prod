@@ -1,0 +1,42 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Vae index{% endblock %}
+
+{% block page_content %}
+    <h1 class="mb-4">Liste des VAE</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Nom</th>
+                <th>NumVae</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for vae in vaes %}
+            <tr>
+                <td>{{ vae.id }}</td>
+                <td>{{ vae.nom }}</td>
+                <td>{{ vae.numVae }}</td>
+                <td>
+                    <a href="{{ path('app_vae_edit', {'id': vae.id}) }}" class= "btn btn-warning btn-lg mt-1">Modifier </a>
+                     <form method="post" action="{{ path('app_vae_delete', {'id': vae.id}) }}" class="d-inline" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette candidature ?');">
+                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ vae.id) }}">
+                        <button class="btn btn-danger btn-lg mt-1">Supprimer</button>
+                    </form>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="4">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_vae_new') }}" class="btn btn-primary btn-lg mt-1">
+    Nouveau
+</a>
+{% endblock %}

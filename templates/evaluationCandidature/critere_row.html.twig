@@ -1,0 +1,24 @@
+
+<div class="critere-row mb-3 p-3 border rounded" data-critere-id="{{ critere.id }}">
+    <div class="row align-items-center">
+        <div class="col-md-5">
+            <label class="form-label fw-bold">{{ critere.libelle }}</label>
+            <div class="text-muted small">Barème: {{ critere.bareme ?? 'Non défini' }} points</div>
+        </div>
+        <div class="col-md-3">
+            <input type="number" 
+                   name="notations[{{ critere.id }}][note]" 
+                   class="form-control note-input" 
+                   min="0" 
+                   max="{{ critere.bareme ?? '' }}" 
+                   step="0.5"
+                   required>
+        </div>
+        <div class="col-md-4">
+            <textarea name="notations[{{ critere.id }}][commentaire]" 
+                      class="form-control" 
+                      rows="1" 
+                      placeholder="Commentaire (optionnel)"></textarea>
+        </div>
+    </div>
+</div>

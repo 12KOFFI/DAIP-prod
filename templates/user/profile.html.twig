@@ -1,0 +1,74 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mon Profil{% endblock %}
+
+{% block page_content %}
+<div class="row">
+    <div class="col-md-12 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <h6 class="card-title mb-4">Mon Profil</h6>
+
+                {# Flash messages #}
+                {% for type, messages in app.flashes %}
+                    {% for message in messages %}
+                        <div class="alert alert-{{ type == 'error' ? 'danger' : type }} alert-dismissible fade show" role="alert">
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    {% endfor %}
+                {% endfor %}
+
+                {{ form_start(form) }}
+                
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Email</label>
+                        {{ form_widget(form.email) }}
+                        {{ form_errors(form.email) }}
+                    </div>
+                    {% if app.user.cfaEtablissement %}
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">CFA associé</label>
+                            <div class="form-control bg-light">
+                                {{ app.user.cfaEtablissement.nomEtablissement }}
+                            </div>
+                        </div>
+                        {% if app.user.cfaEtablissement.filieres|length > 0 %}
+                            <div class="col-md-12 mb-3">
+                                <label class="form-label">Filière(s) de l'établissement</label>
+                                <div class="form-control bg-light">
+                                    {% for filiere in app.user.cfaEtablissement.filieres %}
+                                        <span class="badge bg-primary me-1">{{ filiere.nom }}</span>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        {% endif %}
+                    {% endif %}
+                </div>
+
+
+
+                <hr class="my-4">
+                <h6 class="card-title mb-3">Changer de mot de passe</h6>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                         {{ form_row(form.plainPassword.first) }}
+                    </div>
+                    <div class="col-md-6 mb-3">
+                         {{ form_row(form.plainPassword.second) }}
+                    </div>
+                </div>
+
+                <div class="mt-3">
+                    <button type="submit" class="btn btn-primary me-2">Mettre à jour le profil</button>
+                    <a href="{{ path('app_dashboard') }}" class="btn btn-secondary">Retour</a>
+                </div>
+
+                {{ form_end(form) }}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

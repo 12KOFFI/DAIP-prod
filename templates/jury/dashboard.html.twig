@@ -1,0 +1,127 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Espace Jury{% endblock %}
+
+{% block page_content %}
+    <div class="d-flex justify-content-between align-items-center flex-wrap grid-margin">
+        <div>
+            <h4 class="mb-3 mb-md-0">Tableau de bord Jury</h4>
+            <p class="text-muted mb-0">Accédez rapidement aux outils d'évaluation</p>
+        </div>
+    </div>
+
+    {% if juryStats is not null %}
+        <div class="row g-3 mb-4">
+            <div class="col-12 col-sm-6 col-xl-3">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span class="text-muted text-uppercase small">Total candidatures</span>
+                            <i data-lucide="users" class="text-primary" style="width:20px;height:20px;"></i>
+                        </div>
+                        <h3 class="fw-semibold mb-0">{{ juryStats.total ?? 0 }}</h3>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-sm-6 col-xl-3">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span class="text-muted text-uppercase small">Acceptées</span>
+                            <i data-lucide="check-circle-2" class="text-success" style="width:20px;height:20px;"></i>
+                        </div>
+                        <h3 class="fw-semibold mb-0">{{ juryStats.accepted ?? 0 }}</h3>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-sm-6 col-xl-3">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span class="text-muted text-uppercase small">Refusées</span>
+                            <i data-lucide="x-octagon" class="text-danger" style="width:20px;height:20px;"></i>
+                        </div>
+                        <h3 class="fw-semibold mb-0">{{ juryStats.refused ?? 0 }}</h3>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-sm-6 col-xl-3">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span class="text-muted text-uppercase small">Incomplets</span>
+                            <i data-lucide="alert-circle" class="text-warning" style="width:20px;height:20px;"></i>
+                        </div>
+                        <h3 class="fw-semibold mb-0">{{ juryStats.incomplete ?? 0 }}</h3>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-sm-6 col-xl-3">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span class="text-muted text-uppercase small">En attente</span>
+                            <i data-lucide="clock-9" class="text-info" style="width:20px;height:20px;"></i>
+                        </div>
+                        <h3 class="fw-semibold mb-0">{{ juryStats.pending ?? 0 }}</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+
+    <div class="row g-4">
+        <div class="col-12 col-md-6 col-xl-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <div>
+                            <h6 class="card-title">Évaluations</h6>
+                            <p class="text-muted small mb-3">Consulter ou créer une évaluation</p>
+                        </div>
+                        <i data-lucide="clipboard-check" class="text-primary" style="width:32px;height:32px;"></i>
+                    </div>
+                    <div class="d-grid gap-2">
+                        <a href="{{ path('app_evaluation_candidature_traitement') }}" class="btn btn-primary btn-sm">Analyser un dossier</a>
+                        <a href="{{ path('app_evaluation_candidature_index') }}" class="btn btn-outline-primary btn-sm">Liste des évaluations</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-md-6 col-xl-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <div>
+                            <h6 class="card-title">Critères & Grilles</h6>
+                            <p class="text-muted small mb-3">Consulter les référentiels utilisés</p>
+                        </div>
+                        <i data-lucide="sliders" class="text-success" style="width:32px;height:32px;"></i>
+                    </div>
+                    <div class="d-grid gap-2">
+                        <a href="{{ path('app_critere_index') }}" class="btn btn-success btn-sm">Liste des critères</a>
+                        <a href="{{ path('app_grille_evaluation_index') }}" class="btn btn-outline-success btn-sm">Grilles d'évaluation</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-md-6 col-xl-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <div>
+                            <h6 class="card-title">Convocations & Notations</h6>
+                            <p class="text-muted small mb-3">Suivi des séances et des notes attribuées</p>
+                        </div>
+                        <i data-lucide="calendar-check" class="text-warning" style="width:32px;height:32px;"></i>
+                    </div>
+                    <div class="d-grid gap-2">
+                        <a href="{{ path('app_notation_index') }}" class="btn btn-outline-warning btn-sm">Historique des notations</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

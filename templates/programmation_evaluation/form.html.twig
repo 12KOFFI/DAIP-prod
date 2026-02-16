@@ -1,0 +1,36 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ title|default('Programmation d\'évaluation') }}{% endblock %}
+
+{% block page_content %}
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h1 class="h4 mb-0">{{ title|default('Programmation d\'évaluation') }}</h1>
+        <a href="{{ path('app_programmation_evaluation_index') }}" class="btn btn-outline-secondary btn-sm">
+            Retour à la liste
+        </a>
+    </div>
+
+    <div class="card">
+        <div class="card-body">
+            {{ form_start(form) }}
+                <div class="row">
+                    <div class="col-md-6 mb-3">{{ form_row(form.typeEvaluation) }}</div>
+                    <div class="col-md-6 mb-3">{{ form_row(form.centre) }}</div>
+                    <div class="col-md-6 mb-3">{{ form_row(form.metier) }}</div>
+                    <div class="col-md-6 mb-3">{{ form_row(form.dateLancement) }}</div>
+                    <div class="col-md-6 mb-3">{{ form_row(form.statut) }}</div>
+                    <div class="col-md-6 mb-3">{{ form_row(form.recrutement) }}</div>
+
+                    {% if form.user is defined %}
+                        <div class="col-md-6 mb-3">{{ form_row(form.user) }}</div>
+                    {% endif %}
+                </div>
+
+                <div class="d-flex gap-2 mt-3">
+                    <button class="btn btn-primary" type="submit">Enregistrer</button>
+                    <a href="{{ path('app_programmation_evaluation_index') }}" class="btn btn-light">Annuler</a>
+                </div>
+            {{ form_end(form) }}
+        </div>
+    </div>
+{% endblock %}

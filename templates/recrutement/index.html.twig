@@ -1,0 +1,149 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Recrutement index{% endblock %}
+
+{% block page_content %}
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+        <div>
+            <h1 class="mb-1">Liste des recrutements</h1>
+            <p class="text-muted mb-0">Suivez les sessions, leur période et leur état d'ouverture.</p>
+        </div>
+        <a href="{{ path('app_recrutement_new') }}" class="btn btn-primary">
+            <i class="fas fa-plus me-2"></i>Nouveau recrutement
+        </a>
+    </div>
+
+    <div class="card border-0 shadow-sm">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>ID</th>
+                            <th>Libellé</th>
+                            <th>Projet</th>
+                            <th>Période</th>
+                            <th>Cible</th>
+                            <th>Âge</th>
+                            <th>Statut</th>
+                            <th>Année</th>
+                            <th>Médias</th>
+                            <th class="text-end">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for recrutement in recrutements %}
+                        <tr>
+                            <td class="fw-semibold text-muted">#{{ recrutement.id }}</td>
+                            <td>
+                                <div class="fw-semibold">{{ recrutement.libelle }}</div>
+                                <small class="text-muted">{{ recrutement.numRecrutement ?? 'Sans référence' }}</small>
+                            </td>
+                            <td>
+                                {% if recrutement.projet %}
+                                    <div class="d-flex align-items-center gap-2">
+                                        {% if recrutement.projet.logo %}
+                                            {% if recrutement.projet.logo starts with 'http' %}
+                                                <img src="{{ recrutement.projet.logo }}"
+                                                     alt="Logo {{ recrutement.projet.nom }}"
+                                                     class="rounded border"
+                                                     style="width: 34px; height: 34px; object-fit: contain;">
+                                            {% else %}
+                                                <img src="{{ asset('uploads/projet/logo/' ~ recrutement.projet.logo) }}"
+                                                     alt="Logo {{ recrutement.projet.nom }}"
+                                                     class="rounded border"
+                                                     style="width: 34px; height: 34px; object-fit: contain;">
+                                            {% endif %}
+                                        {% else %}
+                                            <div class="bg-light rounded border d-flex align-items-center justify-content-center"
+                                                 style="width: 34px; height: 34px;">
+                                                <i class="fas fa-folder text-muted small"></i>
+                                            </div>
+                                        {% endif %}
+                                        <div class="d-flex flex-column">
+                                            <span>{{ recrutement.projet.nom }}</span>
+                                            <small class="text-muted">{{ recrutement.projet.numProjet }}</small>
+                                        </div>
+                                    </div>
+                                {% else %}
+                                    <span class="text-muted fst-italic">Aucun projet</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <div>{{ recrutement.dateDebut ? recrutement.dateDebut|date('d/m/Y') : '—' }}</div>
+                                <small class="text-muted">au {{ recrutement.dateFin ? recrutement.dateFin|date('d/m/Y') : '—' }}</small>
+                            </td>
+                            <td>
+                                <span class="text-muted">
+                                    {% if recrutement.metiers|length > 0 %}
+                                        {{ recrutement.metiers|length }} métier{{ recrutement.metiers|length > 1 ? 's' : '' }}
+                                    {% else %}
+                                        —
+                                    {% endif %}
+                                </span>
+                            </td>
+                            <td>
+                                {% if recrutement.ageMin is not null or recrutement.ageMax is not null %}
+                                    <span class="badge bg-light text-dark border">
+                                        {{ recrutement.ageMin ?? '?' }} - {{ recrutement.ageMax ?? '?' }} ans
+                                    </span>
+                                {% else %}
+                                    <span class="text-muted">—</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% set status = recrutement.status ?? 'Non défini' %}
+                                {% set statusClass = status in ['OUVERT', 'Actif']
+                                    ? 'success'
+                                    : (status in ['EN ATTENTE']
+                                        ? 'warning text-dark'
+                                        : (status in ['FERME', 'ACHEVE'] ? 'secondary' : 'light text-dark border')) %}
+                                <span class="badge bg-{{ statusClass }}">{{ status }}</span>
+                            </td>
+                            <td>{{ recrutement.annee ?? '—' }}</td>
+                            <td>
+                                <div class="d-flex gap-1">
+                                    {% if recrutement.image %}
+                                        <img src="{{ asset('uploads/' ~ recrutement.image) }}" alt="Image" class="rounded border" style="width: 34px; height: 34px; object-fit: cover;">
+                                    {% endif %}
+                                    {% if recrutement.logo %}
+                                        <img src="{{ asset('uploads/' ~ recrutement.logo) }}" alt="Logo" class="rounded border" style="width: 34px; height: 34px; object-fit: cover;">
+                                    {% endif %}
+                                    {% if recrutement.banniere %}
+                                        <img src="{{ asset('uploads/' ~ recrutement.banniere) }}" alt="Bannière" class="rounded border" style="width: 34px; height: 34px; object-fit: cover;">
+                                    {% endif %}
+                                    {% if not recrutement.image and not recrutement.logo and not recrutement.banniere %}
+                                        <span class="text-muted">—</span>
+                                    {% endif %}
+                                </div>
+                            </td>
+                            <td class="text-end">
+                                <div class="d-flex gap-2 justify-content-end">
+                                    <a href="{{ path('app_recrutement_edit', {'id': recrutement.id}) }}" class="btn btn-outline-primary btn-sm">
+                                        <i class="fas fa-edit me-1"></i>Modifier
+                                    </a>
+                                    <form method="post" action="{{ path('app_recrutement_delete', {'id': recrutement.id}) }}" class="d-inline" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce recrutement ?');">
+                                        <input type="hidden" name="_method" value="DELETE">
+                                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ recrutement.id) }}">
+                                        <button class="btn btn-outline-danger btn-sm">
+                                            <i class="fas fa-trash-alt me-1"></i>Supprimer
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="10" class="text-center py-5">
+                                <div class="text-muted mb-2"><i class="fas fa-inbox fa-2x"></i></div>
+                                <div class="fw-semibold">Aucun recrutement trouvé</div>
+                                <small class="text-muted">Commencez par créer un nouveau recrutement.</small>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}

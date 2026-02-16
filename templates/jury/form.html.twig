@@ -1,0 +1,160 @@
+
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ title|default('Gestion du jury') }}{% endblock %}
+
+{% block page_content %}
+<div class="container-fluid py-4">
+    <div class="d-flex align-items-center justify-content-between flex-wrap gap-3 mb-4">
+        <div>
+            <p class="text-uppercase text-muted small mb-1">Administration</p>
+            <h2 class="fw-bold mb-0">{{ title|default('Créer / modifier un jury') }}</h2>
+        </div>
+        <a href="{{ path('app_jury_index') }}" class="btn btn-outline-secondary d-flex align-items-center gap-2">
+            <i class="bi bi-arrow-left"></i> Retour à la liste
+        </a>
+    </div>
+
+    <div class="card border-0 shadow-sm">
+        <div class="card-body p-4">
+            {% if form is defined %}
+                {{ form_start(form) }}
+
+                {% if form.vars.errors|length or (form.vars.valid is defined and not form.vars.valid) %}
+                    <div class="alert alert-danger mb-4" role="alert">
+                        {{ form_errors(form) }}
+                    </div>
+                {% endif %}
+
+                <div class="row g-4">
+                    <div class="col-12">
+                        <h6 class="text-uppercase text-muted small mb-3">Informations</h6>
+                    </div>
+
+                    <div class="col-md-6">
+                        {{ form_row(form.nom, {'attr': {'class': 'form-control'}}) }}
+                    </div>
+                    <div class="col-md-6">
+                        {{ form_row(form.prenom, {'attr': {'class': 'form-control'}}) }}
+                    </div>
+                    <div class="col-md-6">
+                        {{ form_row(form.fonction, {'attr': {'class': 'form-control'}}) }}
+                    </div>
+                    <div class="col-md-6">
+                        {{ form_row(form.organisation, {'attr': {'class': 'form-control'}}) }}
+                    </div>
+                    <div class="col-md-6">
+                        {{ form_row(form.centre, {'attr': {'class': 'form-select'}}) }}
+                    </div>
+                    <div class="col-md-6">
+                        {{ form_row(form.user, {'attr': {'class': 'form-select'}}) }}
+                    </div>
+
+                    <div class="col-12">
+                        <div class="card bg-light border-0">
+                            <div class="card-body">
+                                <h6 class="text-uppercase text-muted small mb-3">Affectations</h6>
+                                <div class="row g-3">
+                                    <div class="col-lg-4">
+                                        {{ form_row(form.recrutements, {'attr': {'class': 'form-select'}}) }}
+                                    </div>
+                                    <div class="col-lg-4">
+                                        {{ form_row(form.formations, {'attr': {'class': 'form-select'}}) }}
+                                    </div>
+                                    <div class="col-lg-4">
+                                        {{ form_row(form.vaes, {'attr': {'class': 'form-select'}}) }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-end gap-2 mt-4">
+                    <a href="{{ path('app_jury_index') }}" class="btn btn-outline-secondary">Annuler</a>
+                    <button type="submit" class="btn btn-primary">
+                        {{ button_label|default('Enregistrer') }}
+                    </button>
+                </div>
+
+                {{ form_end(form) }}
+            {% else %}
+                <div class="row g-4">
+                    <div class="col-12">
+                        <h6 class="text-uppercase text-muted small mb-3">Informations</h6>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="fw-semibold">Nom</div>
+                        <div class="text-muted">{{ jury.nom ?? '-' }}</div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="fw-semibold">Prénom</div>
+                        <div class="text-muted">{{ jury.prenom ?? '-' }}</div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="fw-semibold">Fonction</div>
+                        <div class="text-muted">{{ jury.fonction ?? '-' }}</div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="fw-semibold">Organisation</div>
+                        <div class="text-muted">{{ jury.organisation ?? '-' }}</div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="fw-semibold">Centre</div>
+                        <div class="text-muted">{{ jury.centre.nom ?? '-' }}</div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="fw-semibold">Utilisateur</div>
+                        <div class="text-muted">{{ jury.user.email ?? '-' }}</div>
+                    </div>
+
+                    <div class="col-12">
+                        <div class="card bg-light border-0">
+                            <div class="card-body">
+                                <h6 class="text-uppercase text-muted small mb-3">Affectations</h6>
+                                <div class="row g-3">
+                                    <div class="col-lg-4">
+                                        <div class="fw-semibold">Recrutements</div>
+                                        <div class="text-muted">
+                                            {% if jury.recrutements is defined and jury.recrutements|length %}
+                                                {{ jury.recrutements|map(r => r.libelle)|join(', ') }}
+                                            {% else %}
+                                                -
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4">
+                                        <div class="fw-semibold">Formations</div>
+                                        <div class="text-muted">
+                                            {% if jury.formations is defined and jury.formations|length %}
+                                                {{ jury.formations|map(f => f.libelle)|join(', ') }}
+                                            {% else %}
+                                                -
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4">
+                                        <div class="fw-semibold">VAE</div>
+                                        <div class="text-muted">
+                                            {% if jury.vaes is defined and jury.vaes|length %}
+                                                {{ jury.vaes|map(v => v.nom)|join(', ') }}
+                                            {% else %}
+                                                -
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-12 d-flex justify-content-end">
+                        <a href="{{ path('app_jury_edit', {'id': jury.id}) }}" class="btn btn-primary">Modifier</a>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,218 @@
+{{ form_start(form) }}
+    <div class="row">
+        <div class="col-12">
+            {% if form.vars.data and form.vars.data.id %}
+                {# Mode édition - Afficher le champ en lecture seule #}
+                <div class="mb-3">
+                    {{ form_label(form.candidature, null, {'label_attr': {'class': 'form-label'}}) }}
+                    <input type="text" 
+                           class="form-control-plaintext" 
+                           value="{{ form.vars.data.candidature.nom }} {{ form.vars.data.candidature.prenom }}" 
+                           readonly>
+                    <input type="hidden" 
+                           name="{{ form.candidature.vars.full_name }}" 
+                           value="{{ form.vars.data.candidature.id }}">
+                    {{ form_widget(form.candidature, {
+                        'attr': {'class': 'd-none'},
+                        'label': false
+                    }) }}
+                </div>
+            {% else %}
+                {# Mode création - Afficher le champ normalement #}
+                {{ form_row(form.candidature, {
+                    'attr': {'class': 'form-control'},
+                    'row_attr': {'class': 'mb-3'}
+                }) }}
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            {{ form_row(form.typeEvaluation, {
+                'attr': {'class': 'form-select'},
+                'row_attr': {'class': 'mb-3'}
+            }) }}
+        </div>
+    </div>
+
+    <div class="row d-none" id="grille-evaluation-row">
+        <div class="col-12">
+            {{ form_row(form.grilleEvaluation, {
+                'attr': {
+                    'class': 'form-select',
+                    'data-critere-url': path('evaluation_candidature_load_criteres')
+                },
+                'row_attr': {'class': 'mb-3'}
+            }) }}
+        </div>
+    </div>
+    
+    <!-- Conteneur pour les critères -->
+    <div id="criteres-container" class="mt-4">
+        <!-- Les critères seront chargés ici en AJAX -->
+    </div>
+    
+    <div class="row">
+        <div class="col-12">
+            {{ form_row(form.statut, {
+                'attr': {'class': 'form-select'},
+                'row_attr': {'class': 'mb-3'}
+            }) }}
+        </div>
+    </div>
+    
+    <div class="row d-none" id="commentaire-row">
+        <div class="col-12">
+            {{ form_row(form.commentaire, {
+                'attr': {'class': 'form-control', 'rows': 4},
+                'row_attr': {'class': 'mb-3'}
+            }) }}
+        </div>
+    </div>
+
+    <div class="text-center mt-3">
+        <button type="submit" class="btn btn-success">
+            <i class="fas fa-save me-1"></i> Enregistrer l'évaluation
+        </button>
+    </div>
+{{ form_end(form) }}
+
+{% block javascripts %}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Éléments du DOM
+            const grilleEvaluationRow = document.getElementById('grille-evaluation-row');
+            const commentaireRow = document.getElementById('commentaire-row');
+            const grilleSelect = document.querySelector('select[name$="[grilleEvaluation]"]');
+            const criteresContainer = document.getElementById('criteres-container');
+            const typeEvaluationSelect = document.querySelector('select[name$="[typeEvaluation]"]');
+            
+            // Fonction pour afficher/masquer les champs conditionnels
+            function toggleConditionalFields() {
+                if (!typeEvaluationSelect) return;
+
+                const selectedOption = typeEvaluationSelect.options[typeEvaluationSelect.selectedIndex];
+                const selectedText = selectedOption ? selectedOption.text.toLowerCase() : '';
+
+                // Pour "étude de dossier"
+                if (selectedText.includes('dossier') || selectedText.includes('étude de dossier')) {
+                    // Masquer la grille d'évaluation et les critères
+                    grilleEvaluationRow.classList.add('d-none');
+                    
+                    // Afficher le commentaire
+                    commentaireRow.classList.remove('d-none');
+                    
+                    // Réinitialiser la sélection de la grille et vider les critères
+                    if (grilleSelect) {
+                        grilleSelect.value = '';
+                    }
+                    if (criteresContainer) {
+                        criteresContainer.innerHTML = '';
+                    }
+                } else {
+                    // Pour les autres types d'évaluation
+                    // Afficher la grille d'évaluation
+                    grilleEvaluationRow.classList.remove('d-none');
+                    
+                    // Masquer le commentaire
+                    commentaireRow.classList.add('d-none');
+                }
+            }
+            
+            // Fonction pour charger les critères
+            function loadCriteres(grilleId) {
+                if (!grilleId || !criteresContainer) return;
+                
+                const url = grilleSelect ? grilleSelect.dataset.critereUrl : '';
+                
+                // Afficher un indicateur de chargement
+                criteresContainer.innerHTML = `
+                    <div class="text-center my-4">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Chargement...</span>
+                        </div>
+                        <p class="mt-2">Chargement des critères...</p>
+                    </div>`;
+                
+                // Charger les critères via AJAX
+                fetch(`${url}?grille_id=${grilleId}`)
+                    .then(response => response.text())
+                    .then(html => {
+                        criteresContainer.innerHTML = html;
+                        updateTotalPoints();
+                        setupNoteInputs();
+                    })
+                    .catch(error => {
+                        console.error('Erreur lors du chargement des critères:', error);
+                        criteresContainer.innerHTML = `
+                            <div class="alert alert-danger">
+                                Une erreur est survenue lors du chargement des critères.
+                            </div>`;
+                    });
+            }
+            
+            // Fonction pour configurer les écouteurs d'événements des champs de note
+            function setupNoteInputs() {
+                document.querySelectorAll('.note-input').forEach(input => {
+                    // Ne pas ajouter plusieurs fois le même écouteur
+                    if (!input.hasAttribute('data-has-listener')) {
+                        input.addEventListener('input', updateTotalPoints);
+                        input.setAttribute('data-has-listener', 'true');
+                    }
+                    
+                    // Validation de la note maximale
+                    const max = parseFloat(input.max) || 0;
+                    if (max > 0) {
+                        input.addEventListener('change', function() {
+                            if (parseFloat(this.value) > max) {
+                                this.value = max;
+                                updateTotalPoints();
+                            }
+                        });
+                    }
+                });
+            }
+            
+            // Fonction pour mettre à jour le total des points
+            function updateTotalPoints() {
+                let total = 0;
+                document.querySelectorAll('.note-input').forEach(input => {
+                    const value = parseFloat(input.value);
+                    if (!isNaN(value)) {
+                        total += value;
+                    }
+                });
+                
+                // Mettre à jour l'affichage du total
+                const totalElement = document.getElementById('total-points');
+                if (totalElement) {
+                    totalElement.textContent = total.toFixed(1);
+                }
+                
+                // Mettre à jour le champ caché de la note totale
+                const noteTotaleInput = document.getElementById('evaluation_note_totale');
+                if (noteTotaleInput) {
+                    noteTotaleInput.value = total.toFixed(1);
+                }
+            }
+            
+            // Écouteurs d'événements
+            if (typeEvaluationSelect) {
+                typeEvaluationSelect.addEventListener('change', toggleConditionalFields);
+                toggleConditionalFields(); // Exécuter au chargement
+            }
+            
+            if (grilleSelect) {
+                grilleSelect.addEventListener('change', function() {
+                    loadCriteres(this.value);
+                });
+                
+                // Charger les critères si une grille est déjà sélectionnée (en cas de rechargement de page)
+                if (grilleSelect.value && grilleSelect.value !== '') {
+                    loadCriteres(grilleSelect.value);
+                }
+            }
+        });
+    </script>
+{% endblock %}

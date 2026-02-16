@@ -1,0 +1,236 @@
+<div class="container py-4" style="margin-bottom: 5rem;">
+    {# 🔹 Messages flash #}
+    {% for type, messages in app.flashes %}
+        {% for message in messages %}
+            <div class="alert alert-{{ type }} alert-dismissible fade show shadow-sm text-center mb-4">
+                <i class="fa fa-exclamation-circle me-1"></i> {{ message|raw }}
+            </div>
+        {% endfor %}
+    {% endfor %}
+
+    {# 🔹 Déterminer le type de candidature #}
+    {% set type = null %}
+    {% if candidature.recrutement %}
+        {% set type = 'recrutement' %}
+    {% elseif candidature.formation %}
+        {% set type = 'formation' %}
+    {% elseif candidature.vae %}
+        {% set type = 'vae' %}
+    {% endif %}
+
+    {# 🔹 En-tête candidat #}
+    <div class="card shadow-sm border-0 mb-4">
+        <div class="card-body">
+            <div class="row align-items-center">
+                <div class="col-md-3 text-center border-end">
+                    <div class="mb-2 fs-4 text-primary">
+                        {% if candidature.sexe == 'MASCULIN' %}
+                            <i class="fa fa-male"></i>
+                        {% else %}
+                            <i class="fa fa-female text-danger"></i>
+                        {% endif %}
+                    </div>
+                    <div class="fw-bold text-uppercase">{{ candidature.nom }} {{ candidature.prenom }}</div>
+                    <div class="text-muted small">{{ candidature.dateNaissance ? candidature.dateNaissance|date('d/m/Y') : '' }}</div>
+
+                    {% set photo = candidature.pieceJointe|filter(p => p.type == 'PHOTO')|first %}
+                    {% set photoPath = photo and photo.chemin ? 'uploads/candidatures/' ~ candidature.numCandidature ~ '/' ~ (photo.chemin|split('/')|last) : '' %}
+                    <img class="border rounded-circle shadow-sm my-3" style="width: 130px; height: 130px; object-fit: cover;"
+                         src="{{ photoPath ? asset(photoPath) : 'https://daip.ci/public/image/user.png' }}"
+                         alt="Photo de {{ candidature.prenom }} {{ candidature.nom }}"
+                         onerror="this.src='https://daip.ci/public/image/user.png';">
+                    <div class="fw-bold text-primary">{{ candidature.numCandidature }}</div>
+                </div>
+
+                <div class="col-md-9">
+                    <div class="d-flex justify-content-between align-items-center">
+                        {% if candidature.metier is not empty %}
+                            <div class="fw-bold fs-5 text-primary">
+                                {{ candidature.metier.nom }}
+                            </div>
+                        {% endif %}
+                        {% set hasPiece = candidature.pieceJointe|filter(p => p.type == 'CNI')|length > 0 %}
+                        {% set hasExtrait = candidature.pieceJointe|filter(p => p.type == 'EXTRACT_NAISSANCE')|length > 0 %}
+                        {% set hasDiplome = candidature.pieceJointe|filter(p => p.type == 'DIPLOME')|length > 0 %}
+                        {% if not hasPiece or not hasExtrait or not hasDiplome %}
+                            <span class="badge bg-light text-danger border border-danger">Dossier Incomplet</span>
+                        {% endif %}
+                    </div>
+
+                    <hr class="my-3">
+
+                    <table class="table table-sm align-middle">
+                        <tbody>
+                        <tr>
+                            <td style="max-width: 300px">CNI ou Attestation d'identité</td>
+                            <td class="text-end">
+                                {% set piece = candidature.pieceJointe|filter(p => p.type == 'CNI')|first %}
+                                {% if piece and piece.chemin %}
+                                    <a href="{{ asset('uploads/candidatures/' ~ candidature.numCandidature ~ '/' ~ (piece.chemin|split('/')|last)) }}"
+                                       class="btn btn-outline-primary btn-sm" target="_blank">
+                                        <i class="fa fa-download"></i> Télécharger
+                                    </a>
+                                {% else %}
+                                    <span class="badge bg-light text-secondary border"><i class="fa fa-exclamation-triangle"></i> Non chargé</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Extrait de naissance / Jugement supplétif</td>
+                            <td class="text-end">
+                                {% set extrait = candidature.pieceJointe|filter(p => p.type == 'EXTRACT_NAISSANCE')|first %}
+                                {% if extrait and extrait.chemin %}
+                                    <a href="{{ asset('uploads/candidatures/' ~ candidature.numCandidature ~ '/' ~ (extrait.chemin|split('/')|last)) }}"
+                                       class="btn btn-outline-primary btn-sm" target="_blank">
+                                        <i class="fa fa-download"></i> Télécharger
+                                    </a>
+                                {% else %}
+                                    <span class="badge bg-light text-secondary border"><i class="fa fa-exclamation-triangle"></i> Non chargé</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Niveau d'étude / Diplôme requis</td>
+                            <td class="text-end">
+                                {% set diplome = candidature.pieceJointe|filter(p => p.type == 'DIPLOME')|first %}
+                                {% if diplome and diplome.chemin %}
+                                    <a href="{{ asset('uploads/candidatures/' ~ candidature.numCandidature ~ '/' ~ (diplome.chemin|split('/')|last)) }}"
+                                       class="btn btn-outline-primary btn-sm" target="_blank">
+                                        <i class="fa fa-download"></i> Télécharger
+                                    </a>
+                                {% else %}
+                                    <span class="badge bg-light text-secondary border"><i class="fa fa-exclamation-triangle"></i> Non chargé</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Fiche d'inscription</td>
+                            <td class="text-end">
+                                {% if candidature.numCandidature %}
+                                   
+                            <a href="{{ path('app_print_inscription', {'numero': candidature.numCandidature}) }}" class="btn btn-outline-success btn-sm" target="_blank">
+                                <i class="fa fa-print"></i> Imprimer la fiche d'inscription
+                            </a>
+                                {% else %}
+                                    <span class="badge bg-light text-secondary border"><i class="fa fa-exclamation-triangle"></i> Non disponible</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Convocation</td>
+                            <td class="text-end">
+                                {% if convocation is defined and convocation %}
+                                    <a href="{{ path('app_convocation_print', {'id': convocation.id}) }}" class="btn btn-outline-success btn-sm" target="_blank">
+                                        <i class="fa fa-print"></i> Imprimer la convocation
+                                    </a>
+                                {% else %}
+                                    <span class="badge bg-light text-secondary border"><i class="fa fa-exclamation-triangle"></i> Non disponible</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# 🔹 Informations personnelles #}
+    <div class="card shadow-sm border-0 mb-4">
+        <div class="card-header bg-light fw-bold text-primary">Informations personnelles</div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <div><strong>Nom :</strong><br>{{ candidature.nom }}</div>
+                    <div><strong>Prénom :</strong><br>{{ candidature.prenom }}</div>
+                    <div><strong>Sexe :</strong><br>{{ candidature.sexe }}</div>
+                    {% if candidature.sexe == 'FEMININ' and candidature.nomJeuneFille %}
+                        <div><strong>Nom de jeune fille :</strong><br>{{ candidature.nomJeuneFille }}</div>
+                    {% endif %}
+                </div>
+                <div class="col-md-4 mb-3">
+                    <div><strong>Date de naissance :</strong><br>{{ candidature.dateNaissance ? candidature.dateNaissance|date('d/m/Y') : '' }}</div>
+                    <div><strong>Lieu de naissance :</strong><br>{{ candidature.lieuNaissance }}</div>
+                    <div><strong>Situation matrimoniale :</strong><br>{{ candidature.situationMatrimoniale }}</div>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <div><strong>Adresse :</strong><br>{{ candidature.adresse }}</div>
+                    <div><strong>Contacts :</strong><br>{{ candidature.contacts }}</div>
+                    {% if candidature.email %}
+                        <div><strong>Email :</strong><br>{{ candidature.email }}</div>
+                    {% endif %}
+                    <div><strong>Numéro CMU :</strong><br>{{ candidature.numCmu }}</div>
+                    <div><strong>Numéro pièce :</strong><br>{{ candidature.numPiece }}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# 🔹 Niveau d'étude #}
+    <div class="card shadow-sm border-0 mb-4">
+        <div class="card-header bg-light fw-bold text-primary">Niveau d'étude</div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-4"><strong>Niveau :</strong><br>{{ candidature.niveauEtude ? candidature.niveauEtude.libelle : '' }}</div>
+                <div class="col-md-4"><strong>Diplôme :</strong><br>{{ candidature.diplome ? candidature.diplome.libelle : '' }}</div>
+                <div class="col-md-4"><strong>Métier :</strong><br>{{ candidature.metier ? candidature.metier.nom : '' }}</div>
+            </div>
+        </div>
+    </div>
+
+    {# 🔹 Situation professionnelle - MASQUÉE pour les recrutements #}
+    {% if type != 'recrutement' %}
+    <div class="card shadow-sm border-0 mb-4">
+        <div class="card-header bg-light fw-bold text-primary">Situation professionnelle</div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <div><strong>Situation professionnelle :</strong><br>{{ candidature.situationpro }}</div>
+                    <div><strong>Expérience :</strong><br>{{ candidature.experience }}</div>
+                    <div><strong>Titre professionnel :</strong><br>{{ candidature.titrepro }}</div>
+                    <div><strong>Entreprise :</strong><br>{{ candidature.entreprise }}</div>
+                    <div><strong>Direction :</strong><br>{{ candidature.direction }}</div>
+                    <div><strong>Fonction :</strong><br>{{ candidature.fonction }}</div>
+                </div>
+                <div class="col-md-6">
+                    <div><strong>Contrat :</strong><br>{{ candidature.contrat }}</div>
+                    <div><strong>Lieu entreprise :</strong><br>{{ candidature.lieuentreprise }}</div>
+                    <div><strong>Référence entreprise :</strong><br>{{ candidature.refentreprise }}</div>
+                    <div><strong>Apprenti formé :</strong><br>{{ candidature.apprentiforme }}</div>
+                    <div><strong>Apprenti recruté :</strong><br>{{ candidature.apprentirecrute }}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    {# 🔹 Étude du dossier #}
+    {% if is_granted('ROLE_ADMIN') %}
+    <div class="card shadow-sm border-0 mb-4">
+        <div class="card-header bg-light fw-bold text-primary">Statut globale du dossier</div>
+        <div class="card-body">
+            <div class="mb-2">
+                <strong>Statut du dossier :</strong>
+                <span class="badge bg-{{ candidature.statut == 'VALIDEE' ? 'success' : (candidature.statut == 'REJETEE' ? 'danger' : 'warning') }}">
+                    {{ candidature.statut }}
+                </span>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    {# 🔹 Boutons d'action #}
+    {% if not hide_actions is defined or hide_actions == false %}
+    <div class="text-center mt-4">
+        <a href="{{ path('app_candidature_index') }}" class="btn btn-outline-secondary me-2">
+            <i class="fa fa-arrow-left"></i> Retour à la liste
+        </a>
+        {% if not is_granted('ROLE_JURY') %}
+        <a href="{{ path('app_candidature_edit', {'id': candidature.id}) }}" class="btn btn-primary me-2">
+            <i class="fa fa-edit"></i> Modifier la candidature
+        </a>
+        {% endif %}
+
+    </div>
+    {% endif %}
+</div>

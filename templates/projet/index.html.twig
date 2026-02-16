@@ -1,0 +1,71 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Projet index{% endblock %}
+
+{% block page_content %}
+    <div class="container mt-5 justify-content-center">
+    <h1 class="mb-4">Liste des Projets</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Nom</th>
+                <th>Description</th>
+                <th>Status</th>
+                <th>DateDebut</th>
+                <th>DateFin</th>
+                <th>Image</th>
+                <th>Logo</th>
+                <th>NumProjet</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for projet in projets %}
+            <tr>
+                <td>{{ projet.id }}</td>
+                <td>{{ projet.nom }}</td>
+                <td>{{ projet.description }}</td>
+                <td>{{ projet.status }}</td>
+                <td>{{ projet.dateDebut ? projet.dateDebut|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ projet.dateFin ? projet.dateFin|date('Y-m-d H:i:s') : '' }}</td>
+                <td>
+                    {% if projet.image %}
+                        <img src="{{ asset('uploads/projet/images/' ~ projet.image) }}" alt="Image du projet" style="max-width: 100px; max-height: 100px;">
+                    {% else %}
+                        Pas d'image
+                    {% endif %}
+                </td>
+                <td>
+                    {% if projet.logo %}
+                        <img src="{{ asset('uploads/projet/logo/' ~ projet.logo) }}" alt="Logo du projet" style="max-width: 50px; max-height: 50px;">
+                    {% else %}
+                        Pas de logo
+                    {% endif %}
+                </td>
+                <td>{{ projet.numProjet }}</td>
+                <td>
+                    <a href="{{ path('app_projet_edit', {'id': projet.id}) }}"  class="btn btn-warning btn-lg mt-1">Modifier</a>
+                     <form method="post" action="{{ path('app_projet_delete', {'id': projet.id}) }}" class="d-inline" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce projet ?');">
+                        <input type="hidden" name="_method" value="DELETE">
+                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ projet.id) }}">
+                        <button class="btn btn-danger btn-lg mt-1">Supprimer</button>
+                    </form>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="10">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_projet_new') }}" class="btn btn-primary btn-lg mt-1">
+    Nouveau
+</a>
+    </div>
+
+
+{% endblock %}

@@ -1,0 +1,80 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des Établissements - DAIP{% endblock %}
+
+{% block body %}
+    <div class="page-content bg-white">
+        <!-- Banner  -->
+        <div class="dlab-bnr-inr style-1 bg-parallax" style="background-image: url({{ asset('front/images/banner/bnr1.jpg') }}); background-size:cover; background-position:center;">
+            <div class="container">
+                <div class="dlab-bnr-inr-entry">
+                    <h1 class="text-white">Liste des Établissements</h1>
+                    <div class="dlab-separator bg-primary"></div>
+                </div>
+            </div>
+        </div>
+        <!-- Banner End -->
+
+        <!-- Content -->
+        <section class="content-inner-1">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="widget widget_services">
+                            <div class="row">
+                                {% if pagination is not empty %}
+                                    {% for etablissement in pagination %}
+                                        <div class="col-lg-4 col-md-6 col-sm-6 m-b30">
+                                            <div class="dlab-box blog-grid">
+                                                <div class="dlab-info p-a20 border-1">
+                                                    <h4 class="dlab-title m-b10">
+                                                        <a href="{{ path('app_etablissement_show', {'id': etablissement.id}) }}">
+                                                            {{ etablissement.nom }}
+                                                            {% if etablissement.sigle %}
+                                                                <small>({{ etablissement.sigle }})</small>
+                                                            {% endif %}
+                                                        </a>
+                                                    </h4>
+                                                    {% if etablissement.type %}
+                                                        <div class="dlab-meta m-b15">
+                                                            <ul>
+                                                                <li class="post-category">{{ etablissement.type }}</li>
+                                                            </ul>
+                                                        </div>
+                                                    {% endif %}
+                                                    {% if etablissement.ville %}
+                                                        <p class="m-b15">
+                                                            <i class="fas fa-map-marker-alt text-primary"></i> 
+                                                            {{ etablissement.ville }}
+                                                        </p>
+                                                    {% endif %}
+                                                    <a href="{{ path('app_etablissement_show', {'id': etablissement.id}) }}" class="btn btn-primary btn-sm">
+                                                        En savoir plus <i class="fas fa-arrow-right"></i>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                    
+                                    <!-- Pagination -->
+                                    <div class="col-12">
+                                        <div class="pagination-bx">
+                                            {{ knp_pagination_render(pagination) }}
+                                        </div>
+                                    </div>
+                                {% else %}
+                                    <div class="col-12">
+                                        <div class="alert alert-info">
+                                            Aucun établissement n'a été trouvé.
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- Content End -->
+    </div>
+{% endblock %}

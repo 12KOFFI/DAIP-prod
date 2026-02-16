@@ -1,0 +1,53 @@
+
+<header class="text-white" style="background-color: #CC5500; margin-bottom: 8rem;">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-orange py-3">
+        <div class="container">
+            <div class="d-flex align-items-center justify-content-between w-100 gap-3">
+                <a class="navbar-brand d-flex align-items-center gap-2" href="{{ path('app_home') }}">
+                    <img src="{{ asset('front/image/logo.png') }}" alt="Logo" height="40" class="d-inline-block align-text-top">
+                    <span class="fw-semibold text-uppercase letter-spacing-1">Acceuil</span>
+                </a>
+                <button class="navbar-toggler ms-3" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Basculer la navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+            </div>
+
+            <div class="collapse navbar-collapse mt-3 mt-lg-0 w-100" id="navbarNav">
+                <div class="d-lg-flex align-items-center justify-content-between w-100 gap-4">
+                    <ul class="navbar-nav flex-column flex-lg-row align-items-center align-items-lg-start gap-2 gap-lg-4 mb-3 mb-lg-0">
+                        <li class="nav-item">
+                            <a class="nav-link active px-3 fw-semibold d-flex align-items-center gap-2" href="{{ path('app_liste_projet') }}">
+                                <i class="bi bi-grid-1x2-fill fs-5"></i>
+                                <span>NOS OFFRES DISPONIBLES</span>
+                            </a>
+                        </li>
+                        <!-- Ajoutez d'autres liens de navigation ici -->
+                    </ul>
+                    <div class="d-flex justify-content-center justify-content-lg-end flex-wrap gap-3">
+                        {% if app.user %}
+                            <div class="dropdown">
+                                <button class="btn btn-outline-light dropdown-toggle d-flex align-items-center gap-2" type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="bi bi-person-badge fs-5"></i>
+                                    {{ app.user.email }}
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-end">
+                                    <li><a class="dropdown-item" href="{{ path('app_profile') }}">Mon profil</a></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li><a class="dropdown-item" href="{{ path('app_logout') }}">Déconnexion</a></li>
+                                </ul>
+                            </div>
+                        {% else %}
+                            <a href="{{ path('app_login') }}" class="btn btn-outline-light d-inline-flex align-items-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person-circle me-2" viewBox="0 0 16 16">
+                                    <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"/>
+                                    <path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8zm8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1z"/>
+                                </svg>
+                                <span>Mon espace</span>
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+</header>

@@ -1,0 +1,53 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Accueil - Mon Application{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-lg-12 text-center">
+            <h1 class="display-4 mb-4">Bienvenue sur Mon Application</h1>
+            <p class="lead mb-5">Plateforme de gestion de projets et de recrutement</p>
+            
+            <div class="row mt-5">
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">Projets</h5>
+                            <p class="card-text">Gérez vos projets et suivez leur avancement.</p>
+                            <a href="{{ path('app_projet_index') }}" class="btn btn-primary">Voir les projets</a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">Recrutements</h5>
+                            <p class="card-text">Consultez les offres de recrutement disponibles.</p>
+                            <a href="{{ path('app_recrutement_index') }}" class="btn btn-primary">Voir les recrutements</a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">Formations</h5>
+                            <p class="card-text">Découvrez nos formations disponibles.</p>
+                            <a href="{{ path('app_formation_index') }}" class="btn btn-primary">Voir les formations</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            {% if not app.user %}
+            <div class="mt-5">
+                <a href="{{ path('app_login') }}" class="btn btn-lg btn-primary me-3">Se connecter</a>
+                <a href="{{ path('app_register') }}" class="btn btn-lg btn-outline-primary">S'inscrire</a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

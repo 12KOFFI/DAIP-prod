@@ -1,0 +1,144 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Dashboard Prospection{% endblock %}
+
+{% block page_content %}
+    <div class="d-flex justify-content-between align-items-center flex-wrap grid-margin">
+        <div>
+            <h4 class="mb-1">Dashboard Prospection</h4>
+            <p class="text-muted mb-0">Vue globale des entreprises prospectées et des postes d'apprentissage.</p>
+            {% set selectedCfa = selectedCfaId ? cfas|filter(c => c.id == selectedCfaId)|first : null %}
+            {% set totalEffectifs = cfas|reduce((sum, c) => sum + c.effectifs, 0) %}
+            <p class="text-muted mb-0">
+                <i class="fas fa-users me-2 text-primary "></i>
+                <strong class="fs-4">Effectifs à prospecter :</strong>
+                <span class="fs-4">{{ selectedCfa ? selectedCfa.effectifs : totalEffectifs }}</span>
+            </p>
+        </div>
+        
+    </div>
+
+    <div class="card mb-4">
+        <div class="card-body">
+            <form method="get" action="{{ path('app_dashboard_prospection') }}" class="row g-3 align-items-end">
+                <div class="col-12 col-md-4">
+                    <label class="form-label">CFA</label>
+                    <select name="cfa" class="form-select">
+                        <option value="">Tous les établissements</option>
+                        {% for cfa in cfas %}
+                            <option value="{{ cfa.id }}" {{ selectedCfaId == cfa.id ? 'selected' : '' }}>
+                                {{ cfa.nomEtablissement }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-12 col-md-3">
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary flex-fill">Appliquer</button>
+                        <a href="{{ path('app_dashboard_prospection') }}" class="btn btn-outline-secondary flex-fill">Réinitialiser</a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="row mb-4">
+        <div class="col-12 col-md-6 mb-3">
+            <div class="card h-100">
+                <div class="card-body text-center">
+                    <div class="text-muted">Entreprises prospectées</div>
+                    <div class="fs-3 fw-bold">{{ kpis.entreprises|default(0) }}</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-md-6 mb-3">
+            <div class="card h-100">
+                <div class="card-body text-center">
+                    <div class="text-muted">Total postes d'apprentissage</div>
+                    <div class="fs-3 fw-bold text-success">{{ kpis.postes|default(0) }}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mb-4">
+        <div class="col-12 col-lg-12 mb-3"> {# Changé de col-lg-6 à col-lg-12 #}
+            <div class="card h-100">
+                <div class="card-body">
+                    <h6 class="card-title">Postes par entreprise (Top 8)</h6>
+                    <div class="table-responsive">
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Entreprise</th>
+                                    <th class="text-end">Postes</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for row in postesByEntreprise %}
+                                    <tr>
+                                        <td>{{ row.structure_nom }}</td>
+                                        <td class="text-end">{{ row.total_postes }}</td>
+                                    </tr>
+                                {% else %}
+                                    <tr>
+                                        <td colspan="2" class="text-center text-muted">Aucune donnée</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {# Supprimé: La carte "Postes par filière" #}
+    </div>
+
+    <div class="card">
+        <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h6 class="card-title mb-0">Entreprises prospectées</h6>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Entreprise</th>
+                            <th>Ville</th>
+                            <th>Secteur</th>
+                            
+                            <th class="text-end">Postes</th>
+                            <th class="text-end">Métiers</th>
+                            <th>Dernière prospection</th>
+                            <th>Utilisateur</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for row in entrepriseTable %}
+                            <tr>
+                                <td>{{ row.structure_nom }}</td>
+                                <td>{{ row.structure_ville }}</td>
+                                <td>{{ row.structure_secteur }}</td>
+                                
+                                <td class="text-end">{{ row.total_postes }}</td>
+                                <td>{{ row.metiers_noms ?? '-' }}</td>
+                                <td>{{ row.last_date ? row.last_date|date('d/m/Y') : '-' }}</td>
+                                <td>{{ row.user_email ?? '-' }}</td>
+                                <td class="text-end">
+                                    <a href="{{ path('app_dashboard_prospection_detail', {'id': row.structure_id}) }}" class="btn btn-outline-primary btn-sm">
+                                        Voir détail
+                                    </a>
+                                </td>
+                            </tr>
+                        {% else %}
+                            <tr>
+                                <td colspan="9" class="text-center text-muted">Aucune entreprise prospectée</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}

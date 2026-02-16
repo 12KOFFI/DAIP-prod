@@ -1,0 +1,117 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des Métiers{% endblock %}
+
+{% block page_content %}
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Liste des Métiers</h1>
+        <a href="{{ path('app_metier_new') }}" class="btn btn-primary">
+            <i class="fas fa-plus me-2"></i>Nouveau métier
+        </a>
+    </div>
+
+    {% if metiers is empty %}
+        <div class="alert alert-info">
+            <i class="fas fa-info-circle me-2"></i>Aucun métier n'a été trouvé.
+        </div>
+    {% else %}
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th style="width: 100px;">Image</th>
+                        <th>Nom</th>
+                        <th>Description</th>
+                        <th>Niveau d'étude</th>
+                        <th>Secteur</th>
+                        <th class="text-end">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for metier in metiers %}
+                        <tr>
+                            <td class="text-center">
+                                {% if metier.image %}
+                                    <img src="{{ asset('uploads/metiers/' ~ metier.image) }}" 
+                                         alt="{{ metier.nom }}"
+                                         class="img-thumbnail"
+                                         style="width: 80px; height: 60px; object-fit: cover;">
+                                {% else %}
+                                    <span class="text-muted">-</span>
+                                {% endif %}
+                            </td>
+                            <td class="fw-semibold">{{ metier.nom }}</td>
+                            <td>
+                                {% if metier.description %}
+                                    <span class="text-muted">
+                                        {{ metier.description|length > 100 ? metier.description|slice(0, 100) ~ '...' : metier.description }}
+                                    </span>
+                                {% else %}
+                                    <span class="text-muted fst-italic">Aucune description</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if metier.niveauEtude %}
+                                    <span class="badge bg-info-subtle text-dark">{{ metier.niveauEtude.libelle }}</span>
+                                {% else %}
+                                    <span class="text-muted">—</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if metier.secteur %}
+                                    <span class="badge bg-secondary-subtle text-dark">{{ metier.secteur.nom }}</span>
+                                {% else %}
+                                    <span class="text-muted">—</span>
+                                {% endif %}
+                            </td>
+                            <td class="text-end">
+                                <div class="d-flex gap-2 justify-content-end">
+                                    <a href="{{ path('app_metier_edit', {'id': metier.id}) }}" 
+                                       class="btn btn-primary btn-sm"
+                                       data-bs-toggle="tooltip" 
+                                       title="Modifier">
+                                        <i class="fas fa-edit me-1"></i>Modifier
+                                    </a>
+                                    <form method="post" 
+                                          action="{{ path('app_metier_delete', {'id': metier.id}) }}" 
+                                          class="d-inline"
+                                          onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce métier ?');">
+                                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ metier.id) }}">
+                                        <button type="submit" 
+                                                class="btn btn-danger btn-sm"
+                                                data-bs-toggle="tooltip" 
+                                                title="Supprimer">
+                                            <i class="fas fa-trash-alt me-1"></i>Supprimer
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% endif %}
+
+    <style>
+        .table th, .table td {
+            vertical-align: middle;
+        }
+        .table-hover tbody tr:hover {
+            background-color: rgba(75, 73, 172, 0.05);
+        }
+        .btn-group .btn {
+            padding: 0.25rem 0.5rem;
+        }
+    </style>
+
+    <script>
+        // Initialisation des tooltips
+        document.addEventListener('DOMContentLoaded', function() {
+            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+            var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl);
+            });
+        });
+    </script>
+{% endblock %}

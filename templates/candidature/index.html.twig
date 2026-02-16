@@ -1,0 +1,224 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des Candidatures{% endblock %}
+
+{% block page_content %}
+    {# Affichage des messages flash #}
+    {% for type, messages in app.flashes %}
+        {% for message in messages %}
+            <div class="alert alert-{{ type == 'error' ? 'danger' : type }} alert-dismissible fade show" role="alert">
+                {{ message|raw }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
+    {% endfor %}
+    
+    <h1 class="mb-4">Liste des Candidatures</h1>
+
+    {# FILTRES #}
+    {% if is_granted('ROLE_ADMIN') %}
+    <div class="card mb-4">
+        <div class="card-body">
+            <form method="get" class="row g-3">
+                <div class="col-md-4">
+                    <label for="type" class="form-label">Type</label>
+                    <select name="type" id="type" class="form-select" onchange="this.form.submit()">
+                        <option value="">Tous les types</option>
+                        <option value="recrutement" {{ current_type == 'recrutement' ? 'selected' : '' }}>Recrutement</option>
+                        <option value="formation" {{ current_type == 'formation' ? 'selected' : '' }}>Formation</option>
+                        <option value="vae" {{ current_type == 'vae' ? 'selected' : '' }}>VAE</option>
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label for="nom" class="form-label">Nom</label>
+                    <select name="nom" id="nom" class="form-select" onchange="this.form.submit()">
+                        <option value="">Sélectionnez d'abord un type</option>
+                        {% if current_type == 'recrutement' %}
+                            <option value="">Tous les recrutements</option>
+                            {% for recrutement in recrutements %}
+                                <option value="{{ recrutement.libelle }}" {{ current_nom == recrutement.libelle ? 'selected' : '' }}>
+                                    {{ recrutement.libelle }}
+                                </option>
+                            {% endfor %}
+                        {% elseif current_type == 'formation' %}
+                            <option value="">Toutes les formations</option>
+                            {% for formation in formations %}
+                                <option value="{{ formation.nom }}" {{ current_nom == formation.nom ? 'selected' : '' }}>
+                                    {{ formation.nom }}
+                                </option>
+                            {% endfor %}
+                        {% elseif current_type == 'vae' %}
+                            <option value="">Toutes les VAE</option>
+                            {% for vae in vaes %}
+                                <option value="{{ vae.nom }}" {{ current_nom == vae.nom ? 'selected' : '' }}>
+                                    {{ vae.nom }}
+                                </option>
+                            {% endfor %}
+                        {% else %}
+                            <option value="">Sélectionnez d'abord un type</option>
+                        {% endif %}
+                    </select>
+                </div>
+                <div class="col-md-4 d-flex align-items-end">
+                    <button type="submit" class="btn btn-primary me-2">Filtrer</button>
+                    <a href="{{ path('app_candidature_index') }}" class="btn btn-outline-secondary">Réinitialiser</a>
+                </div>
+            </form>
+        </div>
+    </div>
+    {% elseif is_granted('ROLE_JURY') %}
+    <div class="card mb-4">
+        <div class="card-body">
+            <form method="get" class="row g-3 align-items-end">
+                <input type="hidden" name="type" value="{{ current_type }}">
+                <input type="hidden" name="nom" value="{{ current_nom }}">
+
+                <div class="col-md-6">
+                    <label for="jury_status" class="form-label">Statut de la candidature</label>
+                    <select name="jury_status" id="jury_status" class="form-select">
+                        <option value="">Tous les statuts</option>
+                        {% for statusKey, statusLabel in jury_status_options %}
+                            <option value="{{ statusKey }}" {{ current_jury_status == statusKey ? 'selected' : '' }}>
+                                {{ statusLabel }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="col-md-6">
+                    <label for="jury_evaluation" class="form-label">Type d'évaluation</label>
+                    <select name="jury_evaluation" id="jury_evaluation" class="form-select">
+                        <option value="">Tous les types</option>
+                        {% for evalKey, evalLabel in jury_evaluation_types %}
+                            <option value="{{ evalKey }}" {{ current_jury_evaluation == evalKey ? 'selected' : '' }}>
+                                {{ evalLabel }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="col-12 d-flex align-items-center">
+                    <button type="submit" class="btn btn-primary me-2">Filtrer</button>
+                    <a href="{{ path('app_candidature_index') }}" class="btn btn-outline-secondary">Réinitialiser</a>
+                </div>
+            </form>
+        </div>
+    </div>
+    {% endif %}
+
+    {# TABLEAU DES CANDIDATURES #}
+    <div class="card">
+        <div class="card-body">
+            <h6 class="card-title">Candidatures</h6>
+            <div class="table-responsive">
+                <table class="table table-hover table-striped">
+                    <thead>
+                        <tr>
+                            <th>Id</th>
+                            <th>Nom</th>
+                            <th>Prenom</th>
+                            <th>Email</th>
+                            <th>Type</th>
+                            <th>Nom du projet</th>
+                            <th>DateCandidature</th>
+                            <th>Statut</th>
+                            <th>NumCandidature</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="align-middle">
+                    {% for candidature in candidatures %}
+                        <tr>
+                            <td>{{ candidature.id }}</td>
+                            <td>{{ candidature.nom }}</td>
+                            <td>{{ candidature.prenom }}</td>
+                            <td>{{ candidature.email }}</td>
+                            <td>
+                                {% if candidature.recrutement %}
+                                    <span class="badge bg-primary">Recrutement</span>
+                                {% elseif candidature.formation %}
+                                    <span class="badge bg-success">Formation</span>
+                                {% elseif candidature.vae %}
+                                    <span class="badge bg-info">VAE</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if candidature.recrutement %}
+                                    {{ candidature.recrutement.libelle }}
+                                {% elseif candidature.formation %}
+                                    {{ candidature.formation.nom }}
+                                {% elseif candidature.vae %}
+                                    {{ candidature.vae.nom }}
+                                {% endif %}
+                            </td>
+                            <td>{{ candidature.dateCandidature ? candidature.dateCandidature|date('Y-m-d H:i:s') : '' }}</td>
+                            <td>
+                                {% set statut = candidature.statut|lower %}
+                                {% if 'acceptee' in statut %}
+                                    <span class="badge bg-success">
+                                        <i class="fas fa-check-circle me-1"></i> {{ candidature.statut }}
+                                    </span>
+                                {% elseif 'refusee' in statut %}
+                                    <span class="badge bg-danger">
+                                        <i class="fas fa-times-circle me-1"></i> {{ candidature.statut }}
+                                    </span>
+                                {% elseif 'en_attente' in statut or candidature.statut is null %}
+                                    <span class="badge bg-warning text-dark">
+                                        <i class="fas fa-clock me-1"></i> {{ candidature.statut ?? 'EN_ATTENTE' }}
+                                    </span>
+                                {% else %}
+                                    <span class="badge bg-secondary">
+                                        {{ candidature.statut }}
+                                    </span>
+                                {% endif %}
+                            </td>
+                            <td>{{ candidature.numCandidature }}</td>
+                            <td>
+                                <div class="d-flex flex-column flex-md-row gap-2 align-items-stretch align-items-md-center">
+                                    <a href="{{ path('app_candidature_show', {'id': candidature.id}) }}" 
+                                       class="btn btn-primary btn-sm" 
+                                       title="Voir les détails">
+                                        <i class="fas fa-eye me-1"></i>Voir
+                                    </a>
+                                    {% if not is_granted('ROLE_JURY') %}
+                                        <a href="{{ path('app_candidature_edit', {'id': candidature.id}) }}" 
+                                           class="btn btn-warning btn-sm" 
+                                           title="Modifier la candidature">
+                                            <i class="fas fa-edit me-1"></i>Modifier
+                                        </a>
+                                    {% endif %}
+                                    {% if is_granted('ROLE_ADMIN') %}
+                                        <form method="post" 
+                                              action="{{ path('app_candidature_delete', {'id': candidature.id}) }}" 
+                                              class="d-inline" 
+                                              onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette candidature ?');">
+                                            <input type="hidden" name="_method" value="DELETE">
+                                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ candidature.id) }}">
+                                            <button class="btn btn-danger btn-sm w-100" title="Supprimer la candidature">
+                                                <i class="fas fa-trash me-1"></i>Supprimer
+                                            </button>
+                                        </form>
+                                    {% endif %}
+                                </div>
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="10" class="text-center py-4">
+                                <div class="text-muted">Aucune candidature trouvée</div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    {% if not is_granted('ROLE_ADMIN') and not is_granted('ROLE_JURY') %}
+    <a href="{{ path('app_liste_projet') }}" class="btn btn-primary btn-lg mt-1">
+        <i class="fas fa-briefcase me-2"></i>Voir les offres
+    </a>
+    {% endif %}
+
+{% endblock %}

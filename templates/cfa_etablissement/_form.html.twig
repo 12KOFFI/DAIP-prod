@@ -1,0 +1,229 @@
+{% extends 'base.html.twig' %}
+
+{% block page_content %}
+
+<div class="row mt-5 justify-content-center">
+    <div class="col-md-8 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <h6 class="card-title">{{ title|default('CfaEtablissement') }}</h6>
+
+                {{ form_start(form, {'attr': {'class': 'forms-sample'}}) }}
+
+                <div class="row">
+                    <div class="col-md-6">
+                        {{ form_row(form.nomEtablissement) }}
+                    </div>
+                    <div class="col-md-6">
+                        {{ form_row(form.nomChefEtablissement) }}
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        {{ form_row(form.email) }}
+                    </div>
+                    <div class="col-md-6">
+                        {{ form_row(form.numcfaEtablissement) }}
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12">
+                        {{ form_row(form.region) }}
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-12">
+                        <div class="mb-3">
+                            <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-2">
+                                <label class="form-label fw-semibold mb-0">Métiers</label>
+                                <button type="button" id="add-metier" class="btn btn-primary btn-sm">
+                                    <i class="link-icon" data-feather="plus"></i> Ajouter un métier
+                                </button>
+                            </div>
+                            <small class="text-muted d-block mb-2">Recherchez un métier, puis définissez l'effectif correspondant.</small>
+                            <div class="input-group mb-3">
+                                <span class="input-group-text"><i class="link-icon" data-feather="search"></i></span>
+                                <input type="text" id="metier-search" class="form-control" placeholder="Filtrer les métiers par nom...">
+                            </div>
+                            <div id="cfa-metiers-container" class="p-3 border rounded bg-light" data-prototype="{{ form_widget(form.cfaMetiers.vars.prototype)|e('html_attr') }}" data-index="{{ form.cfaMetiers|length }}">
+                                {% for cfaMetier in form.cfaMetiers %}
+                                    <div class="cfa-metier-item mb-3 p-3 border rounded bg-white">
+                                        <div class="row g-2 align-items-end">
+                                            <div class="col-md-6">
+                                                <label class="form-label text-muted small mb-1">Métier</label>
+                                                {{ form_widget(cfaMetier.metier, {'attr': {'class': 'form-select metier-select'}}) }}
+                                                {{ form_errors(cfaMetier.metier) }}
+                                            </div>
+                                            <div class="col-md-4">
+                                                <label class="form-label text-muted small mb-1">Effectif</label>
+                                                {{ form_widget(cfaMetier.effectif, {'attr': {'class': 'form-control'}}) }}
+                                                {{ form_errors(cfaMetier.effectif) }}
+                                            </div>
+                                            <div class="col-md-2 d-grid">
+                                                <button type="button" class="btn btn-outline-danger btn-sm remove-metier">
+                                                    <i class="link-icon" data-feather="trash-2"></i> Supprimer
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-12">
+                        {{ form_row(form.users) }}
+                    </div>
+                </div>
+
+                <div class="row mt-4">
+                    <div class="col-12">
+                        <button type="reset" class="btn btn-secondary">Cancel</button>
+                        <button type="submit" class="btn btn-primary me-2">
+                            {{ button_label|default('Save') }}
+                        </button>
+                    </div>
+                </div>
+
+                {{ form_end(form) }}
+            </div>
+        </div>
+    </div>
+</div>
+    <a href="{{ path('app_cfa_etablissement_index') }}" class="btn btn-secondary">Retour à la liste</a>
+
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const container = document.getElementById('cfa-metiers-container');
+            const addButton = document.getElementById('add-metier');
+            
+            if (!container || !addButton) return;
+            
+            let index = parseInt(container.dataset.index) || 0;
+            
+            // Fonction pour ajouter un nouveau métier
+            addButton.addEventListener('click', function() {
+                const prototype = container.dataset.prototype;
+                const newForm = prototype.replace(/__name__/g, index);
+                
+                // Créer un élément temporaire pour parser le HTML
+                const temp = document.createElement('div');
+                temp.innerHTML = newForm;
+                
+                const wrapper = document.createElement('div');
+                wrapper.classList.add('cfa-metier-item', 'mb-3', 'p-3', 'border', 'rounded', 'bg-white');
+                
+                // Créer la structure HTML
+                const row = document.createElement('div');
+                row.className = 'row g-2 align-items-end';
+                
+                // Colonne métier
+                const colMetier = document.createElement('div');
+                colMetier.className = 'col-md-6';
+                const metierField = temp.querySelector('[id*="metier"]');
+                if (metierField) {
+                    metierField.classList.add('form-select', 'metier-select');
+                    const metierLabel = document.createElement('label');
+                    metierLabel.className = 'form-label text-muted small mb-1';
+                    metierLabel.textContent = 'Métier';
+                    colMetier.appendChild(metierLabel);
+                    colMetier.appendChild(metierField);
+                }
+                
+                // Colonne effectif
+                const colEffectif = document.createElement('div');
+                colEffectif.className = 'col-md-4';
+                const effectifField = temp.querySelector('[id*="effectif"]');
+                if (effectifField) {
+                    effectifField.classList.add('form-control');
+                    const effectifLabel = document.createElement('label');
+                    effectifLabel.className = 'form-label text-muted small mb-1';
+                    effectifLabel.textContent = 'Effectif';
+                    colEffectif.appendChild(effectifLabel);
+                    colEffectif.appendChild(effectifField);
+                }
+                
+                // Colonne bouton supprimer
+                const colButton = document.createElement('div');
+                colButton.className = 'col-md-2 d-grid';
+                colButton.innerHTML = `
+                    <button type="button" class="btn btn-outline-danger btn-sm remove-metier">
+                        <i class="link-icon" data-feather="trash-2"></i> Supprimer
+                    </button>
+                `;
+                
+                row.appendChild(colMetier);
+                row.appendChild(colEffectif);
+                row.appendChild(colButton);
+                wrapper.appendChild(row);
+                
+                container.appendChild(wrapper);
+                index++;
+                container.dataset.index = index;
+                
+                // Réinitialiser les icônes Feather
+                if (typeof feather !== 'undefined') {
+                    feather.replace();
+                }
+
+                if (typeof filterMetierSelects === 'function') {
+                    filterMetierSelects();
+                }
+            });
+            
+            // Fonction pour supprimer un métier
+            container.addEventListener('click', function(e) {
+                if (e.target.classList.contains('remove-metier') || e.target.closest('.remove-metier')) {
+                    const button = e.target.classList.contains('remove-metier') ? e.target : e.target.closest('.remove-metier');
+                    const item = button.closest('.cfa-metier-item');
+                    if (item) {
+                        item.remove();
+                    }
+                }
+            });
+
+            // ── Filtre automatique des métiers ──
+            const searchInput = document.getElementById('metier-search');
+            let filterMetierSelects = null;
+            if (searchInput) {
+                function normalize(str) {
+                    return (str || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim();
+                }
+
+                filterMetierSelects = function() {
+                    const query = normalize(searchInput.value);
+                    const selects = container.querySelectorAll('select.metier-select, select[id*="metier"]');
+
+                    selects.forEach(function(select) {
+                        const selectedValue = select.value;
+                        Array.from(select.options).forEach(function(option) {
+                            if (!option.value) {
+                                option.style.display = '';
+                                return;
+                            }
+                            const text = normalize(option.textContent);
+                            if (query.length === 0 || text.includes(query) || option.value === selectedValue) {
+                                option.style.display = '';
+                            } else {
+                                option.style.display = 'none';
+                            }
+                        });
+                    });
+                };
+
+                searchInput.addEventListener('input', filterMetierSelects);
+                filterMetierSelects();
+            }
+        });
+    </script>
+{% endblock %}
+

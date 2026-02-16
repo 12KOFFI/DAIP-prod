@@ -1,0 +1,63 @@
+<nav class="navbar">
+	<div class="navbar-content">
+		<div class="logo-mini-wrapper">
+			<img src="{{ asset('assets/templateNEW/images/logo-mini-light.png') }}" class="logo-mini logo-mini-light" alt="logo">
+			<img src="{{ asset('assets/templateNEW/images/logo-mini-dark.png') }}" class="logo-mini logo-mini-dark" alt="logo">
+		</div>
+		<form class="search-form">
+			<div class="input-group">
+				<div class="input-group-text">
+					<i data-lucide="search"></i>
+				</div>
+				<input type="text" class="form-control" id="navbarForm" placeholder="Search here...">
+			</div>
+		</form>
+		<ul class="navbar-nav ms-auto align-items-center">
+            {% if app.user %}
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <div class="avatar me-2">
+                        <i data-lucide="user" class="rounded-circle" style="width: 32px; height: 32px; padding: 6px; background: rgba(var(--bs-primary-rgb), 0.1);"></i>
+                    </div>
+                    <span class="d-none d-md-inline">{{ app.user.email }}</span>
+                </a>
+                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                    <li><a class="dropdown-item" href="{{ path('app_profile') }}">
+                        <i data-lucide="user" class="me-2" style="width: 16px; height: 16px;"></i> Mon Profil
+                    </a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li>
+                        <a class="dropdown-item text-danger" href="{{ path('app_logout') }}">
+                            <i data-lucide="log-out" class="me-2" style="width: 16px; height: 16px;"></i> Déconnexion
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            {% else %}
+            <li class="nav-item">
+                <a href="{{ path('app_login') }}" class="nav-link">
+                    <i data-lucide="log-in" class="me-1"></i> Connexion
+                </a>
+            </li>
+            {% endif %}
+            <li class="theme-switcher-wrapper nav-item">
+				<input type="checkbox" value="" id="theme-switcher">
+				<label for="theme-switcher">
+					<div class="box">
+						<div class="ball"></div>
+						<div class="icons">
+							<i data-lucide="sun"></i>
+							<i data-lucide="moon"></i>
+						</div>
+					</div>
+				</label>
+			</li>
+			<li class="nav-item">
+				<a href="#" class="sidebar-toggler">
+					<i data-lucide="menu"></i>
+				</a>
+			</li>
+		</ul>
+	</div>
+	<script src="{{ asset('assets/templateNEW/js/color-modes.js') }}"></script>
+</nav>

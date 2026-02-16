@@ -1,0 +1,37 @@
+{{ form_start(form, {'attr': {'class': 'forms-sample', 'enctype': 'multipart/form-data'}, 'action': path('app_partenaire_new', {'_popup': 1})}) }}
+
+<div class="row">
+    <div class="col-md-6">
+        {{ form_row(form.nom) }}
+    </div>
+    <div class="col-md-6">
+        <div class="form-group">
+            {{ form_label(form.logoFile) }}
+            <div class="input-group">
+                {{ form_widget(form.logoFile, {'attr': {'class': 'form-control'}}) }}
+            </div>
+            {{ form_help(form.logoFile) }}
+            {{ form_errors(form.logoFile) }}
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        {{ form_row(form.email) }}
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        {{ form_row(form.contact) }}
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-12">
+        <button type="submit" class="btn btn-primary me-2">{{ button_label|default('Save') }}</button>
+    </div>
+</div>
+
+{{ form_end(form) }}

@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang='fr'>
+<head>
+    <meta charset='UTF-8'>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+    <title>{{ recrutement.entreprise|upper }} - {{ recrutement.nom|upper }} - FICHE D'INSCRIPTION CANDIDAT</title>
+    <style>
+        @page{
+            size: A4;
+            margin: 0cm;
+        }
+        * {
+            box-sizing: border-box;
+        }
+        .container {
+            margin: 0.8cm;
+        }
+        section {
+            padding: 0px 15px;
+        }
+        .row{
+            display:flex;
+            justify-content:flex-start;
+            align-items:stretch;
+            flex-wrap:nowrap;
+            padding:1px;
+        }
+        .row_large{
+            display: flex;
+            flex-direction: row;
+            flex-wrap: nowrap;
+            justify-content: space-between;
+            align-items: stretch;
+            align-content: stretch;
+        }
+        .cell{
+            min-height: 26px;
+            flex-grow: 1;
+            flex-basis: 100%;
+            padding: 2px;
+        }
+        .title{
+            text-align: center;
+            font-weight: bold;
+            font-size: 1.2em;
+            margin-top: 20px;
+        }
+        .subtitle {
+            padding: 5px;
+            font-weight: bold;
+            font-size: 1.1em;
+            text-align: center;
+            border: 1px solid black;
+            margin: 10px 0 20px 0;
+        }
+        .subtitle2 {
+            padding: 2px;
+            font-style: italic;
+            text-decoration: none;
+        }
+        .subtitle3 {
+            text-align:center;
+            text-decoration: none;
+            margin-bottom: 20px;
+            font-style: italic;
+        }
+        .stamp{
+            width: 120px;
+            height: 150px;
+            float: right;
+            margin: 10px auto;
+            border: 1px solid #333;
+        }
+        .label{
+            font-size: 1em;
+        }
+        .result{
+            font-weight: bold;
+            font-size: 1em;
+        }
+        @media (max-width: 768px){
+            .row{
+                flex-wrap: wrap;
+            }
+        }
+        .footer {
+            position: fixed;
+            bottom: 10;
+            width: 100%;
+            text-align: center;
+        }
+        .footer img {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class='container'>
+        <section for='logo'>
+            <img src='{{ image.entete }}' alt=''  style='width: 100%'>
+        </section>
+        <br>
+        <section for='title'>
+            <div class='row'>
+                <div class='cell'>
+                    <div class='title'> {{ recrutement.nom|upper }} </div>
+                    <div class='subtitle'>FICHE D'INSCRIPTION CANDIDAT</div>
+                    <div class='subtitle2'>N° d'enregistrement: <b>{{ candidature.numCandidature }}</b></div>
+                    <div class='subtitle2'>DEMANDE D'INSCRIPTION À LA SESSION DE: 2025</div>
+                   
+                </div>
+            </div>
+        </section>
+        <!-- Section photo du candidat -->
+        <div style="float: right; width: 150px; margin: 10px 30px 10px 10px; text-align: center;">
+            {% if image.photo is defined and image.photo is not empty %}
+                <img src="{{ image.photo }}" alt="Photo du candidat" style="max-width: 100%; max-height: 180px; border: 1px solid #ddd; border-radius: 4px; padding: 3px;">
+                
+            {% else %}
+                <div style="height: 180px; display: flex; align-items: center; justify-content: center; border: 1px dashed #999; background-color: #f9f9f9; color: #777; font-style: italic; padding: 10px; border-radius: 4px;">
+                    Photo non disponible
+                </div>
+            {% endif %}
+        </div>
+
+        <section>
+            <div class='row'>
+                <div class='cell'>
+                    <span class='label'>Nom & Prénoms :</span> <span class='result'>{{ candidature.nom|upper }}</span> &nbsp;&nbsp; <span class='result'>{{ candidature.prenom|upper }}</span>
+                </div>
+                {% if (candidature.nomJeuneFille is not null) %}
+                <div class='cell'>
+                    <span class='label'>Nom de jeune fille :</span> <span class='result'>{{ candidature.nomJeuneFille|upper }}</span>
+                </div>
+                {% endif %}
+                <div class='cell'>
+                    <span class='label'>Date & lieu de naissance :</span> <span class='result'>{{ candidature.dateNaissance|date('d/m/Y') }}</span> &nbsp;&nbsp;&nbsp; à &nbsp;&nbsp;&nbsp;<span class='result'>{{ candidature.lieuNaissance|upper }}</span>
+                </div>
+                <div class='cell'>
+                    <span class='label'>Sexe :</span> <span class='result'>{{ candidature.sexe }}</span>
+                </div>
+                <div class='cell'>
+                    <span class='label'>Contact :</span> <span class='result'> {{ candidature.contacts }} {{ candidature.contact2 ? " - " ~ candidature.contact2 : "" }}</span>
+                </div>
+                <div class='cell'>
+                    <span class='label'>Adresse e-mail :</span> <span class='result'> {{ candidature.email }}</span>
+                </div>
+                <div class='cell'>
+                    <span class='label'>Niveau d'étude :</span> <span class='result'>{{ candidature.niveauEtude ? candidature.niveauEtude.libelle : '' }}</span>
+                </div>
+                <div class='cell'>
+                    <span class='label'>Métier :</span> <span class='result'>{{ candidature.metier ? candidature.metier.nom : '' }}</span>
+                </div>
+            </div>
+        </section>
+        <section class='footer'>
+            <img src='https://api.qrcode.tec-it.com/API/QRCode?data={{ candidature.numCandidature }}&backcolor=ffffff&qzoned=2&download=0&filetype=PNG&margin=0&size=5' alt='QR Code'><br>
+            <small> {{ "now"|date('Y') }} - {{ recrutement.entreprise|upper }}. Tous Droits Réservés</small>
+        </section>
+    </div>
+</body>
+</html>

@@ -1,0 +1,52 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Programmations d'évaluation{% endblock %}
+
+{% block page_content %}
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h1 class="h4 mb-0">Programmations d'évaluation</h1>
+        <a href="{{ path('app_programmation_evaluation_new') }}" class="btn btn-primary btn-sm">Nouvelle programmation</a>
+    </div>
+
+    <div class="card">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-striped align-middle">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Type</th>
+                            <th>Centre</th>
+                            <th>Métier</th>
+                            <th>Date lancement</th>
+                            <th>Statut</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for item in program_evaluations %}
+                        <tr>
+                            <td>{{ item.id }}</td>
+                            <td>{{ item.typeEvaluation ? item.typeEvaluation.libelle : '-' }}</td>
+                            <td>{{ item.centre ? item.centre.nom : '-' }}</td>
+                            <td>{{ item.metier ? item.metier.nom : '-' }}</td>
+                            <td>{{ item.dateLancement ? item.dateLancement|date('d/m/Y') : '-' }}</td>
+                            <td>{{ item.statut ?: '-' }}</td>
+                            <td>
+                                <div class="btn-group btn-group-sm" role="group">
+                                    <a href="{{ path('app_programmation_evaluation_show', {'id': item.id}) }}" class="btn btn-outline-info">Voir</a>
+                                    <a href="{{ path('app_programmation_evaluation_edit', {'id': item.id}) }}" class="btn btn-outline-warning">Modifier</a>
+                                </div>
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="7" class="text-center text-muted">Aucune programmation trouvée.</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}

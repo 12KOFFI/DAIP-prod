@@ -1,0 +1,36 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'Détails Candidature' ~ ' | ' ~ parent() }}{% endblock %}
+
+{% block meta %}
+    {{ parent() }}
+    <meta name='keywords' content='e2c, tic, recrutement, formation, vae'/>
+    <meta name='description' content="Détails de la candidature E2C_TIC"/>
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="{{ app.request.uri }}" />
+    <meta property="og:title" content="Détails de la candidature E2C_TIC" />
+    <meta property="og:description" content="Détails de la candidature E2C_TIC" />
+    <meta property="og:image" content="{{ app.request.getSchemeAndHttpHost() ~ '/images/logo.png' }}" />
+{% endblock %}
+
+{% block page_content %}
+    <div class="candidature-details">
+        {% include 'layout/candidature/content.html.twig' %}
+
+        <div class="actions">
+    
+            {# Bouton supprimer : visible seulement pour admin #}
+            {% if is_granted('ROLE_ADMIN') %}
+                <form method="post"
+                      action="{{ path('app_candidature_delete', {'id': candidature.id}) }}"
+                      style="display:inline;">
+                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ candidature.id) }}">
+                    <button class="btn btn-danger"
+                            onclick="return confirm('Êtes-vous sûr ?');">
+                        Supprimer
+                    </button>
+                </form>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

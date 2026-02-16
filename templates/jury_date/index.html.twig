@@ -1,0 +1,42 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des Dates de Jury{% endblock %}
+
+{% block page_content %}
+    <h1>Liste des Dates de Jury</h1>
+
+    <div class="mb-3">
+        <a href="{{ path('app_jury_date_new') }}" class="btn btn-primary">Créer une nouvelle date</a>
+    </div>
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Date de passage</th>
+                <th>Capacité Max</th>
+                <th>Créé le</th>
+                <th>Jury</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for jury_date in jury_dates %}
+            <tr>
+                <td>{{ jury_date.id }}</td>
+                <td>{{ jury_date.datePassage ? jury_date.datePassage|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ jury_date.capaciteMax }}</td>
+                <td>{{ jury_date.createdAt ? jury_date.createdAt|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ jury_date.jury ? jury_date.jury.nom ~ ' ' ~ jury_date.jury.prenom : '' }}</td>
+                <td>
+                    <a href="{{ path('app_jury_date_edit', {'id': jury_date.id}) }}" class="btn btn-sm btn-warning">Modifier</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="6">Aucune date de jury trouvée</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

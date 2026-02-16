@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <meta name="description" content="Responsive HTML Admin Dashboard Template based on Bootstrap 5">
+	<meta name="author" content="NobleUI">
+	<meta name="keywords" content="nobleui, bootstrap, bootstrap 5, bootstrap5, admin, dashboard, template, responsive, css, sass, html, theme, front-end, ui kit, web">
+
+	<title>{% block title %} Admin Dashboard Template{% endblock %}</title>
+
+  <!-- color-modes:js -->
+  <script src="{{ asset('assets/js/color-modes.js') }}"></script>
+  <!-- endinject -->
+  <!-- Font Awesome (chargé après pour éviter les conflits) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&amp;display=swap" rel="stylesheet">
+  <!-- End fonts -->
+
+	<!-- core:css -->
+<link rel="stylesheet" href="{{ asset('assets/templateNEW/vendors/core/core.css') }}">
+	<!-- endinject -->
+
+	{% block plugins_css %}{% endblock %}
+
+	<!-- inject:css -->
+	<!-- endinject -->
+
+  <!-- Layout styles -->
+	<link rel="stylesheet" href="{{ asset('assets/templateNEW/css/demo1/style.css') }}">
+  <!-- End layout styles -->
+
+  <link rel="shortcut icon" href="{{ asset('front/image/favicon.png') }}" />
+
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-NXVN8PTKWG"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-NXVN8PTKWG');
+  </script>
+
+  {% block stylesheets %}{% endblock %}
+</head>
+<body>
+	<div class="main-wrapper">
+		{% block sidebar %}
+			{% include 'layout/_sidebar.html.twig' %}
+		{% endblock %}
+
+		<div class="page-wrapper">
+			{% block navbar %}
+				{% include 'layout/_navbar.html.twig' %}
+			{% endblock %}
+
+			<div class="page-content container-xxl">
+				{% block page_content %}{% endblock %}
+			</div>
+
+			{% block footer %}
+				{% include 'layout/_footer.html.twig' %}
+			{% endblock %}
+		</div>
+	</div>
+	
+
+</body>
+	<!-- core:js -->
+	<script src="{{ asset('assets/templateNEW/vendors/core/core.js') }}"></script>
+	<!-- endinject -->
+
+	<!-- Plugin js for this page -->
+	{% block plugins_js %}{% endblock %}
+	<!-- End plugin js for this page -->
+
+	<!-- inject:js -->
+	<script src="{{ asset('assets/templateNEW/js/app.js') }}"></script>
+	<!-- endinject -->
+
+	{% block javascripts %}{% endblock %}
+
+</html>

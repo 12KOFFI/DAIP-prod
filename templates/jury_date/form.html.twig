@@ -1,0 +1,131 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ jury_date.id ? 'Modifier' : 'Nouvelle' }} Date de Jury{% endblock %}
+
+{% block page_content %}
+    <div class="container py-4">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-white border-bottom">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h1 class="h4 mb-0">
+                                <i class="bi bi-calendar-event me-2"></i>
+                                {{ jury_date.id ? 'Modifier' : 'Créer une nouvelle' }} Date de Jury
+                            </h1>
+                            <a href="{{ path('app_jury_date_index') }}" class="btn btn-outline-secondary btn-sm">
+                                <i class="bi bi-arrow-left me-1"></i> Retour
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <div class="card-body">
+                        {{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'novalidate'}}) }}
+                            
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    {{ form_label(form.date_passage, null, {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                                    <div class="input-group">
+                                        <span class="input-group-text">
+                                            <i class="bi bi-calendar"></i>
+                                        </span>
+                                        {{ form_widget(form.date_passage, {'attr': {
+                                            'class': 'form-control',
+                                            'placeholder': 'JJ/MM/AAAA HH:MM'
+                                        }}) }}
+                                    </div>
+                                    <div class="form-text">Date et heure du passage</div>
+                                    <div class="invalid-feedback">
+                                        {{ form_errors(form.date_passage) }}
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-6 mb-3">
+                                    {{ form_label(form.capacite_max, null, {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                                    <div class="input-group">
+                                        <span class="input-group-text">
+                                            <i class="bi bi-people"></i>
+                                        </span>
+                                        {{ form_widget(form.capacite_max, {'attr': {
+                                            'class': 'form-control',
+                                            'placeholder': 'Nombre maximum'
+                                        }}) }}
+                                    </div>
+                                    <div class="form-text">Nombre maximum de participants</div>
+                                    <div class="invalid-feedback">
+                                        {{ form_errors(form.capacite_max) }}
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-4">
+                                {{ form_label(form.jury, null, {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                                <div class="input-group">
+                                    <span class="input-group-text">
+                                        <i class="bi bi-person-badge"></i>
+                                    </span>
+                                    {{ form_widget(form.jury, {'attr': {
+                                        'class': 'form-select'
+                                    }}) }}
+                                </div>
+                                <div class="invalid-feedback">
+                                    {{ form_errors(form.jury) }}
+                                </div>
+                            </div>
+                            
+                            <hr class="my-4">
+                            
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <button type="submit" class="btn btn-primary px-4">
+                                        <i class="bi bi-check-circle me-2"></i>
+                                        {{ button_label|default('Enregistrer') }}
+                                    </button>
+                                    <a href="{{ path('app_jury_date_index') }}" class="btn btn-outline-secondary ms-2">
+                                        Annuler
+                                    </a>
+                                </div>
+                                
+                                {% if jury_date.id %}
+                                    <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">
+                                        <i class="bi bi-trash me-1"></i> Supprimer
+                                    </button>
+                                {% endif %}
+                            </div>
+                            
+                        {{ form_end(form) }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    {% if jury_date.id %}
+        <!-- Modal de suppression -->
+        <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="deleteModalLabel">
+                            <i class="bi bi-exclamation-triangle text-danger me-2"></i>
+                            Confirmation de suppression
+                        </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p class="mb-0">Êtes-vous sûr de vouloir supprimer cette date de jury ? Cette action est irréversible.</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                        <form method="post" action="{{ path('app_jury_date_delete', {'id': jury_date.id}) }}" class="d-inline">
+                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ jury_date.id) }}">
+                            <button type="submit" class="btn btn-danger">
+                                <i class="bi bi-trash me-1"></i> Supprimer définitivement
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+{% endblock %}

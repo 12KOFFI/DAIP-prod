@@ -1,0 +1,54 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Partenaire index{% endblock %}
+
+{% block page_content %}
+    <h1 class="mb-4">Liste des Partenaires</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Nom</th>
+                <th>Logo</th>
+                <th>Email</th>
+                <th>Contact</th>
+                <th>NumPartenaire</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for partenaire in partenaires %}
+            <tr>
+                <td>{{ partenaire.id }}</td>
+                <td>{{ partenaire.nom }}</td>
+                <td>
+                    {% if partenaire.logo %}
+                        <img src="{{ asset(partenaire.logo) }}" alt="Logo {{ partenaire.nom }}" style="max-width: 100px; max-height: 50px;" class="img-thumbnail">
+                    {% else %}
+                        Aucun logo
+                    {% endif %}
+                </td>
+                <td>{{ partenaire.email }}</td>
+                <td>{{ partenaire.contact }}</td>
+                <td>{{ partenaire.numPartenaire }}</td>
+                <td>
+                    <a href="{{ path('app_partenaire_edit', {'id': partenaire.id}) }}" class="btn btn-warning btn-lg mt-1">Modifier</a>
+                        <form method="post" action="{{ path('app_partenaire_delete', {'id': partenaire.id}) }}" class="d-inline" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette candidature ?');">
+                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ partenaire.id) }}">
+                        <button class="btn btn-danger btn-lg mt-1">Supprimer</button>
+                    </form>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="7">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_partenaire_new') }}" class="btn btn-primary btn-lg mt-1">
+    Nouveau
+</a>
+{% endblock %}

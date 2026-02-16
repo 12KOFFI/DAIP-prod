@@ -1,0 +1,40 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}GrilleEvaluation index{% endblock %}
+
+{% block page_content %}
+    <h1 class="mb-4">Liste des Grilles d'Évaluation</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Nom</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for grille_evaluation in grille_evaluations %}
+            <tr>
+                <td>{{ grille_evaluation.id }}</td>
+                <td>{{ grille_evaluation.nom }}</td>
+                <td>
+                    <a href="{{ path('app_grille_evaluation_edit', {'id': grille_evaluation.id}) }}" class="btn btn-warning btn-lg mt-1">edit</a>
+                    <form method="post" action="{{ path('app_grille_evaluation_delete', {'id': grille_evaluation.id}) }}" class="d-inline" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette grille d\'evaluation ?');">
+                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ grille_evaluation.id) }}">
+                        <button class="btn btn-danger btn-lg mt-1">Supprimer</button>
+                        </form>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="3">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_grille_evaluation_new') }}" class="btn btn-primary btn-lg mt-1">
+    Nouveau
+</a>
+{% endblock %}

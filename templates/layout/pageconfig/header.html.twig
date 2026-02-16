@@ -1,0 +1,31 @@
+{% set route = app.request.attributes.get('_route') %}
+<div id='accueil'></div>
+<header class='site-header header style-1' style='height:90px' >
+	<div class='sticky-header main-bar-wraper navbar-expand-lg'style='height:90px' >
+		<div class='main-bar clearfix shadow-none border-bottom'>
+			<div class='container-fluid d-flex clearfix align-items-center'>
+				<div class='logo-header mostion logo-dark justify-content-start' style='height:100px' >
+					<img src='{{ asset(header_logo|default('front/image/e2c.png')) }}' style='height:90px; width:140px'>
+				</div>
+				{% if "recrutement" in app.request.getPathInfo %}
+    				    				<div class='d-flex w-100'>
+        				<div class='header-nav navbar-collapse collapse justify-content-center' style='height:70px;' id='navbarNavDropdown'>
+        					<ul class='nav navbar-nav navbar navbar-left'>
+        						<li><a href='#accueil'>Accueil</a></li>
+        						<li><a href='#parcours'>Parcours</a></li>
+        						<li><a href='#conditions-candidature'>Candidature</a></li>
+        						<li><a href='#contact'>Contact</a></li>
+        					</ul>
+        				</div>
+    				</div>
+    				<div class='d-flex' style="width: 210px">
+        				<div class='logo-header mostion logo-dark justify-content-end' style='height:90px; width: 70px' >
+        					<img src='{{ asset('front/image/metfpa.png') }}' style='height:90px; width:110px'>
+        				</div>
+    				</div>
+				{% endif %}
+				
+			</div>
+		</div>
+	</div>
+</header>

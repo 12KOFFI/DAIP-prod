@@ -1,0 +1,251 @@
+<?php
+
+declare(strict_types=1);
+
+namespace DoctrineMigrations;
+
+use Doctrine\DBAL\Schema\Schema;
+use Doctrine\Migrations\AbstractMigration;
+
+/**
+ * Auto-generated Migration: Please modify to your needs!
+ */
+final class Version20260213181756 extends AbstractMigration
+{
+    public function getDescription(): string
+    {
+        return '';
+    }
+
+    public function up(Schema $schema): void
+    {
+        // this up() migration is auto-generated, please modify it to your needs
+        $this->addSql('CREATE TABLE candidature (id INT AUTO_INCREMENT NOT NULL, recrutement_id INT DEFAULT NULL, formation_id INT DEFAULT NULL, vae_id INT DEFAULT NULL, user_id INT DEFAULT NULL, metier_id INT DEFAULT NULL, niveau_etude_id INT DEFAULT NULL, diplome_id INT DEFAULT NULL, nom VARCHAR(255) NOT NULL, prenom VARCHAR(255) NOT NULL, email VARCHAR(255) NOT NULL, contacts INT NOT NULL, date_naissance DATE NOT NULL, adresse VARCHAR(255) NOT NULL, date_candidature DATE DEFAULT NULL, statut VARCHAR(255) DEFAULT NULL, num_candidature VARCHAR(255) DEFAULT NULL, sexe VARCHAR(20) DEFAULT NULL, lieu_naissance VARCHAR(100) DEFAULT NULL, situation_matrimoniale VARCHAR(50) DEFAULT NULL, nom_jeune_fille VARCHAR(100) DEFAULT NULL, disponibilite VARCHAR(255) DEFAULT NULL, num_piece VARCHAR(50) DEFAULT NULL, situationpro VARCHAR(50) DEFAULT NULL, experience VARCHAR(50) DEFAULT NULL, titrepro VARCHAR(100) DEFAULT NULL, entreprise VARCHAR(100) DEFAULT NULL, direction VARCHAR(100) DEFAULT NULL, fonction VARCHAR(100) DEFAULT NULL, contrat VARCHAR(50) DEFAULT NULL, lieuentreprise VARCHAR(100) DEFAULT NULL, refentreprise VARCHAR(100) DEFAULT NULL, apprentiforme VARCHAR(10) DEFAULT NULL, apprentirecrute VARCHAR(10) DEFAULT NULL, num_cmu VARCHAR(255) DEFAULT NULL, contact2 VARCHAR(20) DEFAULT NULL, nom_prenom_urgence VARCHAR(100) DEFAULT NULL, contact_urgence VARCHAR(20) DEFAULT NULL, nationalite VARCHAR(100) DEFAULT NULL, INDEX IDX_E33BD3B8FCC7117B (recrutement_id), INDEX IDX_E33BD3B85200282E (formation_id), INDEX IDX_E33BD3B85D130A91 (vae_id), INDEX IDX_E33BD3B8A76ED395 (user_id), INDEX IDX_E33BD3B8ED16FA20 (metier_id), INDEX IDX_E33BD3B8FEAD13D1 (niveau_etude_id), INDEX IDX_E33BD3B826F859E2 (diplome_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
+        $this->addSql('CREATE TABLE centre (id INT AUTO_INCREMENT NOT NULL, nom VARCHAR(255) NOT NULL, type VARCHAR(255) NOT NULL, region VARCHAR(255) NOT NULL, departement VARCHAR(255) NOT NULL, adresse VARCHAR(255) NOT NULL, contacts INT NOT NULL, num_centre VARCHAR(255) NOT NULL, UNIQUE INDEX UNIQ_C6A0EA757F81BDCD (num_centre), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
+        $this->addSql('CREATE TABLE centre_metier (centre_id INT NOT NULL, metier_id INT NOT NULL, INDEX IDX_821D032B463CD7C3 (centre_id), INDEX IDX_821D032BED16FA20 (metier_id), PRIMARY KEY(centre_id, metier_id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
+        $this->addSql('CREATE TABLE cfa_etablissement (id INT AUTO_INCREMENT NOT NULL, nom_etablissement VARCHAR(255) NOT NULL, nom_chef_etablissement VARCHAR(255) NOT NULL, email VARCHAR(255) NOT NULL, numcfa_etablissement VARCHAR(255) NOT NULL, region VARCHAR(255) NOT NULL, effectifs INT DEFAULT NULL, PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
+        $this->addSql('CREATE TABLE cfa_etablissement_filiere (cfa_etablissement_id INT NOT NULL, filiere_id INT NOT NULL, INDEX IDX_F7AC320AEEFC5FE5 (cfa_etablissement_id), INDEX IDX_F7AC320A180AA129 (filiere_id), PRIMARY KEY(cfa_etablissement_id, filiere_id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
+        $this->addSql('CREATE TABLE cfa_metier (id INT AUTO_INCREMENT NOT NULL, cfa_etablissement_id INT NOT NULL, metier_id INT NOT NULL, effectif INT NOT NULL, INDEX IDX_DF9DBA7FEEFC5FE5 (cfa_etablissement_id), INDEX IDX_DF9DBA7FED16FA20 (metier_id), UNIQUE INDEX cfa_metier_unique (cfa_etablissement_id, metier_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
+        $this->addSql('CREATE TABLE convocation (id INT AUTO_INCREMENT NOT NULL, candidature_id INT DEFAULT NULL, user_id INT DEFAULT NULL, sujet VARCHAR(255) NOT NULL, contenu LONGTEXT NOT NULL, date_envoi DATETIME NOT NULL, INDEX IDX_C03B3F5FB6121583 (candidature_id), INDEX IDX_C03B3F5FA76ED395 (user_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
+        $this->addSql('CREATE TABLE critere (id INT AUTO_INCREMENT NOT NULL, grille_evaluation_id INT DEFAULT NULL, recrutement_id INT DEFAULT NULL, user_id INT DEFAULT NULL, libelle VARCHAR(255) NOT NULL, bareme INT DEFAULT NULL, INDEX IDX_7F6A8053E0874FAE (grille_evaluation_id), INDEX IDX_7F6A8053FCC7117B (recrutement_id), INDEX IDX_7F6A8053A76ED395 (user_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
+        $this->addSql('CREATE TABLE diplome (id INT AUTO_INCREMENT NOT NULL, filiere_id INT DEFAULT NULL, libelle VARCHAR(255) NOT NULL, INDEX IDX_EB4C4D4E180AA129 (filiere_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
+        $this->addSql('CREATE TABLE evaluation_candidature (id INT AUTO_INCREMENT NOT NULL, candidature_id INT DEFAULT NULL, grille_evaluation_id INT DEFAULT NULL, user_id INT DEFAULT NULL, type_evaluation_id INT NOT NULL, libelle VARCHAR(255) DEFAULT NULL, date_evaluation DATETIME NOT NULL, commentaire LONGTEXT DEFAULT NULL, note_totale INT DEFAULT NULL, statut VARCHAR(255) NOT NULL, INDEX IDX_B06247CFB6121583 (candidature_id), INDEX IDX_B06247CFE0874FAE (grille_evaluation_id), INDEX IDX_B06247CFA76ED395 (user_id), INDEX IDX_B06247CF3581E173 (type_evaluation_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
+        $this->addSql('CREATE TABLE filiere (id INT AUTO_INCREMENT NOT NULL, nom VARCHAR(255) NOT NULL, PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
+        $this->addSql('CREATE TABLE filiere_metier (filiere_id INT NOT NULL, metier_id INT NOT NULL, INDEX IDX_6E6C5B13180AA129 (filiere_id), INDEX IDX_6E6C5B13ED16FA20 (metier_id), PRIMARY KEY(filiere_id, metier_id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
+        $this->addSql('CREATE TABLE formation (id INT AUTO_INCREMENT NOT NULL, projet_id INT DEFAULT NULL, cfa_etablissement_id INT DEFAULT NULL, user_id INT DEFAULT NULL, libelle VARCHAR(255) NOT NULL, description VARCHAR(255) NOT NULL, date_debut DATETIME NOT NULL, date_fin DATETIME NOT NULL, numformation VARCHAR(255) NOT NULL, age_minimum INT DEFAULT NULL, age_maximum INT DEFAULT NULL, public_cible VARCHAR(255) DEFAULT NULL, statut VARCHAR(50) NOT NULL, image VARCHAR(255) DEFAULT NULL, banniere VARCHAR(255) DEFAULT NULL, logo VARCHAR(255) DEFAULT NULL, INDEX IDX_404021BFC18272 (projet_id), INDEX IDX_404021BFEEFC5FE5 (cfa_etablissement_id), INDEX IDX_404021BFA76ED395 (user_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
+        $this->addSql('CREATE TABLE grille_evaluation (id INT AUTO_INCREMENT NOT NULL, nom VARCHAR(255) NOT NULL, PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
+        $this->addSql('CREATE TABLE jury (id INT AUTO_INCREMENT NOT NULL, user_id INT NOT NULL, centre_id INT DEFAULT NULL, nom VARCHAR(255) NOT NULL, prenom VARCHAR(255) NOT NULL, fonction VARCHAR(255) DEFAULT NULL, organisation VARCHAR(255) DEFAULT NULL, UNIQUE INDEX UNIQ_1335B02CA76ED395 (user_id), INDEX IDX_1335B02C463CD7C3 (centre_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
+        $this->addSql('CREATE TABLE jury_recrutement (jury_id INT NOT NULL, recrutement_id INT NOT NULL, INDEX IDX_22714ED5E560103C (jury_id), INDEX IDX_22714ED5FCC7117B (recrutement_id), PRIMARY KEY(jury_id, recrutement_id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
+        $this->addSql('CREATE TABLE jury_formation (jury_id INT NOT NULL, formation_id INT NOT NULL, INDEX IDX_8BC2782BE560103C (jury_id), INDEX IDX_8BC2782B5200282E (formation_id), PRIMARY KEY(jury_id, formation_id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
+        $this->addSql('CREATE TABLE jury_vae (jury_id INT NOT NULL, vae_id INT NOT NULL, INDEX IDX_AA5D76C5E560103C (jury_id), INDEX IDX_AA5D76C55D130A91 (vae_id), PRIMARY KEY(jury_id, vae_id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
+        $this->addSql('CREATE TABLE jury_date (id INT AUTO_INCREMENT NOT NULL, jury_id INT NOT NULL, date_passage DATETIME NOT NULL, capacite_max INT NOT NULL, created_at DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL, INDEX IDX_ADB7AD17E560103C (jury_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
+        $this->addSql('CREATE TABLE metier (id INT AUTO_INCREMENT NOT NULL, niveau_etude_id INT DEFAULT NULL, secteur_id INT DEFAULT NULL, nom VARCHAR(255) NOT NULL, description LONGTEXT DEFAULT NULL, image VARCHAR(255) DEFAULT NULL, num_metier VARCHAR(255) NOT NULL, effectif INT DEFAULT NULL, INDEX IDX_51A00D8CFEAD13D1 (niveau_etude_id), INDEX IDX_51A00D8C9F7E4405 (secteur_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
+        $this->addSql('CREATE TABLE metier_diplome (metier_id INT NOT NULL, diplome_id INT NOT NULL, INDEX IDX_E628AAF3ED16FA20 (metier_id), INDEX IDX_E628AAF326F859E2 (diplome_id), PRIMARY KEY(metier_id, diplome_id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
+        $this->addSql('CREATE TABLE niveau_etude (id INT AUTO_INCREMENT NOT NULL, libelle VARCHAR(255) NOT NULL, PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
+        $this->addSql('CREATE TABLE notation (id INT AUTO_INCREMENT NOT NULL, critere_id INT DEFAULT NULL, evaluation_id INT DEFAULT NULL, note DOUBLE PRECISION NOT NULL, commentaire VARCHAR(255) DEFAULT NULL, INDEX IDX_268BC959E5F45AB (critere_id), INDEX IDX_268BC95456C5646 (evaluation_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
+        $this->addSql('CREATE TABLE partenaire (id INT AUTO_INCREMENT NOT NULL, nom VARCHAR(255) NOT NULL, logo VARCHAR(255) DEFAULT NULL, email VARCHAR(255) DEFAULT NULL, contact INT DEFAULT NULL, num_partenaire VARCHAR(255) DEFAULT NULL, PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
+        $this->addSql('CREATE TABLE piece_jointe (id INT AUTO_INCREMENT NOT NULL, candidature_id INT DEFAULT NULL, nom VARCHAR(255) DEFAULT NULL, chemin VARCHAR(255) DEFAULT NULL, type VARCHAR(255) DEFAULT NULL, num_piece_jointe VARCHAR(255) NOT NULL, num_candidature VARCHAR(255) DEFAULT NULL, taille_fichier INT DEFAULT NULL, date_creation DATETIME NOT NULL, date_modification DATETIME DEFAULT NULL, INDEX IDX_AB5111D4B6121583 (candidature_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
+        $this->addSql('CREATE TABLE program_evaluation (id INT AUTO_INCREMENT NOT NULL, type_evaluation_id INT NOT NULL, centre_id INT NOT NULL, metier_id INT NOT NULL, user_id INT NOT NULL, recrutement_id INT DEFAULT NULL, date_lancement DATE NOT NULL, statut VARCHAR(255) NOT NULL, INDEX IDX_51958C13581E173 (type_evaluation_id), INDEX IDX_51958C1463CD7C3 (centre_id), INDEX IDX_51958C1ED16FA20 (metier_id), INDEX IDX_51958C1A76ED395 (user_id), INDEX IDX_51958C1FCC7117B (recrutement_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
+        $this->addSql('CREATE TABLE projet (id INT AUTO_INCREMENT NOT NULL, user_id INT DEFAULT NULL, nom VARCHAR(255) NOT NULL, description VARCHAR(255) DEFAULT NULL, status VARCHAR(50) NOT NULL, date_debut DATETIME NOT NULL, date_fin DATETIME NOT NULL, logo VARCHAR(255) DEFAULT NULL, image VARCHAR(255) DEFAULT NULL, num_projet VARCHAR(20) NOT NULL, UNIQUE INDEX UNIQ_50159CA9E934CB11 (num_projet), INDEX IDX_50159CA9A76ED395 (user_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
+        $this->addSql('CREATE TABLE projet_partenaire (projet_id INT NOT NULL, partenaire_id INT NOT NULL, INDEX IDX_B3624B59C18272 (projet_id), INDEX IDX_B3624B5998DE13AC (partenaire_id), PRIMARY KEY(projet_id, partenaire_id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
+        $this->addSql('CREATE TABLE prospection (id INT AUTO_INCREMENT NOT NULL, structure_acceuil_id INT DEFAULT NULL, cfa_etablissement_id INT DEFAULT NULL, user_id INT DEFAULT NULL, date DATE NOT NULL, commentaire VARCHAR(255) DEFAULT NULL, INDEX IDX_47EBD1B02AD897DA (structure_acceuil_id), INDEX IDX_47EBD1B0EEFC5FE5 (cfa_etablissement_id), INDEX IDX_47EBD1B0A76ED395 (user_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
+        $this->addSql('CREATE TABLE prospection_metier (id INT AUTO_INCREMENT NOT NULL, metier_id INT DEFAULT NULL, prospection_id INT DEFAULT NULL, filiere_id INT DEFAULT NULL, nombre_postes INT NOT NULL, INDEX IDX_843FC6FED16FA20 (metier_id), INDEX IDX_843FC6FCE4F4C9 (prospection_id), INDEX IDX_843FC6F180AA129 (filiere_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
+        $this->addSql('CREATE TABLE recrutement (id INT AUTO_INCREMENT NOT NULL, projet_id INT DEFAULT NULL, user_id INT DEFAULT NULL, centre_id INT DEFAULT NULL, libelle VARCHAR(255) NOT NULL, date_debut DATETIME NOT NULL, date_fin DATETIME NOT NULL, cible VARCHAR(255) NOT NULL, age_min INT DEFAULT NULL, age_max INT DEFAULT NULL, date_limite_age DATE DEFAULT NULL, nationalite VARCHAR(255) DEFAULT NULL, status VARCHAR(255) DEFAULT NULL, image VARCHAR(255) NOT NULL, logo VARCHAR(255) DEFAULT NULL, banniere VARCHAR(255) DEFAULT NULL, num_recrutement VARCHAR(255) DEFAULT NULL, texte_annonce LONGTEXT DEFAULT NULL, date_inscription LONGTEXT DEFAULT NULL, liste_parcours JSON DEFAULT NULL, con_candidature JSON DEFAULT NULL, dos_candidature JSON DEFAULT NULL, texte_parcours LONGTEXT DEFAULT NULL, image_annonce VARCHAR(255) DEFAULT NULL, badge_text VARCHAR(100) DEFAULT NULL, badge_color VARCHAR(20) DEFAULT NULL, INDEX IDX_25EB2319C18272 (projet_id), INDEX IDX_25EB2319A76ED395 (user_id), INDEX IDX_25EB2319463CD7C3 (centre_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
+        $this->addSql('CREATE TABLE recrutement_metier (recrutement_id INT NOT NULL, metier_id INT NOT NULL, INDEX IDX_1305ED48FCC7117B (recrutement_id), INDEX IDX_1305ED48ED16FA20 (metier_id), PRIMARY KEY(recrutement_id, metier_id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
+        $this->addSql('CREATE TABLE secteur (id INT AUTO_INCREMENT NOT NULL, recrutement_id INT DEFAULT NULL, nom VARCHAR(255) NOT NULL, duree_formation INT DEFAULT NULL, INDEX IDX_8045251FFCC7117B (recrutement_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
+        $this->addSql('CREATE TABLE structure_accueil (id INT AUTO_INCREMENT NOT NULL, nom_structure VARCHAR(255) NOT NULL, type VARCHAR(255) NOT NULL, localite VARCHAR(255) NOT NULL, telephone_structure VARCHAR(20) NOT NULL, secteur_activite VARCHAR(255) NOT NULL, nom_responsable VARCHAR(255) NOT NULL, telephone_responsable VARCHAR(20) NOT NULL, PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
+        $this->addSql('CREATE TABLE type_evaluation (id INT AUTO_INCREMENT NOT NULL, libelle VARCHAR(255) NOT NULL, PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
+        $this->addSql('CREATE TABLE user (id INT AUTO_INCREMENT NOT NULL, niveau_etude_id INT DEFAULT NULL, cfa_etablissement_id INT DEFAULT NULL, email VARCHAR(180) NOT NULL, roles JSON NOT NULL, password VARCHAR(255) NOT NULL, INDEX IDX_8D93D649FEAD13D1 (niveau_etude_id), INDEX IDX_8D93D649EEFC5FE5 (cfa_etablissement_id), UNIQUE INDEX UNIQ_IDENTIFIER_EMAIL (email), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
+        $this->addSql('CREATE TABLE user_diplome (user_id INT NOT NULL, diplome_id INT NOT NULL, INDEX IDX_B3415344A76ED395 (user_id), INDEX IDX_B341534426F859E2 (diplome_id), PRIMARY KEY(user_id, diplome_id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
+        $this->addSql('CREATE TABLE vae (id INT AUTO_INCREMENT NOT NULL, projet_id INT DEFAULT NULL, nom VARCHAR(255) NOT NULL, num_vae VARCHAR(255) NOT NULL, INDEX IDX_EE0302C1C18272 (projet_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
+        $this->addSql('CREATE TABLE vae_centre (vae_id INT NOT NULL, centre_id INT NOT NULL, INDEX IDX_693174195D130A91 (vae_id), INDEX IDX_69317419463CD7C3 (centre_id), PRIMARY KEY(vae_id, centre_id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
+        $this->addSql('CREATE TABLE messenger_messages (id BIGINT AUTO_INCREMENT NOT NULL, body LONGTEXT NOT NULL, headers LONGTEXT NOT NULL, queue_name VARCHAR(190) NOT NULL, created_at DATETIME NOT NULL COMMENT \'(DC2Type:datetime_immutable)\', available_at DATETIME NOT NULL COMMENT \'(DC2Type:datetime_immutable)\', delivered_at DATETIME DEFAULT NULL COMMENT \'(DC2Type:datetime_immutable)\', INDEX IDX_75EA56E0FB7336F0 (queue_name), INDEX IDX_75EA56E0E3BD61CE (available_at), INDEX IDX_75EA56E016BA31DB (delivered_at), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
+        $this->addSql('ALTER TABLE candidature ADD CONSTRAINT FK_E33BD3B8FCC7117B FOREIGN KEY (recrutement_id) REFERENCES recrutement (id) ON DELETE CASCADE');
+        $this->addSql('ALTER TABLE candidature ADD CONSTRAINT FK_E33BD3B85200282E FOREIGN KEY (formation_id) REFERENCES formation (id) ON DELETE CASCADE');
+        $this->addSql('ALTER TABLE candidature ADD CONSTRAINT FK_E33BD3B85D130A91 FOREIGN KEY (vae_id) REFERENCES vae (id) ON DELETE CASCADE');
+        $this->addSql('ALTER TABLE candidature ADD CONSTRAINT FK_E33BD3B8A76ED395 FOREIGN KEY (user_id) REFERENCES user (id)');
+        $this->addSql('ALTER TABLE candidature ADD CONSTRAINT FK_E33BD3B8ED16FA20 FOREIGN KEY (metier_id) REFERENCES metier (id)');
+        $this->addSql('ALTER TABLE candidature ADD CONSTRAINT FK_E33BD3B8FEAD13D1 FOREIGN KEY (niveau_etude_id) REFERENCES niveau_etude (id)');
+        $this->addSql('ALTER TABLE candidature ADD CONSTRAINT FK_E33BD3B826F859E2 FOREIGN KEY (diplome_id) REFERENCES diplome (id)');
+        $this->addSql('ALTER TABLE centre_metier ADD CONSTRAINT FK_821D032B463CD7C3 FOREIGN KEY (centre_id) REFERENCES centre (id) ON DELETE CASCADE');
+        $this->addSql('ALTER TABLE centre_metier ADD CONSTRAINT FK_821D032BED16FA20 FOREIGN KEY (metier_id) REFERENCES metier (id) ON DELETE CASCADE');
+        $this->addSql('ALTER TABLE cfa_etablissement_filiere ADD CONSTRAINT FK_F7AC320AEEFC5FE5 FOREIGN KEY (cfa_etablissement_id) REFERENCES cfa_etablissement (id) ON DELETE CASCADE');
+        $this->addSql('ALTER TABLE cfa_etablissement_filiere ADD CONSTRAINT FK_F7AC320A180AA129 FOREIGN KEY (filiere_id) REFERENCES filiere (id) ON DELETE CASCADE');
+        $this->addSql('ALTER TABLE cfa_metier ADD CONSTRAINT FK_DF9DBA7FEEFC5FE5 FOREIGN KEY (cfa_etablissement_id) REFERENCES cfa_etablissement (id) ON DELETE CASCADE');
+        $this->addSql('ALTER TABLE cfa_metier ADD CONSTRAINT FK_DF9DBA7FED16FA20 FOREIGN KEY (metier_id) REFERENCES metier (id) ON DELETE CASCADE');
+        $this->addSql('ALTER TABLE convocation ADD CONSTRAINT FK_C03B3F5FB6121583 FOREIGN KEY (candidature_id) REFERENCES candidature (id)');
+        $this->addSql('ALTER TABLE convocation ADD CONSTRAINT FK_C03B3F5FA76ED395 FOREIGN KEY (user_id) REFERENCES user (id)');
+        $this->addSql('ALTER TABLE critere ADD CONSTRAINT FK_7F6A8053E0874FAE FOREIGN KEY (grille_evaluation_id) REFERENCES grille_evaluation (id)');
+        $this->addSql('ALTER TABLE critere ADD CONSTRAINT FK_7F6A8053FCC7117B FOREIGN KEY (recrutement_id) REFERENCES recrutement (id)');
+        $this->addSql('ALTER TABLE critere ADD CONSTRAINT FK_7F6A8053A76ED395 FOREIGN KEY (user_id) REFERENCES user (id)');
+        $this->addSql('ALTER TABLE diplome ADD CONSTRAINT FK_EB4C4D4E180AA129 FOREIGN KEY (filiere_id) REFERENCES filiere (id)');
+        $this->addSql('ALTER TABLE evaluation_candidature ADD CONSTRAINT FK_B06247CFB6121583 FOREIGN KEY (candidature_id) REFERENCES candidature (id) ON DELETE CASCADE');
+        $this->addSql('ALTER TABLE evaluation_candidature ADD CONSTRAINT FK_B06247CFE0874FAE FOREIGN KEY (grille_evaluation_id) REFERENCES grille_evaluation (id)');
+        $this->addSql('ALTER TABLE evaluation_candidature ADD CONSTRAINT FK_B06247CFA76ED395 FOREIGN KEY (user_id) REFERENCES user (id)');
+        $this->addSql('ALTER TABLE evaluation_candidature ADD CONSTRAINT FK_B06247CF3581E173 FOREIGN KEY (type_evaluation_id) REFERENCES type_evaluation (id)');
+        $this->addSql('ALTER TABLE filiere_metier ADD CONSTRAINT FK_6E6C5B13180AA129 FOREIGN KEY (filiere_id) REFERENCES filiere (id) ON DELETE CASCADE');
+        $this->addSql('ALTER TABLE filiere_metier ADD CONSTRAINT FK_6E6C5B13ED16FA20 FOREIGN KEY (metier_id) REFERENCES metier (id) ON DELETE CASCADE');
+        $this->addSql('ALTER TABLE formation ADD CONSTRAINT FK_404021BFC18272 FOREIGN KEY (projet_id) REFERENCES projet (id) ON DELETE CASCADE');
+        $this->addSql('ALTER TABLE formation ADD CONSTRAINT FK_404021BFEEFC5FE5 FOREIGN KEY (cfa_etablissement_id) REFERENCES cfa_etablissement (id)');
+        $this->addSql('ALTER TABLE formation ADD CONSTRAINT FK_404021BFA76ED395 FOREIGN KEY (user_id) REFERENCES user (id)');
+        $this->addSql('ALTER TABLE jury ADD CONSTRAINT FK_1335B02CA76ED395 FOREIGN KEY (user_id) REFERENCES user (id) ON DELETE CASCADE');
+        $this->addSql('ALTER TABLE jury ADD CONSTRAINT FK_1335B02C463CD7C3 FOREIGN KEY (centre_id) REFERENCES centre (id)');
+        $this->addSql('ALTER TABLE jury_recrutement ADD CONSTRAINT FK_22714ED5E560103C FOREIGN KEY (jury_id) REFERENCES jury (id) ON DELETE CASCADE');
+        $this->addSql('ALTER TABLE jury_recrutement ADD CONSTRAINT FK_22714ED5FCC7117B FOREIGN KEY (recrutement_id) REFERENCES recrutement (id) ON DELETE CASCADE');
+        $this->addSql('ALTER TABLE jury_formation ADD CONSTRAINT FK_8BC2782BE560103C FOREIGN KEY (jury_id) REFERENCES jury (id) ON DELETE CASCADE');
+        $this->addSql('ALTER TABLE jury_formation ADD CONSTRAINT FK_8BC2782B5200282E FOREIGN KEY (formation_id) REFERENCES formation (id) ON DELETE CASCADE');
+        $this->addSql('ALTER TABLE jury_vae ADD CONSTRAINT FK_AA5D76C5E560103C FOREIGN KEY (jury_id) REFERENCES jury (id) ON DELETE CASCADE');
+        $this->addSql('ALTER TABLE jury_vae ADD CONSTRAINT FK_AA5D76C55D130A91 FOREIGN KEY (vae_id) REFERENCES vae (id) ON DELETE CASCADE');
+        $this->addSql('ALTER TABLE jury_date ADD CONSTRAINT FK_ADB7AD17E560103C FOREIGN KEY (jury_id) REFERENCES jury (id)');
+        $this->addSql('ALTER TABLE metier ADD CONSTRAINT FK_51A00D8CFEAD13D1 FOREIGN KEY (niveau_etude_id) REFERENCES niveau_etude (id)');
+        $this->addSql('ALTER TABLE metier ADD CONSTRAINT FK_51A00D8C9F7E4405 FOREIGN KEY (secteur_id) REFERENCES secteur (id)');
+        $this->addSql('ALTER TABLE metier_diplome ADD CONSTRAINT FK_E628AAF3ED16FA20 FOREIGN KEY (metier_id) REFERENCES metier (id) ON DELETE CASCADE');
+        $this->addSql('ALTER TABLE metier_diplome ADD CONSTRAINT FK_E628AAF326F859E2 FOREIGN KEY (diplome_id) REFERENCES diplome (id) ON DELETE CASCADE');
+        $this->addSql('ALTER TABLE notation ADD CONSTRAINT FK_268BC959E5F45AB FOREIGN KEY (critere_id) REFERENCES critere (id)');
+        $this->addSql('ALTER TABLE notation ADD CONSTRAINT FK_268BC95456C5646 FOREIGN KEY (evaluation_id) REFERENCES evaluation_candidature (id)');
+        $this->addSql('ALTER TABLE piece_jointe ADD CONSTRAINT FK_AB5111D4B6121583 FOREIGN KEY (candidature_id) REFERENCES candidature (id) ON DELETE CASCADE');
+        $this->addSql('ALTER TABLE program_evaluation ADD CONSTRAINT FK_51958C13581E173 FOREIGN KEY (type_evaluation_id) REFERENCES type_evaluation (id)');
+        $this->addSql('ALTER TABLE program_evaluation ADD CONSTRAINT FK_51958C1463CD7C3 FOREIGN KEY (centre_id) REFERENCES centre (id)');
+        $this->addSql('ALTER TABLE program_evaluation ADD CONSTRAINT FK_51958C1ED16FA20 FOREIGN KEY (metier_id) REFERENCES metier (id)');
+        $this->addSql('ALTER TABLE program_evaluation ADD CONSTRAINT FK_51958C1A76ED395 FOREIGN KEY (user_id) REFERENCES user (id)');
+        $this->addSql('ALTER TABLE program_evaluation ADD CONSTRAINT FK_51958C1FCC7117B FOREIGN KEY (recrutement_id) REFERENCES recrutement (id)');
+        $this->addSql('ALTER TABLE projet ADD CONSTRAINT FK_50159CA9A76ED395 FOREIGN KEY (user_id) REFERENCES user (id)');
+        $this->addSql('ALTER TABLE projet_partenaire ADD CONSTRAINT FK_B3624B59C18272 FOREIGN KEY (projet_id) REFERENCES projet (id) ON DELETE CASCADE');
+        $this->addSql('ALTER TABLE projet_partenaire ADD CONSTRAINT FK_B3624B5998DE13AC FOREIGN KEY (partenaire_id) REFERENCES partenaire (id) ON DELETE CASCADE');
+        $this->addSql('ALTER TABLE prospection ADD CONSTRAINT FK_47EBD1B02AD897DA FOREIGN KEY (structure_acceuil_id) REFERENCES structure_accueil (id) ON DELETE CASCADE');
+        $this->addSql('ALTER TABLE prospection ADD CONSTRAINT FK_47EBD1B0EEFC5FE5 FOREIGN KEY (cfa_etablissement_id) REFERENCES cfa_etablissement (id)');
+        $this->addSql('ALTER TABLE prospection ADD CONSTRAINT FK_47EBD1B0A76ED395 FOREIGN KEY (user_id) REFERENCES user (id)');
+        $this->addSql('ALTER TABLE prospection_metier ADD CONSTRAINT FK_843FC6FED16FA20 FOREIGN KEY (metier_id) REFERENCES metier (id)');
+        $this->addSql('ALTER TABLE prospection_metier ADD CONSTRAINT FK_843FC6FCE4F4C9 FOREIGN KEY (prospection_id) REFERENCES prospection (id) ON DELETE CASCADE');
+        $this->addSql('ALTER TABLE prospection_metier ADD CONSTRAINT FK_843FC6F180AA129 FOREIGN KEY (filiere_id) REFERENCES filiere (id)');
+        $this->addSql('ALTER TABLE recrutement ADD CONSTRAINT FK_25EB2319C18272 FOREIGN KEY (projet_id) REFERENCES projet (id) ON DELETE CASCADE');
+        $this->addSql('ALTER TABLE recrutement ADD CONSTRAINT FK_25EB2319A76ED395 FOREIGN KEY (user_id) REFERENCES user (id)');
+        $this->addSql('ALTER TABLE recrutement ADD CONSTRAINT FK_25EB2319463CD7C3 FOREIGN KEY (centre_id) REFERENCES centre (id)');
+        $this->addSql('ALTER TABLE recrutement_metier ADD CONSTRAINT FK_1305ED48FCC7117B FOREIGN KEY (recrutement_id) REFERENCES recrutement (id) ON DELETE CASCADE');
+        $this->addSql('ALTER TABLE recrutement_metier ADD CONSTRAINT FK_1305ED48ED16FA20 FOREIGN KEY (metier_id) REFERENCES metier (id) ON DELETE CASCADE');
+        $this->addSql('ALTER TABLE secteur ADD CONSTRAINT FK_8045251FFCC7117B FOREIGN KEY (recrutement_id) REFERENCES recrutement (id)');
+        $this->addSql('ALTER TABLE user ADD CONSTRAINT FK_8D93D649FEAD13D1 FOREIGN KEY (niveau_etude_id) REFERENCES niveau_etude (id)');
+        $this->addSql('ALTER TABLE user ADD CONSTRAINT FK_8D93D649EEFC5FE5 FOREIGN KEY (cfa_etablissement_id) REFERENCES cfa_etablissement (id)');
+        $this->addSql('ALTER TABLE user_diplome ADD CONSTRAINT FK_B3415344A76ED395 FOREIGN KEY (user_id) REFERENCES user (id) ON DELETE CASCADE');
+        $this->addSql('ALTER TABLE user_diplome ADD CONSTRAINT FK_B341534426F859E2 FOREIGN KEY (diplome_id) REFERENCES diplome (id) ON DELETE CASCADE');
+        $this->addSql('ALTER TABLE vae ADD CONSTRAINT FK_EE0302C1C18272 FOREIGN KEY (projet_id) REFERENCES projet (id) ON DELETE CASCADE');
+        $this->addSql('ALTER TABLE vae_centre ADD CONSTRAINT FK_693174195D130A91 FOREIGN KEY (vae_id) REFERENCES vae (id) ON DELETE CASCADE');
+        $this->addSql('ALTER TABLE vae_centre ADD CONSTRAINT FK_69317419463CD7C3 FOREIGN KEY (centre_id) REFERENCES centre (id) ON DELETE CASCADE');
+    }
+
+    public function down(Schema $schema): void
+    {
+        // this down() migration is auto-generated, please modify it to your needs
+        $this->addSql('ALTER TABLE candidature DROP FOREIGN KEY FK_E33BD3B8FCC7117B');
+        $this->addSql('ALTER TABLE candidature DROP FOREIGN KEY FK_E33BD3B85200282E');
+        $this->addSql('ALTER TABLE candidature DROP FOREIGN KEY FK_E33BD3B85D130A91');
+        $this->addSql('ALTER TABLE candidature DROP FOREIGN KEY FK_E33BD3B8A76ED395');
+        $this->addSql('ALTER TABLE candidature DROP FOREIGN KEY FK_E33BD3B8ED16FA20');
+        $this->addSql('ALTER TABLE candidature DROP FOREIGN KEY FK_E33BD3B8FEAD13D1');
+        $this->addSql('ALTER TABLE candidature DROP FOREIGN KEY FK_E33BD3B826F859E2');
+        $this->addSql('ALTER TABLE centre_metier DROP FOREIGN KEY FK_821D032B463CD7C3');
+        $this->addSql('ALTER TABLE centre_metier DROP FOREIGN KEY FK_821D032BED16FA20');
+        $this->addSql('ALTER TABLE cfa_etablissement_filiere DROP FOREIGN KEY FK_F7AC320AEEFC5FE5');
+        $this->addSql('ALTER TABLE cfa_etablissement_filiere DROP FOREIGN KEY FK_F7AC320A180AA129');
+        $this->addSql('ALTER TABLE cfa_metier DROP FOREIGN KEY FK_DF9DBA7FEEFC5FE5');
+        $this->addSql('ALTER TABLE cfa_metier DROP FOREIGN KEY FK_DF9DBA7FED16FA20');
+        $this->addSql('ALTER TABLE convocation DROP FOREIGN KEY FK_C03B3F5FB6121583');
+        $this->addSql('ALTER TABLE convocation DROP FOREIGN KEY FK_C03B3F5FA76ED395');
+        $this->addSql('ALTER TABLE critere DROP FOREIGN KEY FK_7F6A8053E0874FAE');
+        $this->addSql('ALTER TABLE critere DROP FOREIGN KEY FK_7F6A8053FCC7117B');
+        $this->addSql('ALTER TABLE critere DROP FOREIGN KEY FK_7F6A8053A76ED395');
+        $this->addSql('ALTER TABLE diplome DROP FOREIGN KEY FK_EB4C4D4E180AA129');
+        $this->addSql('ALTER TABLE evaluation_candidature DROP FOREIGN KEY FK_B06247CFB6121583');
+        $this->addSql('ALTER TABLE evaluation_candidature DROP FOREIGN KEY FK_B06247CFE0874FAE');
+        $this->addSql('ALTER TABLE evaluation_candidature DROP FOREIGN KEY FK_B06247CFA76ED395');
+        $this->addSql('ALTER TABLE evaluation_candidature DROP FOREIGN KEY FK_B06247CF3581E173');
+        $this->addSql('ALTER TABLE filiere_metier DROP FOREIGN KEY FK_6E6C5B13180AA129');
+        $this->addSql('ALTER TABLE filiere_metier DROP FOREIGN KEY FK_6E6C5B13ED16FA20');
+        $this->addSql('ALTER TABLE formation DROP FOREIGN KEY FK_404021BFC18272');
+        $this->addSql('ALTER TABLE formation DROP FOREIGN KEY FK_404021BFEEFC5FE5');
+        $this->addSql('ALTER TABLE formation DROP FOREIGN KEY FK_404021BFA76ED395');
+        $this->addSql('ALTER TABLE jury DROP FOREIGN KEY FK_1335B02CA76ED395');
+        $this->addSql('ALTER TABLE jury DROP FOREIGN KEY FK_1335B02C463CD7C3');
+        $this->addSql('ALTER TABLE jury_recrutement DROP FOREIGN KEY FK_22714ED5E560103C');
+        $this->addSql('ALTER TABLE jury_recrutement DROP FOREIGN KEY FK_22714ED5FCC7117B');
+        $this->addSql('ALTER TABLE jury_formation DROP FOREIGN KEY FK_8BC2782BE560103C');
+        $this->addSql('ALTER TABLE jury_formation DROP FOREIGN KEY FK_8BC2782B5200282E');
+        $this->addSql('ALTER TABLE jury_vae DROP FOREIGN KEY FK_AA5D76C5E560103C');
+        $this->addSql('ALTER TABLE jury_vae DROP FOREIGN KEY FK_AA5D76C55D130A91');
+        $this->addSql('ALTER TABLE jury_date DROP FOREIGN KEY FK_ADB7AD17E560103C');
+        $this->addSql('ALTER TABLE metier DROP FOREIGN KEY FK_51A00D8CFEAD13D1');
+        $this->addSql('ALTER TABLE metier DROP FOREIGN KEY FK_51A00D8C9F7E4405');
+        $this->addSql('ALTER TABLE metier_diplome DROP FOREIGN KEY FK_E628AAF3ED16FA20');
+        $this->addSql('ALTER TABLE metier_diplome DROP FOREIGN KEY FK_E628AAF326F859E2');
+        $this->addSql('ALTER TABLE notation DROP FOREIGN KEY FK_268BC959E5F45AB');
+        $this->addSql('ALTER TABLE notation DROP FOREIGN KEY FK_268BC95456C5646');
+        $this->addSql('ALTER TABLE piece_jointe DROP FOREIGN KEY FK_AB5111D4B6121583');
+        $this->addSql('ALTER TABLE program_evaluation DROP FOREIGN KEY FK_51958C13581E173');
+        $this->addSql('ALTER TABLE program_evaluation DROP FOREIGN KEY FK_51958C1463CD7C3');
+        $this->addSql('ALTER TABLE program_evaluation DROP FOREIGN KEY FK_51958C1ED16FA20');
+        $this->addSql('ALTER TABLE program_evaluation DROP FOREIGN KEY FK_51958C1A76ED395');
+        $this->addSql('ALTER TABLE program_evaluation DROP FOREIGN KEY FK_51958C1FCC7117B');
+        $this->addSql('ALTER TABLE projet DROP FOREIGN KEY FK_50159CA9A76ED395');
+        $this->addSql('ALTER TABLE projet_partenaire DROP FOREIGN KEY FK_B3624B59C18272');
+        $this->addSql('ALTER TABLE projet_partenaire DROP FOREIGN KEY FK_B3624B5998DE13AC');
+        $this->addSql('ALTER TABLE prospection DROP FOREIGN KEY FK_47EBD1B02AD897DA');
+        $this->addSql('ALTER TABLE prospection DROP FOREIGN KEY FK_47EBD1B0EEFC5FE5');
+        $this->addSql('ALTER TABLE prospection DROP FOREIGN KEY FK_47EBD1B0A76ED395');
+        $this->addSql('ALTER TABLE prospection_metier DROP FOREIGN KEY FK_843FC6FED16FA20');
+        $this->addSql('ALTER TABLE prospection_metier DROP FOREIGN KEY FK_843FC6FCE4F4C9');
+        $this->addSql('ALTER TABLE prospection_metier DROP FOREIGN KEY FK_843FC6F180AA129');
+        $this->addSql('ALTER TABLE recrutement DROP FOREIGN KEY FK_25EB2319C18272');
+        $this->addSql('ALTER TABLE recrutement DROP FOREIGN KEY FK_25EB2319A76ED395');
+        $this->addSql('ALTER TABLE recrutement DROP FOREIGN KEY FK_25EB2319463CD7C3');
+        $this->addSql('ALTER TABLE recrutement_metier DROP FOREIGN KEY FK_1305ED48FCC7117B');
+        $this->addSql('ALTER TABLE recrutement_metier DROP FOREIGN KEY FK_1305ED48ED16FA20');
+        $this->addSql('ALTER TABLE secteur DROP FOREIGN KEY FK_8045251FFCC7117B');
+        $this->addSql('ALTER TABLE user DROP FOREIGN KEY FK_8D93D649FEAD13D1');
+        $this->addSql('ALTER TABLE user DROP FOREIGN KEY FK_8D93D649EEFC5FE5');
+        $this->addSql('ALTER TABLE user_diplome DROP FOREIGN KEY FK_B3415344A76ED395');
+        $this->addSql('ALTER TABLE user_diplome DROP FOREIGN KEY FK_B341534426F859E2');
+        $this->addSql('ALTER TABLE vae DROP FOREIGN KEY FK_EE0302C1C18272');
+        $this->addSql('ALTER TABLE vae_centre DROP FOREIGN KEY FK_693174195D130A91');
+        $this->addSql('ALTER TABLE vae_centre DROP FOREIGN KEY FK_69317419463CD7C3');
+        $this->addSql('DROP TABLE candidature');
+        $this->addSql('DROP TABLE centre');
+        $this->addSql('DROP TABLE centre_metier');
+        $this->addSql('DROP TABLE cfa_etablissement');
+        $this->addSql('DROP TABLE cfa_etablissement_filiere');
+        $this->addSql('DROP TABLE cfa_metier');
+        $this->addSql('DROP TABLE convocation');
+        $this->addSql('DROP TABLE critere');
+        $this->addSql('DROP TABLE diplome');
+        $this->addSql('DROP TABLE evaluation_candidature');
+        $this->addSql('DROP TABLE filiere');
+        $this->addSql('DROP TABLE filiere_metier');
+        $this->addSql('DROP TABLE formation');
+        $this->addSql('DROP TABLE grille_evaluation');
+        $this->addSql('DROP TABLE jury');
+        $this->addSql('DROP TABLE jury_recrutement');
+        $this->addSql('DROP TABLE jury_formation');
+        $this->addSql('DROP TABLE jury_vae');
+        $this->addSql('DROP TABLE jury_date');
+        $this->addSql('DROP TABLE metier');
+        $this->addSql('DROP TABLE metier_diplome');
+        $this->addSql('DROP TABLE niveau_etude');
+        $this->addSql('DROP TABLE notation');
+        $this->addSql('DROP TABLE partenaire');
+        $this->addSql('DROP TABLE piece_jointe');
+        $this->addSql('DROP TABLE program_evaluation');
+        $this->addSql('DROP TABLE projet');
+        $this->addSql('DROP TABLE projet_partenaire');
+        $this->addSql('DROP TABLE prospection');
+        $this->addSql('DROP TABLE prospection_metier');
+        $this->addSql('DROP TABLE recrutement');
+        $this->addSql('DROP TABLE recrutement_metier');
+        $this->addSql('DROP TABLE secteur');
+        $this->addSql('DROP TABLE structure_accueil');
+        $this->addSql('DROP TABLE type_evaluation');
+        $this->addSql('DROP TABLE user');
+        $this->addSql('DROP TABLE user_diplome');
+        $this->addSql('DROP TABLE vae');
+        $this->addSql('DROP TABLE vae_centre');
+        $this->addSql('DROP TABLE messenger_messages');
+    }
+}

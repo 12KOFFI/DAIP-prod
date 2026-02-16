@@ -1,0 +1,16 @@
+body {
+    background-color: skyblue;
+}
+
+/* Couleurs personnalisées */
+.bg-orange {
+    background-color: #FF6B00 !important;  /* Orange vif */
+}
+
+.navbar-dark.bg-orange .navbar-nav .nav-link {
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.navbar-dark.bg-orange .navbar-nav .nav-link:hover {
+    color: #fff;
+}

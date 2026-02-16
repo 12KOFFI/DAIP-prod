@@ -1,0 +1,78 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Evaluation index{% endblock %}
+
+{% block page_content %}
+    <h1 class="mb-4">Liste des Évaluations</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Libellé</th>
+                <th>N° Candidature</th>
+                <th>Candidat</th>
+                <th>Date d'évaluation</th>
+                <th>Statut</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for evaluation in evaluations %}
+            <tr>
+                <td>{{ evaluation.id }}</td>
+                <td>{{ evaluation.libelle }}</td>
+                <td>
+                    {% if evaluation.candidature and evaluation.candidature.numCandidature %}
+                        {{ evaluation.candidature.numCandidature }}
+                    {% else %}
+                        -
+                    {% endif %}
+                </td>
+                <td>
+                    {% if evaluation.candidature %}
+                        {{ evaluation.candidature.nom }} {{ evaluation.candidature.prenom }}
+                    {% else %}
+                        -
+                    {% endif %}
+                </td>
+                <td>
+                    {% if evaluation.centres is defined and evaluation.centres|length %}
+                        {{ evaluation.centres|map(c => c.nom)|join(', ') }}
+                    {% else %}
+                        -
+                    {% endif %}
+                </td>
+                <td>{{ evaluation.dateEvaluation ? evaluation.dateEvaluation|date('Y-m-d H:i:s') : '' }}</td>
+                <td>
+                    {% set statusClass = {
+                        'en_attente': 'bg-warning',
+                        'en_cours': 'bg-info',
+                        'terminee': 'bg-primary',
+                        'acceptee': 'bg-success',
+                        'annulee': 'bg-danger',
+                        'rejete': 'bg-danger',
+                        'refusee': 'bg-danger'
+                    }[evaluation.statut] ?? 'bg-secondary' %}
+                    <span class="badge {{ statusClass }}">
+                        {{ evaluation.statut|replace({'_': ' '})|title }}
+                    </span>
+                </td>
+                <td>
+                    <a href="{{ path('app_evaluation_candidature_edit', {'id': evaluation.id}) }}" class="btn btn-sm btn-outline-primary">
+                        <i class="fas fa-edit"></i> Modifier
+                    </a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="7">Aucune évaluation trouvée</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_evaluation_candidature_new') }}" class="btn btn-primary btn-lg mt-1">
+    Nouveau
+</a>
+{% endblock %}

@@ -1,0 +1,124 @@
+
+
+
+
+{% extends 'base.html.twig' %}
+
+
+
+{% block title %} Filiere {% endblock %}
+
+{% block page_content %}
+
+
+
+<div class="row mt-5 justify-content-center">
+
+    <div class="col-md-8 grid-margin stretch-card">
+
+        <div class="card">
+
+            <div class="card-body">
+
+                <h6 class="card-title">{{ title|default('Filiere') }}</h6>
+
+
+
+                {{ form_start(form, {'attr': {'class': 'forms-sample'}}) }}
+
+
+
+                <div class="row">
+
+                    <div class="col-12">
+
+                        {{ form_row(form.nom) }}
+
+                    </div>
+
+                </div>
+
+
+
+                <div class="row">
+
+                    <div class="col-12">
+
+                        {{ form_row(form.metier) }}
+
+                    </div>
+
+                </div>
+
+
+
+
+
+                <div class="row mt-4">
+
+                    <div class="col-12">
+
+                        <button type="reset" class="btn btn-secondary">Cancel</button>
+
+                        <button type="submit" class="btn btn-primary me-2">
+
+                            {{ button_label|default('Save') }}
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+
+                {{ form_end(form) }}
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+    <a href="{{ path('app_filiere_index') }}" class="btn btn-secondary">Retour à la liste</a>
+
+
+
+{% block javascripts %}
+
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+
+
+
+<script>
+
+$(document).ready(function() {
+
+    // Initialiser Select2 pour le champ des métiers
+
+    $('#filiere_metier').select2({
+
+        theme: 'bootstrap4',
+
+        placeholder: 'Sélectionnez un ou plusieurs métiers...',
+
+        allowClear: true,
+
+        width: '100%'
+
+    });
+
+});
+
+</script>
+
+{% endblock %}
+
+
+
+{% endblock %}
+

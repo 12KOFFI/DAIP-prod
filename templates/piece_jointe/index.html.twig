@@ -1,0 +1,44 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}PieceJointe index{% endblock %}
+
+{% block page_content %}
+    <h1 class="mb-4">Liste des Pièces Jointes</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Nom</th>
+                <th>Chemin</th>
+                <th>Type</th>
+                <th>NumPieceJointe</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for piece_jointe in piece_jointes %}
+            <tr>
+                <td>{{ piece_jointe.id }}</td>
+                <td>{{ piece_jointe.nom }}</td>
+                <td>{{ piece_jointe.chemin }}</td>
+                <td>{{ piece_jointe.type }}</td>
+                <td>{{ piece_jointe.numPieceJointe }}</td>
+                <td>
+                    <a href="{{ path('app_piece_jointe_edit', {'id': piece_jointe.id}) }}"  class="btn btn-warning btn-lg mt-1">Modifier</a>
+                    <form method="post" action="{{ path('app_piece_jointe_delete', {'id': piece_jointe.id}) }}" class="d-inline" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette candidature ?');">
+                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ piece_jointe.id) }}">
+                        <button class="btn btn-danger btn-lg mt-1">Supprimer</button>
+                    </form>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="6">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_piece_jointe_new') }}"  class="btn btn-primary btn-lg mt-1">Create new</a>
+{% endblock %}

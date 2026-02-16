@@ -1,0 +1,164 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Formation index{% endblock %}
+
+{% block page_content %}
+    <h1 class="mb-4">Liste des Formations</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Logo</th>
+                <th>Image</th>
+                <th>Bannière</th>
+                <th>Libellé</th>
+                <th>Description</th>
+                <th>Âge min/max</th>
+                <th>Public cible</th>
+                <th>Statut</th>
+                <th>Date Début</th>
+                <th>Date Fin</th>
+                <th>CFA Établissement</th>
+                <th>Projet</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for formation in formations %}
+            <tr>
+                <td>{{ formation.id }}</td>
+                <td>
+                    {% if formation.logo %}
+                        <img src="{{ asset('uploads/formations/' ~ formation.logo) }}" 
+                             alt="Logo {{ formation.libelle }}" 
+                             class="img-thumbnail"
+                             style="width: 40px; height: 40px; object-fit: contain; border-radius: 4px; background: #fff; padding: 2px;">
+                    {% else %}
+                        <div class="bg-light d-flex align-items-center justify-content-center" 
+                             style="width: 40px; height: 40px; border-radius: 4px;">
+                            <i class="fas fa-image text-muted"></i>
+                        </div>
+                    {% endif %}
+                </td>
+                <td>
+                    {% if formation.image %}
+                        <img src="{{ asset('uploads/formations/' ~ formation.image) }}" 
+                             alt="Image {{ formation.libelle }}" 
+                             class="img-thumbnail"
+                             style="width: 50px; height: 50px; object-fit: cover; border-radius: 4px;">
+                    {% else %}
+                        <div class="bg-light d-flex align-items-center justify-content-center" 
+                             style="width: 50px; height: 50px; border-radius: 4px;">
+                            <i class="fas fa-image text-muted"></i>
+                        </div>
+                    {% endif %}
+                </td>
+                <td>
+                    {% if formation.banniere %}
+                        <img src="{{ asset('uploads/formations/' ~ formation.banniere) }}" 
+                             alt="Bannière {{ formation.libelle }}" 
+                             class="img-thumbnail"
+                             style="width: 80px; height: 40px; object-fit: cover; border-radius: 4px;">
+                    {% else %}
+                        <div class="bg-light d-flex align-items-center justify-content-center" 
+                             style="width: 80px; height: 40px; border-radius: 4px;">
+                            <i class="fas fa-image text-muted"></i>
+                        </div>
+                    {% endif %}
+                </td>
+                <td>{{ formation.libelle }}</td>
+                <td>{{ formation.description|slice(0, 30) }}{{ formation.description|length > 30 ? '...' : '' }}</td>
+                <td>
+                    {% if formation.ageMinimum or formation.ageMaximum %}
+                        {{ formation.ageMinimum ? formation.ageMinimum ~ ' ans' : 'N/A' }} - 
+                        {{ formation.ageMaximum ? formation.ageMaximum ~ ' ans' : 'N/A' }}
+                    {% else %}
+                        Non défini
+                    {% endif %}
+                </td>
+                <td>{{ formation.publicCible ?: 'Non défini' }}</td>
+                <td>
+                    <span class="badge 
+                        {% if formation.statut == 'Publié' %}bg-success
+                        {% elseif formation.statut == 'Brouillon' %}bg-secondary
+                        {% else %}bg-warning text-dark
+                        {% endif %}">
+                        {{ formation.statut }}
+                    </span>
+                </td>
+                <td>{{ formation.dateDebut ? formation.dateDebut|date('d/m/Y') : '' }}</td>
+                <td>{{ formation.dateFin ? formation.dateFin|date('d/m/Y') : '' }}</td>
+                <td>
+                    {% if formation.cfaEtablissement %}
+                        {{ formation.cfaEtablissement.nom }}
+                    {% else %}
+                        Non défini
+                    {% endif %}
+                </td>
+                <td style="min-width: 200px;">
+                    {% if formation.projet %}
+                        <div class="d-flex align-items-center">
+                            {% if formation.projet.logo %}
+                                <div class="me-2" style="width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; overflow: hidden; border: 1px solid #dee2e6; border-radius: 4px; background: #fff; padding: 2px;">
+                                    <img src="{{ asset('uploads/projet/logo/' ~ formation.projet.logo) }}" 
+                                         alt="Logo {{ formation.projet.nom }}" 
+                                         style="max-height: 100%; max-width: 100%; object-fit: contain;">
+                                </div>
+                            {% endif %}
+                            <div class="text-truncate" style="max-width: 150px;" 
+                                 data-bs-toggle="tooltip" 
+                                 data-bs-placement="top" 
+                                 title="{{ formation.projet.nom }}">
+                                {{ formation.projet.nom }}
+                            </div>
+                        </div>
+                    {% else %}
+                        <span class="text-muted">Non défini</span>
+                    {% endif %}
+                </td>
+                <td class="text-nowrap">
+                    <div class="btn-group btn-group-sm" role="group">
+                        <a href="{{ path('app_formation_show', {'id': formation.id}) }}" 
+                           class="btn btn-outline-primary" 
+                           data-bs-toggle="tooltip" 
+                           title="Voir les détails">
+                            <i class="fas fa-eye"></i>
+                            <span class="d-none d-md-inline ms-1">Voir</span>
+                        </a>
+                        <a href="{{ path('app_formation_edit', {'id': formation.id}) }}" 
+                           class="btn btn-outline-warning" 
+                           data-bs-toggle="tooltip" 
+                           title="Modifier">
+                            <i class="fas fa-edit"></i>
+                            <span class="d-none d-md-inline ms-1">Modifier</span>
+                        </a>
+                        <form method="post" 
+                              action="{{ path('app_formation_delete', {'id': formation.id}) }}" 
+                              onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette formation ?');"
+                              class="d-inline">
+                            <input type="hidden" name="_method" value="DELETE">
+                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ formation.id) }}">
+                            <button class="btn btn-outline-danger" 
+                                    type="submit"
+                                    data-bs-toggle="tooltip" 
+                                    title="Supprimer">
+                                <i class="fas fa-trash"></i>
+                                <span class="d-none d-md-inline ms-1">Supprimer</span>
+                            </button>
+                        </form>
+                    </div>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="12" class="text-center">Aucune formation trouvée</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_formation_new') }}" class="btn btn-primary btn-lg mt-1">
+    Nouveau
+</a>
+{% endblock %}

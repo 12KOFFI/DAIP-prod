@@ -1,0 +1,53 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ title|default('Secteur') }}{% endblock %}
+
+{% block page_content %}
+    <div class="row mt-4 justify-content-center">
+        <div class="col-lg-8">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h4 class="mb-1">{{ title|default('Secteur') }}</h4>
+                    <p class="text-muted mb-0">Définissez le secteur et associez les métiers. Vous pourrez ensuite utiliser ce secteur dans les recrutements.</p>
+                </div>
+                <a href="{{ path('app_secteur_index') }}" class="btn btn-outline-secondary btn-sm">
+                    <i class="link-icon" data-feather="arrow-left"></i> Retour à la liste
+                </a>
+            </div>
+
+            <div class="card border-0 shadow-sm">
+                <div class="card-body p-4">
+                    {{ form_start(form, {'attr': {'class': 'forms-sample'}}) }}
+
+                    <div class="row">
+                        <div class="col-md-8 mb-3">
+                            {{ form_row(form.nom, {
+                                'attr': {'class': 'form-control form-control-lg', 'placeholder': 'Ex: BTP, Numérique, Santé...'},
+                                'row_attr': {'class': 'mb-3'}
+                            }) }}
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            {{ form_row(form.dureeFormation, {
+                                'attr': {'class': 'form-control', 'min': 1, 'max': 24, 'placeholder': 'Mois'},
+                                'row_attr': {'class': 'mb-3'}
+                            }) }}
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                       
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-center">
+                        <a href="{{ path('app_secteur_index') }}" class="btn btn-light">Annuler</a>
+                        <button type="submit" class="btn btn-primary px-4">
+                            <i class="link-icon" data-feather="save"></i> {{ button_label|default('Enregistrer') }}
+                        </button>
+                    </div>
+
+                    {{ form_end(form) }}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
