@@ -1,0 +1,28 @@
+# Activation du module de réécriture d'URL
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    
+    # Déterminer si la requête est dirigée vers un fichier existant
+    RewriteCond %{REQUEST_FILENAME} !-f
+    # Déterminer si la requête est dirigée vers un dossier existant
+    RewriteCond %{REQUEST_FILENAME} !-d
+    
+    # Rediriger toutes les requêtes non-existantes vers index.php
+    RewriteRule ^(.*)$ index.php [QSA,L]
+</IfModule>
+
+# GZIP compression pour améliorer les performances
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE text/html text/plain text/css application/javascript application/json
+    AddOutputFilterByType DEFLATE application/x-javascript text/xml application/xml application/xml+rss
+</IfModule>
+
+# Désactiver l'affichage des répertoires
+Options -Indexes
+
+# Définir certains en-têtes de sécurité
+<IfModule mod_headers.c>
+    Header set X-Content-Type-Options "nosniff"
+    Header set X-XSS-Protection "1; mode=block"
+    Header set X-Frame-Options "SAMEORIGIN"
+</IfModule>
