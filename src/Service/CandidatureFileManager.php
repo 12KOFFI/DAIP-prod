@@ -36,6 +36,11 @@ class CandidatureFileManager
 
         // Parcourir chaque champ de fichier
         foreach ($fileFields as $fieldName => $type) {
+            // Vérifier si le champ existe dans le formulaire
+            if (!$form->has($fieldName)) {
+                continue; // Ignorer les champs masqués
+            }
+            
             $uploadedFile = $form->get($fieldName)->getData();
             
             if ($uploadedFile instanceof UploadedFile) {

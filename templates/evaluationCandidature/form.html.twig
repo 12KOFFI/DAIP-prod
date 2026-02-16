@@ -29,7 +29,7 @@
 
     <div class="row">
         <div class="col-12">
-            {{ form_row(form.typeEvaluation, {
+            {{ form_row(form.libelle, {
                 'attr': {'class': 'form-select'},
                 'row_attr': {'class': 'mb-3'}
             }) }}
@@ -86,7 +86,7 @@
             const commentaireRow = document.getElementById('commentaire-row');
             const grilleSelect = document.querySelector('select[name$="[grilleEvaluation]"]');
             const criteresContainer = document.getElementById('criteres-container');
-            const typeEvaluationSelect = document.querySelector('select[name$="[typeEvaluation]"]');
+            const typeEvaluationSelect = document.querySelector('select[name$="[libelle]"]');
             
             // Fonction pour afficher/masquer les champs conditionnels
             function toggleConditionalFields() {

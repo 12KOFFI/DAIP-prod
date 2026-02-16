@@ -2,13 +2,14 @@
 <IfModule mod_rewrite.c>
     RewriteEngine On
     
-    # Déterminer si la requête est dirigée vers un fichier existant
-    RewriteCond %{REQUEST_FILENAME} !-f
-    # Déterminer si la requête est dirigée vers un dossier existant
-    RewriteCond %{REQUEST_FILENAME} !-d
+    # Rediriger vers le dossier public de Symfony
+    RewriteCond %{REQUEST_URI} !^/public/
+    RewriteRule ^(.*)$ public/$1 [L]
     
-    # Rediriger toutes les requêtes non-existantes vers index.php
-    RewriteRule ^(.*)$ index.php [QSA,L]
+    # Si le fichier ou dossier n'existe pas dans public, rediriger vers index.php
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^(.*)$ public/index.php [QSA,L]
 </IfModule>
 
 # GZIP compression pour améliorer les performances

@@ -242,7 +242,7 @@ final class CandidatureController extends AbstractController
             $convocation = $convocationRepository->findOneBy([
                 'candidature' => $candidature,
             ], [
-                'createdAt' => 'DESC',
+                'dateEnvoi' => 'DESC',
             ]);
 
             return $this->render('candidature/show.html.twig', [
@@ -291,12 +291,9 @@ final class CandidatureController extends AbstractController
                 $type = 'vae';
             }
 
-            $diplomes = $this->diplomeRepository->findAll();
-
             $form = $this->createForm(CandidatureType::class, $candidature, [
                 'context_type' => $type,
                 'metiers' => $metiers,
-                'diplomes' => $this->formatDiplomesForChoice($diplomes),
                 'is_edit' => true,
                 'is_admin' => $this->isGranted('ROLE_ADMIN'),
             ]);

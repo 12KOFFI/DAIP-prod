@@ -30,7 +30,7 @@ class CandidatureAuthorizationService
         }
 
         if ($this->authorizationChecker->isGranted('ROLE_CANDIDAT')) {
-            if ($candidature && $candidature->getUser() !== $user) {
+            if ($candidature && $candidature->getUser()?->getId() !== $user->getId()) {
                 throw new AccessDeniedException('Vous ne pouvez voir que vos propres candidatures.');
             }
             return;
@@ -49,7 +49,7 @@ class CandidatureAuthorizationService
         }
 
         if ($this->authorizationChecker->isGranted('ROLE_CANDIDAT')) {
-            if ($candidature->getUser() !== $user) {
+            if ($candidature->getUser()?->getId() !== $user->getId()) {
                 throw new AccessDeniedException('Vous ne pouvez modifier que vos propres candidatures.');
             }
 
@@ -74,7 +74,7 @@ class CandidatureAuthorizationService
             throw new AccessDeniedException('Seuls les administrateurs peuvent supprimer.');
         }
 
-        if ($candidature->getStatut() === 'acceptee') {
+        if (strtolower((string) $candidature->getStatut()) === 'acceptee') {
             throw new AccessDeniedException('Impossible de supprimer une candidature acceptée.');
         }
     }
@@ -106,19 +106,19 @@ class CandidatureAuthorizationService
     private function isEditableByAdmin(Candidature $candidature): bool
     {
         // Les admins peuvent modifier tant que ce n'est pas accepté/refusé
-        return !in_array($candidature->getStatut(), ['acceptee', 'refusee']);
+        return !in_array(strtolower((string) $candidature->getStatut()), ['acceptee', 'refusee'], true);
     }
 
     private function isEditableByCandidate(Candidature $candidature): bool
     {
         // Les candidats ne peuvent modifier que les candidatures en attente ou incomplètes
-        return in_array($candidature->getStatut(), ['en_attente', 'incomplete']);
+        return in_array(strtolower((string) $candidature->getStatut()), ['en_attente', 'incomplete'], true);
     }
 
     private function isDeletable(Candidature $candidature): bool
     {
         // Ne pas supprimer les candidatures acceptées
-        return $candidature->getStatut() !== 'acceptee';
+        return strtolower((string) $candidature->getStatut()) !== 'acceptee';
     }
 
 

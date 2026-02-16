@@ -157,16 +157,8 @@ class CandidatureType extends AbstractType
                 'attr' => ['class' => 'form-select'],
                 'row_attr' => ['class' => 'mb-3']
             ])
-            ->add('numPiece', null, [
-                'label' => 'Numéro de pièce d\'identité',
-                'attr' => ['class' => 'form-control'],
-                'row_attr' => ['class' => 'mb-3']
-            ])
-            ->add('numCmu', null, [
-                'label' => 'Numéro de CMU',
-                'attr' => ['class' => 'form-control'],
-                'row_attr' => ['class' => 'mb-3']
-            ]);
+            // Les champs numPiece et numCmu ont été masqués
+        ;
     }
 
     private function addEducationFields(FormBuilderInterface $builder, array $options): void
@@ -179,14 +171,7 @@ class CandidatureType extends AbstractType
                 'attr' => ['class' => 'form-control'],
                 'row_attr' => ['class' => 'mb-3']
             ])
-            ->add('diplome', EntityType::class, [
-                'class' => Diplome::class,
-                'choice_label' => 'libelle',
-                'placeholder' => 'Sélectionnez un diplôme',
-                'required' => false,
-                'attr' => ['class' => 'form-control'],
-                'row_attr' => ['class' => 'mb-3']
-            ])
+            // Le champ diplome a été masqué
             ->add('metier', EntityType::class, [
                 'class' => Metier::class,
                 'choices' => $options['metiers'] ?? [],
@@ -279,7 +264,6 @@ class CandidatureType extends AbstractType
                 'attr' => ['class' => 'form-control'],
                 'row_attr' => ['class' => 'mb-3']
             ])
-
             ->add('contrat', null, [
                 'label' => 'Référence du contrat de travail',
                 'attr' => ['class' => 'form-control'],

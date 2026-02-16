@@ -116,6 +116,7 @@ class Candidature
     private ?NiveauEtude $niveauEtude = null;
 
     #[ORM\ManyToOne(targetEntity: Diplome::class, inversedBy: 'candidatures')]
+    #[ORM\JoinColumn(nullable: true)]
     private ?Diplome $diplome = null;
 
     #[ORM\Column(length: 255, nullable: true)]
